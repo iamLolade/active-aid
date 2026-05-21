@@ -4,10 +4,8 @@ const TICK_MINUTES = 1
 const DEFAULT_INACTIVITY_RESET_MINUTES = 5
 const NOTIFICATION_SNOOZE_MINUTES = 10
 
-// Some Chrome surfaces fail to show notifications if the icon is SVG.
-// Use a tiny PNG data URL as a reliable fallback.
-const FALLBACK_PNG_DATA_URL =
-  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO7+2wAAAABJRU5ErkJggg=="
+const NOTIFICATION_ICON_URL = () =>
+  chrome.runtime.getURL("assets/icon-128.png")
 
 const SETTINGS_KEY = "activeaid:settings"
 const RUNTIME_KEY = "activeaid:runtime"
@@ -179,7 +177,7 @@ async function showReminder(activeMinutes) {
   try {
     await notificationsCreate(notificationId, {
       type: "basic",
-      iconUrl: FALLBACK_PNG_DATA_URL,
+      iconUrl: NOTIFICATION_ICON_URL(),
       title: "ActiveAid",
       message: `You’ve been active for about ${activeMinutes} minutes. Want a quick movement break?`,
       priority: 0,
