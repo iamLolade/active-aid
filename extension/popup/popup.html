@@ -18,101 +18,149 @@
         <span id="errorText"></span>
       </div>
 
-      <div id="viewHome" class="view">
-      <header class="header">
-        <img
-          class="logo"
-          src="../assets/icon-48.png"
-          width="40"
-          height="40"
-          alt=""
-        />
-        <div class="headerText">
-          <h1 class="title">ActiveAid</h1>
-          <p class="subtitle">Wellness while you work.</p>
+      <main class="main">
+        <div id="viewHome" class="view">
+          <header class="header">
+            <img
+              class="logo"
+              src="../assets/icon-48.png"
+              width="40"
+              height="40"
+              alt=""
+            />
+            <div class="headerText">
+              <h1 class="title">ActiveAid</h1>
+              <p class="subtitle">Wellness while you work.</p>
+            </div>
+          </header>
+
+          <section class="statusCard" id="statusCard">
+            <span class="badge" id="statusBadge">Reminders on</span>
+            <p class="statusMessage" id="statusMessage">Checking in…</p>
+            <p class="statusMeta" id="statusMeta"></p>
+          </section>
+
+          <section class="card card--compact">
+            <div class="cardRow">
+              <div>
+                <h2 class="sectionTitle sectionTitle--inline">Daily check-in</h2>
+                <p class="cardHint" id="checkInHint">Log how your body feels today.</p>
+              </div>
+              <button class="btn btn--primary btn--small" id="goCheckIn" type="button">
+                Check in
+              </button>
+            </div>
+          </section>
+
+          <section class="card">
+            <h2 class="sectionTitle">Reminders</h2>
+            <label class="toggle">
+              <input type="checkbox" id="notificationsEnabled" />
+              <span class="toggleTrack" aria-hidden="true"></span>
+              <span class="toggleLabel">Enable gentle reminders</span>
+            </label>
+            <div class="field">
+              <label class="fieldLabel" for="reminderIntervalMinutes">
+                Remind me after (minutes)
+              </label>
+              <div class="presets" role="group" aria-label="Quick intervals">
+                <button class="preset" type="button" data-minutes="30">30</button>
+                <button class="preset" type="button" data-minutes="60">60</button>
+                <button class="preset" type="button" data-minutes="90">90</button>
+              </div>
+              <input
+                type="number"
+                id="reminderIntervalMinutes"
+                min="1"
+                max="240"
+                step="1"
+              />
+            </div>
+            <div class="actions">
+              <button class="btn btn--secondary" id="snooze10" type="button">Snooze 10m</button>
+              <button class="btn btn--secondary" id="snooze30" type="button">Snooze 30m</button>
+              <button class="btn btn--ghost" id="resetTimer" type="button">Reset timer</button>
+            </div>
+          </section>
+
+          <section class="card">
+            <h2 class="sectionTitle">Quick relief</h2>
+            <p class="sessionIntro">Short guided resets you can do at your desk.</p>
+            <div class="sessionList" id="sessionList"></div>
+            <p class="sessionStats" id="sessionStats"></p>
+          </section>
+
+          <p class="footerNote">We only track activity timing — never what you type.</p>
         </div>
-      </header>
 
-      <section class="statusCard" id="statusCard">
-        <span class="badge" id="statusBadge">Reminders on</span>
-        <p class="statusMessage" id="statusMessage">Checking in…</p>
-        <p class="statusMeta" id="statusMeta"></p>
-      </section>
+        <div id="viewCheckIn" class="view" hidden>
+          <header class="viewHeader">
+            <h2 class="viewTitle">Daily check-in</h2>
+            <p class="viewSubtitle">How does your body feel today?</p>
+          </header>
 
-      <section class="card">
-        <h2 class="sectionTitle">Reminders</h2>
+          <section class="card">
+            <p class="fieldLabel">Overall feeling</p>
+            <div class="chipGroup" id="severityGroup" role="radiogroup"></div>
+          </section>
 
-        <label class="toggle">
-          <input type="checkbox" id="notificationsEnabled" />
-          <span class="toggleTrack" aria-hidden="true"></span>
-          <span class="toggleLabel">Enable gentle reminders</span>
-        </label>
+          <section class="card">
+            <p class="fieldLabel">Any areas to note? (optional)</p>
+            <div class="chipGroup chipGroup--multi" id="bodyAreaGroup"></div>
+          </section>
 
-        <div class="field">
-          <label class="fieldLabel" for="reminderIntervalMinutes">
-            Remind me after (minutes)
-          </label>
-          <div class="presets" role="group" aria-label="Quick intervals">
-            <button class="preset" type="button" data-minutes="30">30</button>
-            <button class="preset" type="button" data-minutes="60">60</button>
-            <button class="preset" type="button" data-minutes="90">90</button>
+          <button class="btn btn--primary btn--block" id="saveCheckIn" type="button">
+            Save check-in
+          </button>
+          <p class="formNote" id="checkInSavedNote" hidden>Saved for today. You can update anytime.</p>
+        </div>
+
+        <div id="viewDashboard" class="view" hidden>
+          <header class="viewHeader">
+            <h2 class="viewTitle">Insights</h2>
+            <p class="viewSubtitle">Simple wellness trends from your local data.</p>
+          </header>
+
+          <div class="statGrid" id="statGrid"></div>
+
+          <section class="card">
+            <h2 class="sectionTitle">Last 7 days</h2>
+            <ul class="trendList" id="trendList"></ul>
+          </section>
+
+          <section class="card" id="areasCard" hidden>
+            <h2 class="sectionTitle">Most noted areas (30 days)</h2>
+            <ul class="areaList" id="areaList"></ul>
+          </section>
+        </div>
+
+        <div id="viewSession" class="view" hidden>
+          <button class="backLink" id="sessionBack" type="button">← Back</button>
+          <header class="sessionHeader">
+            <h2 class="sessionTitle" id="sessionTitle"></h2>
+            <p class="sessionTagline" id="sessionTagline"></p>
+          </header>
+          <p class="stepProgress" id="stepProgress"></p>
+          <article class="stepCard">
+            <h3 class="stepTitle" id="stepTitle"></h3>
+            <p class="stepInstruction" id="stepInstruction"></p>
+            <p class="stepDuration" id="stepDuration"></p>
+          </article>
+          <div class="actions actions--session">
+            <button class="btn btn--ghost" id="stepPrev" type="button" disabled>Previous</button>
+            <button class="btn btn--primary" id="stepNext" type="button">Next</button>
+            <button class="btn btn--primary" id="stepComplete" type="button" hidden>
+              Complete session
+            </button>
           </div>
-          <input
-            type="number"
-            id="reminderIntervalMinutes"
-            min="1"
-            max="240"
-            step="1"
-          />
         </div>
+      </main>
 
-        <div class="actions">
-          <button class="btn btn--secondary" id="snooze10" type="button">
-            Snooze 10m
-          </button>
-          <button class="btn btn--secondary" id="snooze30" type="button">
-            Snooze 30m
-          </button>
-          <button class="btn btn--ghost" id="resetTimer" type="button">
-            Reset timer
-          </button>
-        </div>
-      </section>
-
-      <section class="card">
-        <h2 class="sectionTitle">Quick relief</h2>
-        <p class="sessionIntro">Short guided resets you can do at your desk.</p>
-        <div class="sessionList" id="sessionList"></div>
-        <p class="sessionStats" id="sessionStats"></p>
-      </section>
-
-      <footer class="footer">
-        <p>We only track activity timing — never what you type.</p>
-      </footer>
-      </div>
-
-      <div id="viewSession" class="view" hidden>
-        <button class="backLink" id="sessionBack" type="button">← Back</button>
-        <header class="sessionHeader">
-          <h2 class="sessionTitle" id="sessionTitle"></h2>
-          <p class="sessionTagline" id="sessionTagline"></p>
-        </header>
-        <p class="stepProgress" id="stepProgress"></p>
-        <article class="stepCard">
-          <h3 class="stepTitle" id="stepTitle"></h3>
-          <p class="stepInstruction" id="stepInstruction"></p>
-          <p class="stepDuration" id="stepDuration"></p>
-        </article>
-        <div class="actions actions--session">
-          <button class="btn btn--ghost" id="stepPrev" type="button" disabled>
-            Previous
-          </button>
-          <button class="btn btn--primary" id="stepNext" type="button">Next</button>
-          <button class="btn btn--primary" id="stepComplete" type="button" hidden>
-            Complete session
-          </button>
-        </div>
-      </div>
+      <nav class="nav" id="nav">
+        <button class="navBtn navBtn--active" type="button" data-view="home">Today</button>
+        <button class="navBtn" type="button" data-view="checkin">Check-in</button>
+        <button class="navBtn" type="button" data-view="insights">Insights</button>
+      </nav>
     </div>
 
     <script type="module" src="./popup.js"></script>

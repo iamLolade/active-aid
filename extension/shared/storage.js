@@ -4,12 +4,17 @@ import {
   storageSyncGet,
   storageSyncSet,
 } from "./chrome-api.js"
+import { todayDateKey } from "./checkins.js"
+import { buildWellnessSummary } from "./wellness.js"
 
 const SETTINGS_KEY = "activeaid:settings"
 const RUNTIME_KEY = "activeaid:runtime"
 const SESSION_LOGS_KEY = "activeaid:sessionLogs"
+const CHECKINS_KEY = "activeaid:checkins"
+const DAILY_KEY = "activeaid:daily"
 
 const MAX_SESSION_LOGS = 200
+const MAX_CHECKINS = 400
 
 const DEFAULT_SETTINGS = {
   reminderIntervalMinutes: 90,
@@ -138,6 +143,97 @@ function normalizeSessionLog(raw) {
     sessionId,
     completedAt,
     durationSeconds: Math.max(0, Math.round(Number(raw.durationSeconds) || 0)),
+  }
+}
+
+/** @typedef {{ date: string, severity: string, bodyAreas: string[], createdAt: number }} CheckInLog */
+
+export async function getCheckIns() {
+  const stored = await storageLocalGet(CHECKINS_KEY)
+  const raw = stored?.[CHECKINS_KEY]
+  if (!Array.isArray(raw)) return []
+  return raw.map(normalizeCheckIn).filter(Boolean).slice(0, MAX_CHECKINS)
+}
+
+export async function getTodayCheckIn() {
+  const today = todayDateKey()
+  const checkIns = await getCheckIns()
+  return checkIns.find((c) => c.date === today) ?? null
+}
+
+export async function saveCheckIn({ severity, bodyAreas }) {
+  const today = todayDateKey()
+  const checkIns = await getCheckIns()
+  const filtered = checkIns.filter((c) => c.date !== today)
+  const entry = {
+    date: today,
+    severity: String(severity),
+    bodyAreas: Array.isArray(bodyAreas) ? bodyAreas.map(String) : [],
+    createdAt: Date.now(),
+  }
+  const next = [entry, ...filtered].slice(0, MAX_CHECKINS)
+  await storageLocalSet({ [CHECKINS_KEY]: next })
+  return entry
+}
+
+export async function getDailyStats() {
+  const stored = await storageLocalGet(DAILY_KEY)
+  const raw = stored?.[DAILY_KEY]
+  return normalizeDaily(raw)
+}
+
+export async function recordActivityMs(deltaMs) {
+  const daily = await getDailyStats()
+  const next = {
+    date: todayDateKey(),
+    activityMs: daily.activityMs + Math.max(0, Math.round(deltaMs)),
+    reminders: daily.reminders,
+  }
+  await storageLocalSet({ [DAILY_KEY]: next })
+  return next
+}
+
+export async function recordReminderShown() {
+  const daily = await getDailyStats()
+  const next = {
+    date: todayDateKey(),
+    activityMs: daily.activityMs,
+    reminders: daily.reminders + 1,
+  }
+  await storageLocalSet({ [DAILY_KEY]: next })
+  return next
+}
+
+export async function getWellnessSummary() {
+  const [checkIns, sessionLogs, daily] = await Promise.all([
+    getCheckIns(),
+    getSessionLogs(),
+    getDailyStats(),
+  ])
+  return buildWellnessSummary(checkIns, sessionLogs, daily)
+}
+
+function normalizeCheckIn(raw) {
+  if (!raw || typeof raw !== "object") return null
+  const date = typeof raw.date === "string" ? raw.date : null
+  const severity = typeof raw.severity === "string" ? raw.severity : null
+  const createdAt = numberOrNull(raw.createdAt)
+  if (!date || !severity || createdAt == null) return null
+  const bodyAreas = Array.isArray(raw.bodyAreas)
+    ? raw.bodyAreas.filter((a) => typeof a === "string")
+    : []
+  return { date, severity, bodyAreas, createdAt }
+}
+
+function normalizeDaily(raw) {
+  const today = todayDateKey()
+  if (!raw || raw.date !== today) {
+    return { date: today, activityMs: 0, reminders: 0 }
+  }
+  return {
+    date: today,
+    activityMs: Math.max(0, Math.round(Number(raw.activityMs) || 0)),
+    reminders: Math.max(0, Math.round(Number(raw.reminders) || 0)),
   }
 }
 

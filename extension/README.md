@@ -16,5 +16,10 @@
 - Step through the guided cards and tap **Complete session**.
 - Completion is saved locally; the popup shows how many sessions you finished today.
 
+## Check-ins & insights
+- Use the **Check-in** tab to log how your body feels (severity + optional body areas).
+- Open **Insights** for breaks taken, estimated active time, check-in streak, 7-day trends, and top noted areas.
+- All data stays in local browser storage (no account required).
+
 ## Privacy
 This MVP tracks **timing of activity signals only** (e.g., that *some* activity occurred), and does not log typed content, page content, screenshots, or camera data.

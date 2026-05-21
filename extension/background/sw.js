@@ -9,6 +9,8 @@ const NOTIFICATION_ICON_URL = () =>
 
 const SETTINGS_KEY = "activeaid:settings"
 const RUNTIME_KEY = "activeaid:runtime"
+const DAILY_KEY = "activeaid:daily"
+const ACTIVITY_PING_CAP_MS = 10_000
 
 const DEFAULT_SETTINGS = {
   reminderIntervalMinutes: 90,
@@ -115,6 +117,11 @@ async function handleActivityPing() {
     lastActivityMs == null ||
     t - lastActivityMs > inactiveResetMs
 
+  if (!shouldStartNewSession && lastActivityMs != null) {
+    const delta = Math.min(t - lastActivityMs, ACTIVITY_PING_CAP_MS)
+    if (delta > 0) await recordActivityMs(delta)
+  }
+
   await setRuntimeState({
     lastActivityMs: t,
     activeSinceMs: shouldStartNewSession ? t : state.activeSinceMs,
@@ -163,6 +170,8 @@ async function tick() {
   const minutes = msToRoundedMinutes(activeDurationMs)
   const ok = await showReminder(minutes)
   if (!ok) return
+
+  await recordReminderShown()
 
   await setRuntimeState({
     lastReminderMs: t,
@@ -310,5 +319,49 @@ function stringOrNull(value) {
   if (typeof value !== "string") return null
   const s = value.trim()
   return s.length ? s : null
+}
+
+function todayDateKey(date) {
+  const d = date || new Date()
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, "0")
+  const day = String(d.getDate()).padStart(2, "0")
+  return y + "-" + m + "-" + day
+}
+
+async function getDailyStats() {
+  const stored = await storageLocalGet(DAILY_KEY)
+  const raw = stored && stored[DAILY_KEY]
+  const today = todayDateKey()
+  if (!raw || raw.date !== today) {
+    return { date: today, activityMs: 0, reminders: 0 }
+  }
+  return {
+    date: today,
+    activityMs: Math.max(0, Math.round(Number(raw.activityMs) || 0)),
+    reminders: Math.max(0, Math.round(Number(raw.reminders) || 0)),
+  }
+}
+
+async function recordActivityMs(deltaMs) {
+  const daily = await getDailyStats()
+  await storageLocalSet({
+    [DAILY_KEY]: {
+      date: daily.date,
+      activityMs: daily.activityMs + Math.max(0, Math.round(deltaMs)),
+      reminders: daily.reminders,
+    },
+  })
+}
+
+async function recordReminderShown() {
+  const daily = await getDailyStats()
+  await storageLocalSet({
+    [DAILY_KEY]: {
+      date: daily.date,
+      activityMs: daily.activityMs,
+      reminders: daily.reminders + 1,
+    },
+  })
 }
 

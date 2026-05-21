@@ -27,10 +27,53 @@ body {
 }
 
 .app {
-  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  min-height: 480px;
+}
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 16px 8px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.nav {
+  display: flex;
+  gap: 4px;
+  padding: 8px 12px 12px;
+  border-top: 1px solid var(--gray);
+  background: var(--white);
+}
+
+.nav[hidden] {
+  display: none !important;
+}
+
+.navBtn {
+  flex: 1;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--slate-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.navBtn:hover {
+  background: #f3efe6;
+  color: var(--slate);
+}
+
+.navBtn--active {
+  background: var(--sage-soft);
+  color: #3d6b42;
 }
 
 .banner {
@@ -290,15 +333,157 @@ input[type="number"]:focus {
   background: var(--cream);
 }
 
-.footer {
-  padding: 0 4px;
-}
-
-.footer p {
-  margin: 0;
+.footerNote {
+  margin: 0 4px 4px;
   font-size: 11px;
   color: var(--slate-muted);
   line-height: 1.4;
+}
+
+.viewHeader {
+  margin-bottom: 4px;
+}
+
+.viewTitle {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--slate);
+}
+
+.viewSubtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--slate-muted);
+}
+
+.card--compact {
+  padding: 12px 14px;
+}
+
+.cardRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cardHint {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--slate-muted);
+}
+
+.sectionTitle--inline {
+  margin: 0;
+}
+
+.btn--small {
+  flex: 0 0 auto;
+  height: 34px;
+  padding: 0 14px;
+  font-size: 12px;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.chipGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--gray);
+  background: #f3efe6;
+  color: var(--slate);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.chip:hover {
+  border-color: var(--sage);
+}
+
+.chip--selected {
+  background: var(--sage-soft);
+  border-color: var(--sage);
+  color: #3d6b42;
+  font-weight: 600;
+}
+
+.formNote {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: #3d6b42;
+  text-align: center;
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.statCard {
+  background: var(--white);
+  border: 1px solid var(--gray);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: var(--shadow);
+}
+
+.statValue {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--slate);
+}
+
+.statLabel {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: var(--slate-muted);
+  line-height: 1.35;
+}
+
+.trendList,
+.areaList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trendList li,
+.areaList li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gray);
+  font-size: 13px;
+}
+
+.trendList li:last-child,
+.areaList li:last-child {
+  border-bottom: none;
+}
+
+.trendDate {
+  color: var(--slate-muted);
+  font-size: 12px;
+}
+
+.trendLabel {
+  font-weight: 500;
+  color: var(--slate);
 }
 
 .view[hidden] {
