@@ -4,56 +4,58 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>ActiveAid</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./popup.css" />
   </head>
   <body>
     <div class="app">
+      <div class="banner banner--error" id="errorBanner" hidden>
+        <span id="errorText"></span>
+      </div>
+
       <header class="header">
-        <div class="title">ActiveAid</div>
-        <div class="subtitle">Gentle movement reminders</div>
+        <img
+          class="logo"
+          src="../assets/icon-48.png"
+          width="40"
+          height="40"
+          alt=""
+        />
+        <div class="headerText">
+          <h1 class="title">ActiveAid</h1>
+          <p class="subtitle">Wellness while you work.</p>
+        </div>
       </header>
 
-      <section class="card">
-        <div class="row">
-          <div class="label">Status</div>
-          <div class="value" id="statusText">—</div>
-        </div>
-        <div class="row">
-          <div class="label">Last tick</div>
-          <div class="value" id="lastTickText">—</div>
-        </div>
-        <div class="row">
-          <div class="label">Last decision</div>
-          <div class="value" id="lastDecisionText">—</div>
-        </div>
-        <div class="row">
-          <div class="label">Active session</div>
-          <div class="value" id="activeSinceText">—</div>
-        </div>
-        <div class="row">
-          <div class="label">Last activity</div>
-          <div class="value" id="lastActivityText">—</div>
-        </div>
-        <div class="row">
-          <div class="label">Snoozed</div>
-          <div class="value" id="snoozedText">—</div>
-        </div>
-        <div class="row" id="errorRow" style="display: none">
-          <div class="label">Last error</div>
-          <div class="value" id="lastErrorText">—</div>
-        </div>
+      <section class="statusCard" id="statusCard">
+        <span class="badge" id="statusBadge">Reminders on</span>
+        <p class="statusMessage" id="statusMessage">Checking in…</p>
+        <p class="statusMeta" id="statusMeta"></p>
       </section>
 
       <section class="card">
-        <div class="sectionTitle">Reminders</div>
+        <h2 class="sectionTitle">Reminders</h2>
 
-        <label class="control">
+        <label class="toggle">
           <input type="checkbox" id="notificationsEnabled" />
-          <span>Enable reminders</span>
+          <span class="toggleTrack" aria-hidden="true"></span>
+          <span class="toggleLabel">Enable gentle reminders</span>
         </label>
 
-        <label class="control">
-          <div class="controlLabel">Reminder interval (minutes)</div>
+        <div class="field">
+          <label class="fieldLabel" for="reminderIntervalMinutes">
+            Remind me after (minutes)
+          </label>
+          <div class="presets" role="group" aria-label="Quick intervals">
+            <button class="preset" type="button" data-minutes="30">30</button>
+            <button class="preset" type="button" data-minutes="60">60</button>
+            <button class="preset" type="button" data-minutes="90">90</button>
+          </div>
           <input
             type="number"
             id="reminderIntervalMinutes"
@@ -61,35 +63,26 @@
             max="240"
             step="1"
           />
-        </label>
+        </div>
 
         <div class="actions">
-          <button class="button" id="snooze10" type="button">Snooze 10m</button>
-          <button class="button" id="snooze30" type="button">Snooze 30m</button>
-          <button class="button" id="resetTimer" type="button">Reset</button>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="sectionTitle">Diagnostics</div>
-        <div class="row">
-          <div class="label">Alarm</div>
-          <div class="value" id="alarmText">—</div>
-        </div>
-        <div class="actions">
-          <button class="button" id="runTick" type="button">Run tick</button>
-          <button class="button" id="testNotification" type="button">Test notify</button>
+          <button class="btn btn--secondary" id="snooze10" type="button">
+            Snooze 10m
+          </button>
+          <button class="btn btn--secondary" id="snooze30" type="button">
+            Snooze 30m
+          </button>
+          <button class="btn btn--ghost" id="resetTimer" type="button">
+            Reset timer
+          </button>
         </div>
       </section>
 
       <footer class="footer">
-        <div class="footnote">
-          Privacy note: we track only activity timing (no typed content).
-        </div>
+        <p>We only track activity timing — never what you type.</p>
       </footer>
     </div>
 
     <script type="module" src="./popup.js"></script>
   </body>
 </html>
-
