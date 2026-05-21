@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "ActiveAid",
+  "description": "Lightweight workplace wellness reminders and quick relief sessions.",
+  "version": "0.1.0",
+  "action": {
+    "default_title": "ActiveAid",
+    "default_popup": "popup/popup.html"
+  },
+  "permissions": ["alarms", "notifications", "storage"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "background": {
+    "service_worker": "background/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content/activity.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "assets/icon.svg",
+    "32": "assets/icon.svg",
+    "48": "assets/icon.svg",
+    "128": "assets/icon.svg"
+  }
+}
+

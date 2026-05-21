@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ActiveAid</title>
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="title">ActiveAid</div>
+        <div class="subtitle">Gentle movement reminders</div>
+      </header>
+
+      <section class="card">
+        <div class="row">
+          <div class="label">Status</div>
+          <div class="value" id="statusText">—</div>
+        </div>
+        <div class="row">
+          <div class="label">Active session</div>
+          <div class="value" id="activeSinceText">—</div>
+        </div>
+        <div class="row">
+          <div class="label">Last activity</div>
+          <div class="value" id="lastActivityText">—</div>
+        </div>
+        <div class="row">
+          <div class="label">Snoozed</div>
+          <div class="value" id="snoozedText">—</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="sectionTitle">Reminders</div>
+
+        <label class="control">
+          <input type="checkbox" id="notificationsEnabled" />
+          <span>Enable reminders</span>
+        </label>
+
+        <label class="control">
+          <div class="controlLabel">Reminder interval (minutes)</div>
+          <input
+            type="number"
+            id="reminderIntervalMinutes"
+            min="1"
+            max="240"
+            step="1"
+          />
+        </label>
+
+        <div class="actions">
+          <button class="button" id="snooze10" type="button">Snooze 10m</button>
+          <button class="button" id="snooze30" type="button">Snooze 30m</button>
+          <button class="button" id="resetTimer" type="button">Reset</button>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div class="footnote">
+          Privacy note: we track only activity timing (no typed content).
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="./popup.js"></script>
+  </body>
+</html>
+
