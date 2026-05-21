@@ -7,6 +7,9 @@ import {
 
 const SETTINGS_KEY = "activeaid:settings"
 const RUNTIME_KEY = "activeaid:runtime"
+const SESSION_LOGS_KEY = "activeaid:sessionLogs"
+
+const MAX_SESSION_LOGS = 200
 
 const DEFAULT_SETTINGS = {
   reminderIntervalMinutes: 90,
@@ -82,5 +85,59 @@ function stringOrNull(value) {
   if (typeof value !== "string") return null
   const s = value.trim()
   return s.length ? s : null
+}
+
+/** @typedef {{ sessionId: string, completedAt: number, durationSeconds: number }} SessionLog */
+
+export async function getSessionLogs() {
+  const stored = await storageLocalGet(SESSION_LOGS_KEY)
+  const raw = stored?.[SESSION_LOGS_KEY]
+  if (!Array.isArray(raw)) return []
+  return raw
+    .map(normalizeSessionLog)
+    .filter(Boolean)
+    .slice(0, MAX_SESSION_LOGS)
+}
+
+export async function addSessionLog(entry) {
+  const logs = await getSessionLogs()
+  const next = [
+    {
+      sessionId: String(entry.sessionId),
+      completedAt: Number(entry.completedAt) || Date.now(),
+      durationSeconds: Math.max(0, Math.round(Number(entry.durationSeconds) || 0)),
+    },
+    ...logs,
+  ].slice(0, MAX_SESSION_LOGS)
+  await storageLocalSet({ [SESSION_LOGS_KEY]: next })
+  return next
+}
+
+export async function getSessionStats() {
+  const logs = await getSessionLogs()
+  const startOfDay = new Date()
+  startOfDay.setHours(0, 0, 0, 0)
+
+  const todayCount = logs.filter((l) => l.completedAt >= startOfDay.getTime()).length
+  const last = logs[0] ?? null
+
+  return {
+    totalCount: logs.length,
+    todayCount,
+    lastCompletedAt: last?.completedAt ?? null,
+    lastSessionId: last?.sessionId ?? null,
+  }
+}
+
+function normalizeSessionLog(raw) {
+  if (!raw || typeof raw !== "object") return null
+  const sessionId = typeof raw.sessionId === "string" ? raw.sessionId : null
+  const completedAt = numberOrNull(raw.completedAt)
+  if (!sessionId || completedAt == null) return null
+  return {
+    sessionId,
+    completedAt,
+    durationSeconds: Math.max(0, Math.round(Number(raw.durationSeconds) || 0)),
+  }
 }
 

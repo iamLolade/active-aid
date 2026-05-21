@@ -18,6 +18,7 @@
         <span id="errorText"></span>
       </div>
 
+      <div id="viewHome" class="view">
       <header class="header">
         <img
           class="logo"
@@ -78,9 +79,40 @@
         </div>
       </section>
 
+      <section class="card">
+        <h2 class="sectionTitle">Quick relief</h2>
+        <p class="sessionIntro">Short guided resets you can do at your desk.</p>
+        <div class="sessionList" id="sessionList"></div>
+        <p class="sessionStats" id="sessionStats"></p>
+      </section>
+
       <footer class="footer">
         <p>We only track activity timing — never what you type.</p>
       </footer>
+      </div>
+
+      <div id="viewSession" class="view" hidden>
+        <button class="backLink" id="sessionBack" type="button">← Back</button>
+        <header class="sessionHeader">
+          <h2 class="sessionTitle" id="sessionTitle"></h2>
+          <p class="sessionTagline" id="sessionTagline"></p>
+        </header>
+        <p class="stepProgress" id="stepProgress"></p>
+        <article class="stepCard">
+          <h3 class="stepTitle" id="stepTitle"></h3>
+          <p class="stepInstruction" id="stepInstruction"></p>
+          <p class="stepDuration" id="stepDuration"></p>
+        </article>
+        <div class="actions actions--session">
+          <button class="btn btn--ghost" id="stepPrev" type="button" disabled>
+            Previous
+          </button>
+          <button class="btn btn--primary" id="stepNext" type="button">Next</button>
+          <button class="btn btn--primary" id="stepComplete" type="button" hidden>
+            Complete session
+          </button>
+        </div>
+      </div>
     </div>
 
     <script type="module" src="./popup.js"></script>

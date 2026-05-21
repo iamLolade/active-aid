@@ -3,12 +3,12 @@
   --sage: #7bae7f;
   --sage-soft: #e8f0e9;
   --slate: #1f2937;
-  --slate-muted: #6b7280;
+  --slate-muted: #4b5563;
   --cream: #f7f4ed;
-  --gray: #e5e7eb;
+  --gray: #d1d5db;
   --white: #ffffff;
   --terracotta: #c97b63;
-  --shadow: 0 8px 24px rgba(31, 41, 55, 0.06);
+  --shadow: 0 10px 30px rgba(31, 41, 55, 0.09);
   --radius: 14px;
 }
 
@@ -95,8 +95,8 @@ body {
 }
 
 .badge--paused {
-  background: var(--gray);
-  color: var(--slate-muted);
+  background: #e5e7eb;
+  color: #374151;
 }
 
 .badge--snoozed {
@@ -212,7 +212,7 @@ body {
   height: 32px;
   border-radius: 999px;
   border: 1px solid var(--gray);
-  background: var(--cream);
+  background: #f3efe6;
   color: var(--slate);
   font-size: 13px;
   font-weight: 600;
@@ -222,6 +222,7 @@ body {
 
 .preset:hover {
   border-color: var(--sage);
+  background: #efe9dd;
 }
 
 .preset--active {
@@ -298,4 +299,154 @@ input[type="number"]:focus {
   font-size: 11px;
   color: var(--slate-muted);
   line-height: 1.4;
+}
+
+.view[hidden] {
+  display: none !important;
+}
+
+.sessionIntro {
+  margin: -6px 0 12px;
+  font-size: 13px;
+  color: var(--slate-muted);
+}
+
+.sessionList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sessionBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--gray);
+  background: #f3efe6;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.sessionBtn:hover {
+  border-color: var(--sage);
+  background: var(--sage-soft);
+}
+
+.sessionBtnTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--slate);
+}
+
+.sessionBtnMeta {
+  font-size: 12px;
+  color: var(--slate-muted);
+}
+
+.sessionStats {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--slate-muted);
+}
+
+.backLink {
+  align-self: flex-start;
+  margin-bottom: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--slate-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.backLink:hover {
+  color: var(--slate);
+}
+
+.sessionHeader {
+  margin-bottom: 4px;
+}
+
+.sessionTitle {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--slate);
+}
+
+.sessionTagline {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--slate-muted);
+}
+
+.stepProgress {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--slate-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stepCard {
+  background: #f3efe6;
+  border: 1px solid var(--gray);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+
+.stepTitle {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--slate);
+}
+
+.stepInstruction {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--slate);
+}
+
+.stepDuration {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--slate-muted);
+}
+
+.actions--session {
+  margin-top: 0;
+}
+
+.btn--primary {
+  flex: 1;
+  background: var(--sage);
+  border-color: #6a9d6e;
+  color: #ffffff;
+}
+
+.btn--primary:hover {
+  background: #6a9d6e;
+}
+
+.btn--primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.actions--session .btn--ghost {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 96px;
 }

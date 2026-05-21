@@ -11,5 +11,10 @@
 - Open the popup, enable reminders, and pick an interval (30 / 60 / 90 presets).
 - After your chosen interval of continuous activity, you should receive a gentle notification.
 
+## Wellness sessions
+- In the popup, open **Quick relief** and start any session (neck, wrist, lower back, shoulder, eyes).
+- Step through the guided cards and tap **Complete session**.
+- Completion is saved locally; the popup shows how many sessions you finished today.
+
 ## Privacy
 This MVP tracks **timing of activity signals only** (e.g., that *some* activity occurred), and does not log typed content, page content, screenshots, or camera data.
