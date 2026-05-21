@@ -9,7 +9,7 @@ import {
   saveCheckIn,
   getWellnessSummary,
 } from "../shared/storage.js"
-import { minutesToMs, msToRoundedMinutes, nowMs } from "../shared/time.js"
+import { formatCountdown, minutesToMs, msToRoundedMinutes, nowMs } from "../shared/time.js"
 import { runtimeSendMessage } from "../shared/chrome-api.js"
 import { SESSIONS, getSessionById, getTotalDurationSeconds } from "../shared/sessions.js"
 import { SEVERITIES, BODY_AREAS, getSeverityLabel } from "../shared/checkins.js"
@@ -48,6 +48,9 @@ const els = {
   sessionTitle: document.getElementById("sessionTitle"),
   sessionTagline: document.getElementById("sessionTagline"),
   stepProgress: document.getElementById("stepProgress"),
+  stepCountdown: document.getElementById("stepCountdown"),
+  totalCountdown: document.getElementById("totalCountdown"),
+  stepCard: document.getElementById("stepCard"),
   stepTitle: document.getElementById("stepTitle"),
   stepInstruction: document.getElementById("stepInstruction"),
   stepDuration: document.getElementById("stepDuration"),
@@ -56,7 +59,13 @@ const els = {
   stepComplete: document.getElementById("stepComplete"),
 }
 
-const player = { session: null, stepIndex: 0, startedAt: null }
+const player = {
+  session: null,
+  stepIndex: 0,
+  startedAt: null,
+  stepStartedAt: null,
+  tickId: null,
+}
 const checkInForm = { severity: null, bodyAreas: new Set() }
 let activeTab = "home"
 
@@ -191,7 +200,7 @@ async function renderDashboard() {
     { value: `${summary.activeMinutesToday}m`, label: "Estimated active time" },
     { value: String(summary.checkInStreak), label: "Check-in streak (days)" },
     {
-      value: summary.todayCheckIn ? getSeverityLabel(summary.todayCheckIn.severity) : "—",
+      value: summary.todayCheckIn ? getSeverityLabel(summary.todayCheckIn.severity) : "Not yet",
       label: "Today’s check-in",
     },
   ]
@@ -302,6 +311,7 @@ function openSession(sessionId) {
   player.session = session
   player.stepIndex = 0
   player.startedAt = nowMs()
+  player.stepStartedAt = nowMs()
   els.sessionTitle.textContent = session.title
   els.sessionTagline.textContent = session.tagline
   els.viewHome.hidden = true
@@ -310,18 +320,22 @@ function openSession(sessionId) {
   els.viewSession.hidden = false
   els.nav.hidden = true
   renderStep()
+  startSessionTicker()
 }
 
 function closeSession() {
+  stopSessionTicker()
   player.session = null
   player.stepIndex = 0
   player.startedAt = null
+  player.stepStartedAt = null
   setActiveTab(activeTab)
 }
 
 function goToStep(index) {
   if (!player.session) return
   player.stepIndex = Math.min(player.session.steps.length - 1, Math.max(0, index))
+  player.stepStartedAt = nowMs()
   renderStep()
 }
 
@@ -333,10 +347,18 @@ function renderStep() {
   els.stepProgress.textContent = `Step ${player.stepIndex + 1} of ${session.steps.length}`
   els.stepTitle.textContent = step.title
   els.stepInstruction.textContent = step.instruction
-  els.stepDuration.textContent = `About ${step.durationSeconds} seconds`
+  els.stepDuration.textContent = `Move gently. Stop if it hurts.`
   els.stepPrev.disabled = player.stepIndex === 0
   els.stepNext.hidden = isLast
   els.stepComplete.hidden = !isLast
+  els.stepNext.classList.remove("btn--pulse")
+  els.stepComplete.classList.remove("btn--pulse")
+
+  els.stepCard.classList.remove("stepCard--enter")
+  // retrigger animation
+  void els.stepCard.offsetWidth
+  els.stepCard.classList.add("stepCard--enter")
+  updateCountdownUI()
 }
 
 async function completeSession() {
@@ -355,7 +377,45 @@ async function completeSession() {
   els.statusBadge.className = "badge"
   els.statusBadge.textContent = "Session done"
   els.statusMessage.textContent = `${session.title} complete.`
-  els.statusMeta.textContent = "Small resets add up — your body will thank you."
+  els.statusMeta.textContent = "Small resets add up. Your body will thank you."
+}
+
+function startSessionTicker() {
+  stopSessionTicker()
+  player.tickId = window.setInterval(() => {
+    updateCountdownUI()
+  }, 250)
+}
+
+function stopSessionTicker() {
+  if (player.tickId != null) {
+    window.clearInterval(player.tickId)
+    player.tickId = null
+  }
+}
+
+function updateCountdownUI() {
+  const session = player.session
+  if (!session) return
+  const step = session.steps[player.stepIndex]
+  const stepStart = player.stepStartedAt ?? nowMs()
+
+  const stepElapsed = (nowMs() - stepStart) / 1000
+  const stepRemaining = Math.max(0, step.durationSeconds - stepElapsed)
+  els.stepCountdown.textContent = `Step: ${formatCountdown(stepRemaining)}`
+
+  const remainingStepsSeconds = session.steps
+    .slice(player.stepIndex + 1)
+    .reduce((sum, s) => sum + s.durationSeconds, 0)
+  const totalRemaining = stepRemaining + remainingStepsSeconds
+  els.totalCountdown.textContent = `Total remaining: ${formatCountdown(totalRemaining)}`
+
+  const isStepDone = stepRemaining <= 0.25
+  if (!isStepDone) return
+
+  const isLast = player.stepIndex === session.steps.length - 1
+  if (isLast) els.stepComplete.classList.add("btn--pulse")
+  else els.stepNext.classList.add("btn--pulse")
 }
 
 async function snoozeForMinutes(minutes) {
@@ -375,7 +435,7 @@ async function hydrate() {
   await renderSessionStats()
 
   if (todayCheckIn) {
-    els.checkInHint.textContent = `Today: ${getSeverityLabel(todayCheckIn.severity)}`
+    els.checkInHint.textContent = `Today · ${getSeverityLabel(todayCheckIn.severity)}`
     els.goCheckIn.textContent = "Update"
   } else {
     els.checkInHint.textContent = "Log how your body feels today."
@@ -404,7 +464,7 @@ async function hydrate() {
       minute: "2-digit",
     })
     els.statusMessage.textContent = `We’ll check back around ${until}.`
-    els.statusMeta.textContent = "Take your time — no pressure."
+    els.statusMeta.textContent = "Take your time. No pressure."
   } else if (activeMinutes == null) {
     els.statusBadge.textContent = "Reminders on"
     els.statusMessage.textContent = "Move a little on any tab to start tracking."

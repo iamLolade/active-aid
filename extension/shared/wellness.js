@@ -27,7 +27,7 @@ export function buildWellnessSummary(checkIns, sessionLogs, daily) {
     const entry = checkIns.find((c) => c.date === date)
     return entry
       ? { date, severity: entry.severity, label: getSeverityLabel(entry.severity) }
-      : { date, severity: null, label: "—" }
+      : { date, severity: null, label: "Not logged" }
   })
 
   const areaCounts = countBodyAreas(checkIns, 30)

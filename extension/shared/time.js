@@ -11,7 +11,7 @@ export function msToRoundedMinutes(ms) {
 }
 
 export function formatRelativeTime(ms) {
-  if (ms == null) return "—"
+  if (ms == null) return "Not yet"
 
   const deltaMs = nowMs() - ms
   if (deltaMs < 30_000) return "just now"
@@ -21,5 +21,12 @@ export function formatRelativeTime(ms) {
 
   const hours = Math.floor(mins / 60)
   return `${hours}h ago`
+}
+
+export function formatCountdown(seconds) {
+  const s = Math.max(0, Math.floor(seconds))
+  const mm = String(Math.floor(s / 60)).padStart(2, "0")
+  const ss = String(s % 60).padStart(2, "0")
+  return `${mm}:${ss}`
 }
 

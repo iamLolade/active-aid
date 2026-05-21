@@ -16,6 +16,8 @@ When in doubt, follow `brand_identity.md`.
 - **No fear or guilt**: avoid “damage”, “risk”, “you should”.
 - **Prefer questions + options**: “Quick neck reset?” / “Not now”.
 - **Be specific**: “Take a 60s wrist break” beats “Take a break”.
+- **Avoid em dashes (—)** in UI copy; use commas, periods, or a middle dot (·) for separators.
+- **Empty states**: use plain words like “Not yet” or “Not logged”, not symbols.
 
 ## UI principles
 - **Minimal by default**: show the next best action; reveal detail on demand.
@@ -78,6 +80,12 @@ When in doubt, follow `brand_identity.md`.
 - **Focus visibility**: clear focus states for interactive elements.
 - **Color is not the only signal**: pair color with text/iconography.
 - **Readable tap targets**: minimum ~44×44 px for primary interactions.
+
+## Motion and micro-interactions
+- **Subtle by default**: small fades/slides (150–200ms), no bouncy or attention-grabbing motion.
+- **Purpose-driven**: motion should clarify change (step transitions, state changes), not decorate.
+- **Respect reduced motion**: disable non-essential animations for users who prefer reduced motion.
+- **Avoid pressure**: timers/countdowns should feel supportive (informational), not stressful.
 
 ## Data and analytics UI
 - **Keep metrics simple**: favor trends and totals users can act on.

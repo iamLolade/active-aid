@@ -17,7 +17,7 @@ export const SESSIONS = [
       {
         title: "Chin tuck",
         instruction:
-          "Slowly draw your chin toward your chest. Hold gently — only if it feels comfortable.",
+          "Slowly draw your chin toward your chest. Hold gently, only if it feels comfortable.",
         durationSeconds: 30,
       },
       {
@@ -52,7 +52,7 @@ export const SESSIONS = [
       },
       {
         title: "Other side",
-        instruction: "Switch hands. Keep the stretch mild — stop if anything feels sharp.",
+        instruction: "Switch hands. Keep the stretch mild. Stop if anything feels sharp.",
         durationSeconds: 35,
       },
       {
