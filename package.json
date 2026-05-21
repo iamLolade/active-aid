@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "package:extension": "mkdir -p dist && cd extension && zip -r ../dist/activeaid-extension.zip . -x '*.DS_Store'"
   },
   "dependencies": {
     "framer-motion": "^12.40.0",

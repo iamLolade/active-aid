@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ActiveAid
 
-## Getting Started
+A lightweight workplace wellness companion for desk workers: gentle movement reminders, quick relief sessions, daily check-ins, and simple insights.
 
-First, run the development server:
+## What's in this repo
+- **`extension/`** — Chrome extension (MVP core product)
+- **`app/`** — Next.js web app (landing + Supabase health check)
+- **`supabase/`** — Database migration and setup docs
 
+## Quick start (local)
+
+### 1. Install dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Environment
+Copy `.env.example` to `.env` and add your Supabase credentials.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Apply database migration
+Run `supabase/migrations/0001_init.sql` in the Supabase SQL Editor (see `supabase/README.md`).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Run web app
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) and verify [http://localhost:3000/api/health/supabase](http://localhost:3000/api/health/supabase).
 
-## Learn More
+### 5. Load extension
+See `extension/README.md` for Chrome load-unpacked steps.
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start Next.js dev server |
+| `npm run build` | Production build |
+| `npm run start` | Run production server |
+| `npm run lint` | ESLint |
+| `npm run package:extension` | Zip extension to `dist/activeaid-extension.zip` |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Release
+See [RELEASE.md](./RELEASE.md) for the full QA checklist and Vercel deploy steps.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Design
+- [DESIGN_GUIDELINES.md](./DESIGN_GUIDELINES.md)
+- [brand_identity.md](./brand_identity.md)
+- [plan.md](./plan.md) (product spec)
