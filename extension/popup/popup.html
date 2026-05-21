@@ -19,6 +19,14 @@
           <div class="value" id="statusText">—</div>
         </div>
         <div class="row">
+          <div class="label">Last tick</div>
+          <div class="value" id="lastTickText">—</div>
+        </div>
+        <div class="row">
+          <div class="label">Last decision</div>
+          <div class="value" id="lastDecisionText">—</div>
+        </div>
+        <div class="row">
           <div class="label">Active session</div>
           <div class="value" id="activeSinceText">—</div>
         </div>
@@ -29,6 +37,10 @@
         <div class="row">
           <div class="label">Snoozed</div>
           <div class="value" id="snoozedText">—</div>
+        </div>
+        <div class="row" id="errorRow" style="display: none">
+          <div class="label">Last error</div>
+          <div class="value" id="lastErrorText">—</div>
         </div>
       </section>
 
@@ -55,6 +67,18 @@
           <button class="button" id="snooze10" type="button">Snooze 10m</button>
           <button class="button" id="snooze30" type="button">Snooze 30m</button>
           <button class="button" id="resetTimer" type="button">Reset</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="sectionTitle">Diagnostics</div>
+        <div class="row">
+          <div class="label">Alarm</div>
+          <div class="value" id="alarmText">—</div>
+        </div>
+        <div class="actions">
+          <button class="button" id="runTick" type="button">Run tick</button>
+          <button class="button" id="testNotification" type="button">Test notify</button>
         </div>
       </section>
 

@@ -48,6 +48,16 @@ export function notificationsCreate(notificationId, options) {
   })
 }
 
+export function alarmsGet(name) {
+  return new Promise((resolve, reject) => {
+    chrome.alarms.get(name, (alarm) => {
+      const err = chrome.runtime.lastError
+      if (err) return reject(err)
+      resolve(alarm ?? null)
+    })
+  })
+}
+
 export function runtimeSendMessage(message) {
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage(message, (response) => {

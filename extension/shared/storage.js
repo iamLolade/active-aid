@@ -35,6 +35,9 @@ export async function getRuntimeState() {
     lastActivityMs: numberOrNull(raw?.lastActivityMs),
     lastReminderMs: numberOrNull(raw?.lastReminderMs),
     snoozedUntilMs: numberOrNull(raw?.snoozedUntilMs),
+    lastTickMs: numberOrNull(raw?.lastTickMs),
+    lastDecision: stringOrNull(raw?.lastDecision),
+    lastNotificationError: stringOrNull(raw?.lastNotificationError),
   }
 }
 
@@ -73,5 +76,11 @@ function clampInt(value, min, max) {
 function numberOrNull(value) {
   const n = Number(value)
   return Number.isFinite(n) ? n : null
+}
+
+function stringOrNull(value) {
+  if (typeof value !== "string") return null
+  const s = value.trim()
+  return s.length ? s : null
 }
 

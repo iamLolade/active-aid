@@ -2,6 +2,9 @@
 
 These guidelines ensure ActiveAid feels **calm, lightweight, supportive, and minimal** across the extension and web dashboard.
 
+## Brand alignment (source of truth)
+When in doubt, follow `brand_identity.md`.
+
 ## Product tone and positioning
 - **Supportive, not pushy**: suggestions over commands; gentle language.
 - **Preventative wellness, not medical**: never imply diagnosis, treatment, or cures.
@@ -36,6 +39,12 @@ These guidelines ensure ActiveAid feels **calm, lightweight, supportive, and min
 
 ## Color and visual style
 - **Neutral base** with one calm accent color for primary actions.
+- **Prefer brand palette**:
+  - **Soft Sage Green**: `#7BAE7F` (primary accent)
+  - **Deep Slate**: `#1F2937` (primary text)
+  - **Warm Cream**: `#F7F4ED` (background)
+  - **Soft Gray**: `#E5E7EB` (borders/dividers)
+  - **Muted Terracotta**: `#C97B63` (secondary accent; use sparingly)
 - **Semantic colors**:
   - Success: completion/affirmation
   - Warning: gentle attention (not alarm)
@@ -57,7 +66,7 @@ These guidelines ensure ActiveAid feels **calm, lightweight, supportive, and min
 ### Forms and settings
 - **Default to sensible settings**; users should rarely need to configure.
 - **Explain impact** in plain language (e.g., interval meaning).
-- **Prefer toggles and presets** over freeform inputs where possible.
+- **Prefer toggles and presets** over freeform inputs where possible (especially in the extension popup).
 
 ### States
 - **Loading**: subtle, brief, non-blocking when possible.
