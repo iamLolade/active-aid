@@ -36,7 +36,11 @@ Use this before sharing the extension or deploying the web app.
 ```bash
 npm run package:extension
 ```
-Output: `dist/activeaid-extension.zip` (load unpacked still uses the `extension/` folder).
+Output: `dist/activeaid-extension.zip`
+
+Notes:
+- This zip is **primarily for Chrome Web Store upload**.
+- For private testers, the simplest option is still **Load unpacked** from the `extension/` folder.
 
 ## 7. Deploy web (Vercel)
 1. Push repo to GitHub
@@ -48,6 +52,19 @@ Output: `dist/activeaid-extension.zip` (load unpacked still uses the `extension/
    - `NEXT_PUBLIC_APP_URL` (your production URL)
 4. Deploy
 5. Verify `https://<your-domain>/api/health/supabase`
+
+## 8. Distribute the extension
+### Recommended: Chrome Web Store
+- Best user experience (no Developer mode)
+- Automatic updates
+- You can publish **publicly** or **unlisted** (share link only)
+
+See `CHROME_WEB_STORE.md` for the full step-by-step publishing checklist.
+
+### Private beta: load unpacked
+- Fastest for early testers
+- Requires Developer mode
+- Manual updates when you share a new build
 
 ## Success metrics (MVP, non-invasive)
 Track manually during beta (no third-party analytics required yet):
