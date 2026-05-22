@@ -92,25 +92,15 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="relative">
-            <div className="absolute -inset-6 rounded-[28px] bg-white/50 blur-xl" />
-            <div className="relative grid gap-6 md:gap-7">
-              <Image
-                src="/screenshots/extension-today.png"
-                alt="ActiveAid extension, today view"
-                width={520}
-                height={900}
-                className="h-auto w-full rounded-[28px] border border-[#e5e7eb] bg-white shadow-[0_18px_50px_rgba(31,41,55,0.18)]"
-                priority
-              />
-              <Image
-                src="/screenshots/extension-paused.png"
-                alt="ActiveAid extension, reminders paused view"
-                width={520}
-                height={900}
-                className="hidden h-auto w-full translate-y-0 rounded-[28px] border border-[#e5e7eb] bg-white shadow-[0_18px_50px_rgba(31,41,55,0.14)] md:block md:-translate-y-8 md:translate-x-8"
-              />
-            </div>
+          <div className="flex justify-center">
+            <Image
+              src="/hero-popup.png"
+              alt="ActiveAid extension popup"
+              width={918}
+              height={1148}
+              className="relative h-auto w-full max-w-[420px] rounded-[28px] border border-[#e5e7eb] bg-white shadow-[0_18px_50px_rgba(31,41,55,0.18)]"
+              priority
+            />
           </div>
         </header>
 
