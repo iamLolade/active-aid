@@ -173,7 +173,8 @@ const SESSION_ICONS = {
   neck: BODY_AREA_ICONS.neck,
   wrist: BODY_AREA_ICONS.wrists,
   "lower-back": BODY_AREA_ICONS["lower-back"],
-  shoulders: BODY_AREA_ICONS.shoulders,
+  shoulder: BODY_AREA_ICONS.shoulders,
+  eyes: BODY_AREA_ICONS.eyes,
 }
 
 /**

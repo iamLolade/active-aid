@@ -18,8 +18,11 @@ import {
   iconBarChart,
   iconBell,
   iconCalendar,
+  iconChevronRight,
   iconClock,
   iconHeart,
+  iconPlay,
+  sessionIcon,
   severityIcon,
 } from "./icons.js"
 
@@ -44,6 +47,7 @@ const els = {
   statusPillText: document.getElementById("statusPillText"),
   reminderProgress: document.getElementById("reminderProgress"),
   checkInHint: document.getElementById("checkInHint"),
+  checkInCtaText: document.getElementById("checkInCtaText"),
   goCheckIn: document.getElementById("goCheckIn"),
   notificationsEnabled: document.getElementById("notificationsEnabled"),
   reminderIntervalMinutes: document.getElementById("reminderIntervalMinutes"),
@@ -92,6 +96,8 @@ async function init() {
   renderNavIcons()
   renderCheckInHeaderIcon()
   renderHomeHeroChrome()
+  renderHomeCheckInRowChrome()
+  renderQuickReliefChrome()
   renderSessionList()
   renderCheckInForm()
   bindNav()
@@ -120,6 +126,18 @@ function renderHomeHeroChrome() {
   const pillIcon = document.getElementById("statusPillIcon")
   if (heroIcon) heroIcon.innerHTML = iconClock(22)
   if (pillIcon) pillIcon.innerHTML = iconBell(16)
+}
+
+function renderHomeCheckInRowChrome() {
+  const rowIcon = document.getElementById("homeCheckInIcon")
+  const chevron = document.querySelector("#goCheckIn .pillBtnIcon")
+  if (rowIcon) rowIcon.innerHTML = iconHeart(22)
+  if (chevron) chevron.innerHTML = iconChevronRight(16)
+}
+
+function renderQuickReliefChrome() {
+  const chevron = document.querySelector("#scrollQuickRelief .textBtnIcon")
+  if (chevron) chevron.innerHTML = iconChevronRight(14)
 }
 
 function formatActiveMinutes(totalMinutes) {
@@ -180,6 +198,9 @@ function updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed }) {
 
 function bindNav() {
   els.goCheckIn.addEventListener("click", () => setActiveTab("checkin"))
+  document.getElementById("scrollQuickRelief")?.addEventListener("click", () => {
+    els.sessionList?.scrollIntoView({ block: "nearest", behavior: "smooth" })
+  })
   els.navBtns.forEach((btn) => {
     btn.addEventListener("click", () => setActiveTab(btn.dataset.view))
   })
@@ -407,14 +428,44 @@ function renderSessionList() {
   for (const session of SESSIONS) {
     const btn = document.createElement("button")
     btn.type = "button"
-    btn.className = "sessionBtn"
-    const title = document.createElement("span")
-    title.className = "sessionBtnTitle"
+    btn.className = "sessionRow"
+
+    const left = document.createElement("div")
+    left.className = "sessionRowLeft"
+
+    const icon = document.createElement("span")
+    icon.className = "sessionIcon"
+    icon.setAttribute("aria-hidden", "true")
+    icon.innerHTML = sessionIcon(session.id, 22)
+
+    const text = document.createElement("div")
+    text.className = "sessionRowText"
+
+    const title = document.createElement("p")
+    title.className = "sessionRowTitle"
     title.textContent = session.title
-    const meta = document.createElement("span")
-    meta.className = "sessionBtnMeta"
-    meta.textContent = `${session.durationMinutes} min · ${session.tagline}`
-    btn.append(title, meta)
+
+    const meta = document.createElement("p")
+    meta.className = "sessionRowMeta"
+    meta.textContent = session.tagline
+
+    text.append(title, meta)
+    left.append(icon, text)
+
+    const right = document.createElement("div")
+    right.className = "sessionRowRight"
+
+    const duration = document.createElement("span")
+    duration.className = "durationPill"
+    duration.textContent = `${session.durationMinutes} min`
+
+    const play = document.createElement("span")
+    play.className = "playCircle"
+    play.setAttribute("aria-hidden", "true")
+    play.innerHTML = iconPlay(14)
+
+    right.append(duration, play)
+    btn.append(left, right)
     btn.addEventListener("click", () => openSession(session.id))
     els.sessionList.append(btn)
   }
@@ -560,10 +611,10 @@ async function hydrate() {
 
   if (todayCheckIn) {
     els.checkInHint.textContent = `Today · ${getSeverityLabel(todayCheckIn.severity)}`
-    els.goCheckIn.textContent = "Update"
+    if (els.checkInCtaText) els.checkInCtaText.textContent = "Update"
   } else {
     els.checkInHint.textContent = "Log how your body feels today."
-    els.goCheckIn.textContent = "Check in"
+    if (els.checkInCtaText) els.checkInCtaText.textContent = "Check in"
   }
 
   els.notificationsEnabled.checked = settings.notificationsEnabled

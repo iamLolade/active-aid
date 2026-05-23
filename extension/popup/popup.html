@@ -52,20 +52,28 @@
             </div>
           </section>
 
-          <section class="card card--compact">
+          <section class="card homeCheckInCard">
             <div class="cardRow cardRow--checkin">
+              <div class="rowIcon" id="homeCheckInIcon" aria-hidden="true"></div>
               <div class="cardRowText">
-                <h2 class="sectionTitle sectionTitle--inline">Daily check-in</h2>
+                <h2 class="rowTitle">Daily Check-in</h2>
                 <p class="cardHint" id="checkInHint">Log how your body feels today.</p>
               </div>
-              <button class="btn btn--primary btn--small" id="goCheckIn" type="button">
-                Check in
+              <button class="pillBtn" id="goCheckIn" type="button">
+                <span id="checkInCtaText">Check in</span>
+                <span class="pillBtnIcon" aria-hidden="true"></span>
               </button>
             </div>
           </section>
 
           <section class="card card--sessions">
-            <h2 class="sectionTitle">Quick relief</h2>
+            <div class="sectionHeader">
+              <h2 class="sectionHeaderTitle">Quick Relief</h2>
+              <button class="textBtn" id="scrollQuickRelief" type="button">
+                View all
+                <span class="textBtnIcon" aria-hidden="true"></span>
+              </button>
+            </div>
             <p class="sessionIntro">Short guided resets you can do at your desk.</p>
             <div class="sessionList" id="sessionList"></div>
             <p class="sessionStats" id="sessionStats"></p>

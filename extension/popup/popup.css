@@ -22,7 +22,7 @@ html,
 body {
   margin: 0;
   padding: 0;
-  width: 360px;
+  width: 400px;
   background: var(--cream);
   color: var(--slate);
   font: 14px/1.45 Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
@@ -617,8 +617,14 @@ input[type="number"]:focus {
   .bodyAreaChip,
   .navBtn,
   .view--checkin .btn--save,
-  .progressFill {
+  .progressFill,
+  .sessionRow,
+  .pillBtn {
     transition: none;
+  }
+
+  .sessionRow:hover {
+    transform: none;
   }
 }
 
@@ -641,8 +647,57 @@ input[type="number"]:focus {
   padding: 14px 16px;
 }
 
-.card--sessions .sectionTitle {
+.card--sessions {
+  border-radius: 20px;
+  padding: 16px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 6px;
+}
+
+.sectionHeaderTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--slate);
+}
+
+.textBtn {
+  border: none;
+  background: none;
+  padding: 8px 6px;
+  margin: -6px -4px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: #3d6b42;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.15s ease, background 0.15s ease;
+  border-radius: 10px;
+}
+
+.textBtn:hover {
+  color: #2f5835;
+  background: rgba(232, 240, 233, 0.6);
+}
+
+.textBtn:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
+}
+
+.textBtnIcon {
+  display: inline-flex;
+  line-height: 0;
 }
 
 .cardRow {
@@ -652,13 +707,74 @@ input[type="number"]:focus {
   gap: 12px;
 }
 
+.homeCheckInCard {
+  border-radius: 20px;
+  padding: 16px;
+}
+
 .cardRow--checkin {
-  align-items: flex-start;
+  align-items: center;
 }
 
 .cardRowText {
   min-width: 0;
   flex: 1;
+}
+
+.rowIcon {
+  height: 44px;
+  width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(232, 240, 233, 0.7);
+  color: #3d6b42;
+  flex-shrink: 0;
+}
+
+.rowTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--slate);
+}
+
+.pillBtn {
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: #3d6b42;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+
+.pillBtn:hover {
+  background: #2f5835;
+}
+
+.pillBtn:active {
+  transform: translateY(1px);
+}
+
+.pillBtn:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
+}
+
+.pillBtnIcon {
+  display: inline-flex;
+  line-height: 0;
 }
 
 .detailsCard {
@@ -917,35 +1033,107 @@ input[type="number"]:focus {
   gap: 8px;
 }
 
-.sessionBtn {
+.sessionRow {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 12px;
+  padding: 12px 12px;
+  border-radius: 16px;
   border: 1px solid var(--gray);
   background: #f3efe6;
   cursor: pointer;
   text-align: left;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  font: inherit;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
 }
 
-.sessionBtn:hover {
+.sessionRow:hover {
   border-color: var(--sage);
   background: var(--sage-soft);
+  transform: translateY(-1px);
 }
 
-.sessionBtnTitle {
+.sessionRow:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
+}
+
+.sessionRowLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.sessionIcon {
+  height: 44px;
+  width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: rgba(232, 240, 233, 0.75);
+  color: #3d6b42;
+  flex-shrink: 0;
+}
+
+.sessionRowText {
+  min-width: 0;
+  flex: 1;
+}
+
+.sessionRowTitle {
+  margin: 0;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 800;
   color: var(--slate);
 }
 
-.sessionBtnMeta {
+.sessionRowMeta {
+  margin: 3px 0 0;
   font-size: 12px;
   color: var(--slate-muted);
+  line-height: 1.35;
+}
+
+.sessionRowRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.durationPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(232, 240, 233, 0.8);
+  color: #3d6b42;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.playCircle {
+  height: 30px;
+  width: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 2px solid rgba(61, 107, 66, 0.75);
+  color: #3d6b42;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.sessionRow:hover .playCircle {
+  border-color: rgba(61, 107, 66, 0.95);
+  background: rgba(255, 255, 255, 0.75);
 }
 
 .sessionStats {
