@@ -106,6 +106,7 @@ await init()
 async function init() {
   renderNavIcons()
   renderCheckInHeaderIcon()
+  renderInsightsHeaderIcon()
   renderHeaderChrome()
   renderHomeHeroChrome()
   renderHomeCheckInRowChrome()
@@ -133,6 +134,11 @@ function renderNavIcons() {
 function renderCheckInHeaderIcon() {
   const slot = document.getElementById("checkInHeaderIcon")
   if (slot) slot.innerHTML = iconHeart(22)
+}
+
+function renderInsightsHeaderIcon() {
+  const slot = document.getElementById("insightsHeaderIcon")
+  if (slot) slot.innerHTML = iconBarChart(22)
 }
 
 function renderHeaderChrome() {
@@ -410,26 +416,62 @@ async function submitCheckIn() {
   if (activeTab === "insights") await renderDashboard()
 }
 
+/**
+ * @param {{ value: string, label: string, iconHtml: string }} stat
+ */
+function appendStatCard(stat) {
+  const card = document.createElement("div")
+  card.className = "statCard"
+
+  const icon = document.createElement("span")
+  icon.className = "statCardIcon"
+  icon.setAttribute("aria-hidden", "true")
+  icon.innerHTML = stat.iconHtml
+
+  const body = document.createElement("div")
+  body.className = "statCardBody"
+
+  const value = document.createElement("p")
+  value.className = "statValue"
+  value.textContent = stat.value
+
+  const label = document.createElement("p")
+  label.className = "statLabel"
+  label.textContent = stat.label
+
+  body.append(value, label)
+  card.append(icon, body)
+  els.statGrid.append(card)
+}
+
 async function renderDashboard() {
   const summary = await getWellnessSummary()
 
   els.statGrid.replaceChildren()
-  const stats = [
-    { value: String(summary.breaksToday), label: "Breaks taken today" },
-    { value: `${summary.activeMinutesToday}m`, label: "Estimated active time" },
-    { value: String(summary.checkInStreak), label: "Check-in streak (days)" },
-    {
-      value: summary.todayCheckIn ? getSeverityLabel(summary.todayCheckIn.severity) : "Not yet",
-      label: "Today’s check-in",
-    },
-  ]
-
-  for (const stat of stats) {
-    const card = document.createElement("div")
-    card.className = "statCard"
-    card.innerHTML = `<p class="statValue">${stat.value}</p><p class="statLabel">${stat.label}</p>`
-    els.statGrid.append(card)
-  }
+  appendStatCard({
+    value: String(summary.breaksToday),
+    label: "Breaks taken today",
+    iconHtml: iconPlay(18),
+  })
+  appendStatCard({
+    value: `${summary.activeMinutesToday}m`,
+    label: "Estimated active time",
+    iconHtml: iconClock(18),
+  })
+  appendStatCard({
+    value: String(summary.checkInStreak),
+    label: "Check-in streak (days)",
+    iconHtml: iconCalendar(18),
+  })
+  appendStatCard({
+    value: summary.todayCheckIn
+      ? getSeverityLabel(summary.todayCheckIn.severity)
+      : "Not yet",
+    label: "Today’s check-in",
+    iconHtml: summary.todayCheckIn
+      ? severityIcon(summary.todayCheckIn.severity, 18)
+      : iconHeart(18),
+  })
 
   els.trendList.replaceChildren()
   for (const day of summary.discomfortTrend) {

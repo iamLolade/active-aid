@@ -164,21 +164,30 @@
           </div>
         </div>
 
-        <div id="viewDashboard" class="view" hidden>
-          <header class="viewHeader">
-            <h2 class="viewTitle">Insights</h2>
-            <p class="viewSubtitle">Simple wellness trends from your local data.</p>
+        <div id="viewDashboard" class="view view--insights" hidden>
+          <header class="insightsHeader">
+            <div class="insightsHeaderText">
+              <h2 class="insightsTitle">Insights</h2>
+              <p class="insightsSubtitle">Simple wellness trends from your local data.</p>
+            </div>
+            <div class="insightsHeaderIcon" id="insightsHeaderIcon" aria-hidden="true"></div>
           </header>
 
-          <div class="statGrid" id="statGrid"></div>
+          <section class="card insightsCard">
+            <h3 class="insightsCardTitle">At a glance</h3>
+            <p class="insightsCardHint">How you're doing today.</p>
+            <div class="statGrid" id="statGrid"></div>
+          </section>
 
-          <section class="card">
-            <h2 class="sectionTitle">Last 7 days</h2>
+          <section class="card insightsCard">
+            <h3 class="insightsCardTitle">Last 7 days</h3>
+            <p class="insightsCardHint">Daily check-in mood over the past week.</p>
             <ul class="trendList" id="trendList"></ul>
           </section>
 
-          <section class="card" id="areasCard" hidden>
-            <h2 class="sectionTitle">Most noted areas (30 days)</h2>
+          <section class="card insightsCard" id="areasCard" hidden>
+            <h3 class="insightsCardTitle">Most noted areas</h3>
+            <p class="insightsCardHint">Body areas you've logged in the last 30 days.</p>
             <ul class="areaList" id="areaList"></ul>
           </section>
         </div>
