@@ -5,7 +5,8 @@
   --sage-strong-hover: #5e8f62;
   --sage-soft: #e8f0e9;
   --slate: #1f2937;
-  --slate-muted: #4b5563;
+  --slate-muted: #57616e;
+  --slate-subtle: #6b7280;
   --cream: #f7f4ed;
   --gray: #d1d5db;
   --white: #ffffff;
@@ -21,6 +22,33 @@
   --focus-offset: 2px;
   --ease-ui: 0.15s ease;
   --ease-press: 0.12s ease;
+  --leading-hint: 1.5;
+  --space-section: 16px;
+  --space-card-inner: 12px;
+}
+
+/* --- Typography & spacing (P3) --- */
+
+.subtitle,
+.heroEyebrow,
+.heroMeta,
+.checkInSubtitle,
+.checkInCard .checkInCardHint,
+.insightsSubtitle,
+.insightsCardHint,
+.sessionIntro,
+.cardHint,
+.detailsHint,
+.view--insights .statLabel,
+.trendDate,
+.areasEmpty {
+  line-height: var(--leading-hint);
+}
+
+.insightsCardTitle + .insightsCardHint,
+.checkInCard .checkInCardTitle + .checkInCardHint {
+  margin-top: 4px;
+  margin-bottom: var(--space-card-inner);
 }
 
 /* --- Shared interactive states (P2) --- */
@@ -81,7 +109,7 @@ body {
   min-height: 480px;
   background: #f1ede4;
   color: var(--slate);
-  font: 14px/1.45 Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font: 14px/1.5 Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   border: var(--popup-border);
   border-radius: var(--popup-radius);
   box-shadow: var(--popup-shadow);
@@ -276,7 +304,7 @@ body {
 }
 
 .subtitle {
-  margin: 2px 0 0;
+  margin: 4px 0 0;
   font-size: 12px;
   color: var(--slate-muted);
 }
@@ -587,8 +615,7 @@ input[type="number"]:focus {
 .footerNote {
   margin: 0 4px 4px;
   font-size: 11px;
-  color: var(--slate-muted);
-  line-height: 1.4;
+  color: var(--slate-subtle);
 }
 
 .viewHeader {
@@ -610,7 +637,7 @@ input[type="number"]:focus {
 
 .view--checkin,
 .view--insights {
-  gap: 14px;
+  gap: var(--space-section);
 }
 
 /* --- Insights tab --- */
@@ -669,10 +696,9 @@ input[type="number"]:focus {
 }
 
 .insightsCardHint {
-  margin: 6px 0 14px;
+  margin: 0;
   font-size: 13px;
   color: var(--slate-muted);
-  line-height: 1.4;
 }
 
 .view--insights .statGrid {
@@ -684,8 +710,8 @@ input[type="number"]:focus {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 72px;
-  padding: 12px;
+  min-height: 68px;
+  padding: 11px 12px;
   border-radius: 16px;
   background: #f3efe6;
   border: 1px solid rgba(209, 213, 219, 0.85);
@@ -711,18 +737,18 @@ input[type="number"]:focus {
 
 .view--insights .statValue {
   margin: 0;
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.2;
   color: var(--slate);
+  font-variant-numeric: tabular-nums;
 }
 
 .view--insights .statLabel {
-  margin: 4px 0 0;
-  font-size: 11px;
+  margin: 2px 0 0;
+  font-size: 12px;
   font-weight: 500;
-  line-height: 1.35;
   color: var(--slate-muted);
 }
 
@@ -746,10 +772,9 @@ input[type="number"]:focus {
 }
 
 .insightsPrivacy {
-  margin: 0 4px 2px;
+  margin: 2px 4px 0;
   font-size: 11px;
-  line-height: 1.4;
-  color: var(--slate-muted);
+  color: var(--slate-subtle);
   text-align: center;
 }
 
@@ -936,10 +961,9 @@ input[type="number"]:focus {
 }
 
 .checkInCard .checkInCardHint {
-  margin: 6px 0 14px;
+  margin: 0;
   font-size: 13px;
   color: var(--slate-muted);
-  line-height: 1.4;
 }
 
 .checkInCard .chipGroup {
@@ -999,7 +1023,7 @@ input[type="number"]:focus {
   min-width: 0;
   font-size: 12px;
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.35;
   color: var(--slate);
 }
 
@@ -1077,7 +1101,7 @@ input[type="number"]:focus {
 .sectionHeaderTitle {
   margin: 0;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--slate);
 }
@@ -1445,7 +1469,7 @@ input[type="number"]:focus {
 }
 
 .sessionIntro {
-  margin: 0 0 14px;
+  margin: 0 0 var(--space-card-inner);
   font-size: 13px;
   color: var(--slate-muted);
 }
@@ -1515,16 +1539,16 @@ input[type="number"]:focus {
 
 .sessionRowTitle {
   margin: 0;
-  font-size: 14px;
-  font-weight: 800;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--slate);
 }
 
 .sessionRowMeta {
-  margin: 3px 0 0;
+  margin: 2px 0 0;
   font-size: 12px;
   color: var(--slate-muted);
-  line-height: 1.35;
 }
 
 .sessionRowRight {
