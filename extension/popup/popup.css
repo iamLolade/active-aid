@@ -63,15 +63,31 @@ body {
 
 .navBtn {
   flex: 1;
-  height: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 44px;
+  padding: 6px 8px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   background: transparent;
   color: var(--slate-muted);
   font: inherit;
-  font-size: 13px;
-  font-weight: 600;
   cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.navBtnIcon {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.navBtnLabel {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 .navBtn:hover {
@@ -82,6 +98,11 @@ body {
 .navBtn--active {
   background: var(--sage-soft);
   color: #3d6b42;
+}
+
+.navBtn:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
 }
 
 .banner {

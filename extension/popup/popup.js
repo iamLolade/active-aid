@@ -13,7 +13,19 @@ import { formatCountdown, minutesToMs, msToRoundedMinutes, nowMs } from "../shar
 import { runtimeSendMessage } from "../shared/chrome-api.js"
 import { SESSIONS, getSessionById, getTotalDurationSeconds } from "../shared/sessions.js"
 import { SEVERITIES, BODY_AREAS, getSeverityLabel } from "../shared/checkins.js"
-import { bodyAreaIcon, severityIcon } from "./icons.js"
+import {
+  bodyAreaIcon,
+  iconBarChart,
+  iconCalendar,
+  iconHeart,
+  severityIcon,
+} from "./icons.js"
+
+const NAV_TAB_ICONS = {
+  home: iconCalendar,
+  checkin: iconHeart,
+  insights: iconBarChart,
+}
 
 const els = {
   nav: document.getElementById("nav"),
@@ -73,6 +85,7 @@ let activeTab = "home"
 await init()
 
 async function init() {
+  renderNavIcons()
   renderSessionList()
   renderCheckInForm()
   bindNav()
@@ -81,6 +94,14 @@ async function init() {
   bindCheckIn()
   await hydrate()
   startPolling()
+}
+
+function renderNavIcons() {
+  els.navBtns.forEach((btn) => {
+    const render = NAV_TAB_ICONS[btn.dataset.view]
+    const slot = btn.querySelector(".navBtnIcon")
+    if (render && slot) slot.innerHTML = render(18)
+  })
 }
 
 function bindNav() {
