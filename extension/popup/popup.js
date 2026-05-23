@@ -73,6 +73,7 @@ const els = {
   statGrid: document.getElementById("statGrid"),
   trendList: document.getElementById("trendList"),
   areasCard: document.getElementById("areasCard"),
+  areasEmpty: document.getElementById("areasEmpty"),
   areaList: document.getElementById("areaList"),
   sessionBack: document.getElementById("sessionBack"),
   sessionTitle: document.getElementById("sessionTitle"),
@@ -444,6 +445,35 @@ function appendStatCard(stat) {
   els.statGrid.append(card)
 }
 
+/**
+ * @param {{ id: string, label: string, count: number }} area
+ */
+function appendAreaRow(area) {
+  const li = document.createElement("li")
+  li.className = "areaRow"
+
+  const left = document.createElement("div")
+  left.className = "areaRowLeft"
+
+  const icon = document.createElement("span")
+  icon.className = "areaRowIcon"
+  icon.setAttribute("aria-hidden", "true")
+  icon.innerHTML = bodyAreaIcon(area.id, 18)
+
+  const label = document.createElement("span")
+  label.className = "areaRowLabel"
+  label.textContent = area.label
+
+  left.append(icon, label)
+
+  const count = document.createElement("span")
+  count.className = "areaRowCount"
+  count.textContent = `${area.count}×`
+
+  li.append(left, count)
+  els.areaList.append(li)
+}
+
 function severityIndex(severityId) {
   if (severityId === "great") return 0
   if (severityId === "slight") return 1
@@ -522,15 +552,15 @@ async function renderDashboard() {
     els.trendList.append(li)
   }
 
+  els.areaList.replaceChildren()
   if (summary.topBodyAreas.length === 0) {
-    els.areasCard.hidden = true
+    els.areasEmpty.hidden = false
+    els.areaList.hidden = true
   } else {
-    els.areasCard.hidden = false
-    els.areaList.replaceChildren()
+    els.areasEmpty.hidden = true
+    els.areaList.hidden = false
     for (const area of summary.topBodyAreas) {
-      const li = document.createElement("li")
-      li.innerHTML = `<span>${area.label}</span><span>${area.count}×</span>`
-      els.areaList.append(li)
+      appendAreaRow(area)
     }
   }
 }
