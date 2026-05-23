@@ -11,9 +11,15 @@ import {
 import { formatCountdown, minutesToMs, msToRoundedMinutes, nowMs } from "../shared/time.js"
 import { runtimeSendMessage } from "../shared/chrome-api.js"
 import { SESSIONS, getSessionById, getTotalDurationSeconds } from "../shared/sessions.js"
-import { SEVERITIES, BODY_AREAS, getSeverityLabel } from "../shared/checkins.js"
+import {
+  SEVERITIES,
+  BODY_AREAS,
+  getSeverityLabel,
+  getSeverityShortLabel,
+} from "../shared/checkins.js"
 import {
   bodyAreaIcon,
+  iconActivity,
   iconBarChart,
   iconBell,
   iconCalendar,
@@ -423,9 +429,11 @@ async function submitCheckIn() {
 function appendStatCard(stat) {
   const card = document.createElement("div")
   card.className = "statCard"
+  card.setAttribute("role", "listitem")
+  card.setAttribute("aria-label", `${stat.label}: ${stat.value}`)
 
   const icon = document.createElement("span")
-  icon.className = "statCardIcon"
+  icon.className = "insightsIconTile statCardIcon"
   icon.setAttribute("aria-hidden", "true")
   icon.innerHTML = stat.iconHtml
 
@@ -450,13 +458,14 @@ function appendStatCard(stat) {
  */
 function appendAreaRow(area) {
   const li = document.createElement("li")
-  li.className = "areaRow"
+  li.className = "areaRow insightsRow"
+  li.setAttribute("aria-label", `${area.label}, noted ${area.count} times`)
 
   const left = document.createElement("div")
   left.className = "areaRowLeft"
 
   const icon = document.createElement("span")
-  icon.className = "areaRowIcon"
+  icon.className = "insightsIconTile areaRowIcon"
   icon.setAttribute("aria-hidden", "true")
   icon.innerHTML = bodyAreaIcon(area.id, 18)
 
@@ -500,9 +509,19 @@ async function renderDashboard() {
     iconHtml: iconPlay(18),
   })
   appendStatCard({
+    value: `${summary.breakMinutesToday}m`,
+    label: "Relief minutes today",
+    iconHtml: iconClock(18),
+  })
+  appendStatCard({
+    value: String(summary.sessionsLast7Days),
+    label: "Relief sessions (7 days)",
+    iconHtml: iconBarChart(18),
+  })
+  appendStatCard({
     value: `${summary.activeMinutesToday}m`,
     label: "Estimated active time",
-    iconHtml: iconClock(18),
+    iconHtml: iconActivity(18),
   })
   appendStatCard({
     value: String(summary.checkInStreak),
@@ -511,7 +530,7 @@ async function renderDashboard() {
   })
   appendStatCard({
     value: summary.todayCheckIn
-      ? getSeverityLabel(summary.todayCheckIn.severity)
+      ? getSeverityShortLabel(summary.todayCheckIn.severity)
       : "Not yet",
     label: "Today’s check-in",
     iconHtml: summary.todayCheckIn
@@ -521,8 +540,10 @@ async function renderDashboard() {
 
   els.trendList.replaceChildren()
   for (const day of summary.discomfortTrend) {
+    const mood = day.severity ? day.label : "Not logged"
     const li = document.createElement("li")
-    li.className = "trendRow"
+    li.className = "trendRow insightsRow"
+    li.setAttribute("aria-label", `${formatShortDate(day.date)}: ${mood}`)
 
     const left = document.createElement("div")
     left.className = "trendLeft"
@@ -546,7 +567,7 @@ async function renderDashboard() {
 
     const pill = document.createElement("span")
     pill.className = `trendPill trendPill--${severityTone(day.severity)}`
-    pill.textContent = day.severity ? day.label : "Not logged"
+    pill.textContent = mood
 
     li.append(left, pill)
     els.trendList.append(li)

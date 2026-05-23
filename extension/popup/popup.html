@@ -173,26 +173,28 @@
             <div class="insightsHeaderIcon" id="insightsHeaderIcon" aria-hidden="true"></div>
           </header>
 
-          <section class="card insightsCard">
-            <h3 class="insightsCardTitle">At a glance</h3>
+          <section class="card insightsCard" aria-labelledby="insightsStatsTitle">
+            <h3 class="insightsCardTitle" id="insightsStatsTitle">At a glance</h3>
             <p class="insightsCardHint">How you're doing today.</p>
-            <div class="statGrid" id="statGrid"></div>
+            <div class="statGrid" id="statGrid" role="list"></div>
           </section>
 
-          <section class="card insightsCard">
-            <h3 class="insightsCardTitle">Last 7 days</h3>
+          <section class="card insightsCard" aria-labelledby="insightsTrendTitle">
+            <h3 class="insightsCardTitle" id="insightsTrendTitle">Last 7 days</h3>
             <p class="insightsCardHint">Daily check-in mood over the past week.</p>
-            <ul class="trendList" id="trendList"></ul>
+            <ul class="trendList" id="trendList" role="list" aria-label="Daily check-in mood"></ul>
           </section>
 
-          <section class="card insightsCard" id="areasCard">
-            <h3 class="insightsCardTitle">Most noted areas</h3>
+          <section class="card insightsCard" id="areasCard" aria-labelledby="insightsAreasTitle">
+            <h3 class="insightsCardTitle" id="insightsAreasTitle">Most noted areas</h3>
             <p class="insightsCardHint">Body areas you've logged in the last 30 days.</p>
-            <p class="areasEmpty" id="areasEmpty" hidden>
+            <p class="areasEmpty" id="areasEmpty" role="status" hidden>
               No areas noted in the last 30 days. Add optional areas on your daily check-in.
             </p>
-            <ul class="areaList" id="areaList"></ul>
+            <ul class="areaList" id="areaList" role="list" aria-label="Most noted body areas"></ul>
           </section>
+
+          <p class="insightsPrivacy">Stored on this device only. We never see what you type.</p>
         </div>
 
         <div id="viewSession" class="view view--session" hidden>

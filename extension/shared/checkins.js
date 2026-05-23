@@ -17,6 +17,17 @@ export function getSeverityLabel(id) {
   return SEVERITIES.find((s) => s.id === id)?.label ?? id
 }
 
+/** Short label for compact UI (e.g. Insights stat cards). */
+export function getSeverityShortLabel(id) {
+  const short = {
+    great: "Great",
+    slight: "Slight",
+    moderate: "Moderate",
+    severe: "Severe",
+  }
+  return short[id] ?? getSeverityLabel(id)
+}
+
 export function getBodyAreaLabel(id) {
   return BODY_AREAS.find((a) => a.id === id)?.label ?? id
 }

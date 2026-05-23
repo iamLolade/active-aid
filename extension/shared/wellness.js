@@ -17,6 +17,9 @@ export function buildWellnessSummary(checkIns, sessionLogs, daily) {
     sessionsToday.reduce((sum, l) => sum + l.durationSeconds, 0) / 60
   )
 
+  const weekStartMs = Date.now() - 7 * 86_400_000
+  const sessionsLast7Days = sessionLogs.filter((l) => l.completedAt >= weekStartMs).length
+
   const activeMinutesToday = Math.round((daily.activityMs ?? 0) / 60_000)
 
   const todayCheckIn = checkIns.find((c) => c.date === today) ?? null
@@ -39,6 +42,7 @@ export function buildWellnessSummary(checkIns, sessionLogs, daily) {
   return {
     breaksToday,
     breakMinutesToday,
+    sessionsLast7Days,
     activeMinutesToday,
     remindersToday: daily.reminders ?? 0,
     todayCheckIn,
