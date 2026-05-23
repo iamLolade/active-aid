@@ -427,6 +427,61 @@ input[type="number"]:focus {
   margin-top: 0;
 }
 
+.severityGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.severityOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 76px;
+  padding: 12px 10px;
+  border-radius: 16px;
+  border: 1px solid var(--gray);
+  background: var(--white);
+  cursor: pointer;
+  font: inherit;
+  text-align: center;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.severityOption:hover {
+  border-color: var(--sage);
+  background: rgba(232, 240, 233, 0.35);
+}
+
+.severityOption--selected {
+  border-color: #3d6b42;
+  background: rgba(232, 240, 233, 0.65);
+  box-shadow: 0 0 0 1px rgba(61, 107, 66, 0.2);
+}
+
+.severityOptionIcon {
+  display: inline-flex;
+  color: #3d6b42;
+}
+
+.severityOptionLabel {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--slate);
+}
+
+.severityOption--selected .severityOptionLabel {
+  color: #3d6b42;
+}
+
+.severityOption:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
+}
+
 .card--compact {
   padding: 14px 16px;
 }

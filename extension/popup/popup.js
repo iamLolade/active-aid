@@ -13,6 +13,7 @@ import { formatCountdown, minutesToMs, msToRoundedMinutes, nowMs } from "../shar
 import { runtimeSendMessage } from "../shared/chrome-api.js"
 import { SESSIONS, getSessionById, getTotalDurationSeconds } from "../shared/sessions.js"
 import { SEVERITIES, BODY_AREAS, getSeverityLabel } from "../shared/checkins.js"
+import { severityIcon } from "./icons.js"
 
 const els = {
   nav: document.getElementById("nav"),
@@ -117,9 +118,20 @@ function renderCheckInForm() {
   for (const s of SEVERITIES) {
     const btn = document.createElement("button")
     btn.type = "button"
-    btn.className = "chip"
+    btn.className = "severityOption"
     btn.dataset.severity = s.id
-    btn.textContent = s.label
+    btn.setAttribute("role", "radio")
+    btn.setAttribute("aria-checked", "false")
+
+    const iconWrap = document.createElement("span")
+    iconWrap.className = "severityOptionIcon"
+    iconWrap.innerHTML = severityIcon(s.id, 22)
+
+    const label = document.createElement("span")
+    label.className = "severityOptionLabel"
+    label.textContent = s.label
+
+    btn.append(iconWrap, label)
     btn.addEventListener("click", () => selectSeverity(s.id))
     els.severityGroup.append(btn)
   }
@@ -138,8 +150,10 @@ function renderCheckInForm() {
 
 function selectSeverity(id) {
   checkInForm.severity = id || null
-  els.severityGroup.querySelectorAll(".chip").forEach((chip) => {
-    chip.classList.toggle("chip--selected", Boolean(id && chip.dataset.severity === id))
+  els.severityGroup.querySelectorAll(".severityOption").forEach((option) => {
+    const selected = Boolean(id && option.dataset.severity === id)
+    option.classList.toggle("severityOption--selected", selected)
+    option.setAttribute("aria-checked", selected ? "true" : "false")
   })
 }
 
