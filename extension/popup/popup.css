@@ -368,6 +368,65 @@ input[type="number"]:focus {
   color: var(--slate-muted);
 }
 
+.checkInHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.checkInHeaderText {
+  min-width: 0;
+  flex: 1;
+}
+
+.checkInTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--slate);
+}
+
+.checkInSubtitle {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--slate-muted);
+  line-height: 1.4;
+}
+
+.checkInHeaderIcon {
+  height: 44px;
+  width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: rgba(232, 240, 233, 0.75);
+  color: #3d6b42;
+}
+
+.checkInCard .checkInCardTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--slate);
+}
+
+.checkInCard .checkInCardHint {
+  margin: 6px 0 14px;
+  font-size: 13px;
+  color: var(--slate-muted);
+  line-height: 1.4;
+}
+
+.checkInCard .chipGroup {
+  margin-top: 0;
+}
+
 .card--compact {
   padding: 14px 16px;
 }

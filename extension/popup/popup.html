@@ -98,19 +98,34 @@
           <p class="footerNote">We only track activity timing, never what you type.</p>
         </div>
 
-        <div id="viewCheckIn" class="view" hidden>
-          <header class="viewHeader">
-            <h2 class="viewTitle">Daily check-in</h2>
-            <p class="viewSubtitle">How does your body feel today?</p>
+        <div id="viewCheckIn" class="view view--checkin" hidden>
+          <header class="checkInHeader">
+            <div class="checkInHeaderText">
+              <h2 class="checkInTitle">Daily check-in</h2>
+              <p class="checkInSubtitle">Log how your body feels today.</p>
+            </div>
+            <div class="checkInHeaderIcon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
           </header>
 
-          <section class="card">
-            <p class="fieldLabel">Overall feeling</p>
+          <section class="card checkInCard">
+            <h3 class="checkInCardTitle">Overall feeling</h3>
+            <p class="checkInCardHint">How is your body feeling overall?</p>
             <div class="chipGroup" id="severityGroup" role="radiogroup"></div>
           </section>
 
-          <section class="card">
-            <p class="fieldLabel">Any areas to note? (optional)</p>
+          <section class="card checkInCard">
+            <h3 class="checkInCardTitle">Any areas to note? (optional)</h3>
+            <p class="checkInCardHint">Select all that apply.</p>
             <div class="chipGroup chipGroup--multi" id="bodyAreaGroup"></div>
           </section>
 
