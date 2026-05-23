@@ -329,7 +329,7 @@ function renderCheckInForm() {
 
     const iconWrap = document.createElement("span")
     iconWrap.className = "severityOptionIcon"
-    iconWrap.innerHTML = severityIcon(s.id, 22)
+    iconWrap.innerHTML = severityIcon(s.id, 24)
 
     const label = document.createElement("span")
     label.className = "severityOptionLabel"
@@ -350,7 +350,7 @@ function renderCheckInForm() {
 
     const iconWrap = document.createElement("span")
     iconWrap.className = "bodyAreaChipIcon"
-    iconWrap.innerHTML = bodyAreaIcon(a.id, 18)
+    iconWrap.innerHTML = bodyAreaIcon(a.id, 20)
 
     const label = document.createElement("span")
     label.className = "bodyAreaChipLabel"
@@ -506,27 +506,27 @@ async function renderDashboard() {
   appendStatCard({
     value: String(summary.breaksToday),
     label: "Breaks taken today",
-    iconHtml: iconPlay(18),
+    iconHtml: iconPlay(20),
   })
   appendStatCard({
     value: `${summary.breakMinutesToday}m`,
     label: "Relief minutes today",
-    iconHtml: iconClock(18),
+    iconHtml: iconClock(20),
   })
   appendStatCard({
     value: String(summary.sessionsLast7Days),
     label: "Relief sessions (7 days)",
-    iconHtml: iconBarChart(18),
+    iconHtml: iconBarChart(20),
   })
   appendStatCard({
     value: `${summary.activeMinutesToday}m`,
     label: "Estimated active time",
-    iconHtml: iconActivity(18),
+    iconHtml: iconActivity(20),
   })
   appendStatCard({
     value: String(summary.checkInStreak),
     label: "Check-in streak (days)",
-    iconHtml: iconCalendar(18),
+    iconHtml: iconCalendar(20),
   })
   appendStatCard({
     value: summary.todayCheckIn
@@ -534,8 +534,8 @@ async function renderDashboard() {
       : "Not yet",
     label: "Today’s check-in",
     iconHtml: summary.todayCheckIn
-      ? severityIcon(summary.todayCheckIn.severity, 18)
-      : iconHeart(18),
+      ? severityIcon(summary.todayCheckIn.severity, 20)
+      : iconHeart(20),
   })
 
   els.trendList.replaceChildren()
