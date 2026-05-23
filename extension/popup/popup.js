@@ -13,7 +13,7 @@ import { formatCountdown, minutesToMs, msToRoundedMinutes, nowMs } from "../shar
 import { runtimeSendMessage } from "../shared/chrome-api.js"
 import { SESSIONS, getSessionById, getTotalDurationSeconds } from "../shared/sessions.js"
 import { SEVERITIES, BODY_AREAS, getSeverityLabel } from "../shared/checkins.js"
-import { severityIcon } from "./icons.js"
+import { bodyAreaIcon, severityIcon } from "./icons.js"
 
 const els = {
   nav: document.getElementById("nav"),
@@ -140,9 +140,19 @@ function renderCheckInForm() {
   for (const a of BODY_AREAS) {
     const btn = document.createElement("button")
     btn.type = "button"
-    btn.className = "chip"
+    btn.className = "bodyAreaChip"
     btn.dataset.area = a.id
-    btn.textContent = a.label
+    btn.setAttribute("aria-pressed", "false")
+
+    const iconWrap = document.createElement("span")
+    iconWrap.className = "bodyAreaChipIcon"
+    iconWrap.innerHTML = bodyAreaIcon(a.id, 18)
+
+    const label = document.createElement("span")
+    label.className = "bodyAreaChipLabel"
+    label.textContent = a.label
+
+    btn.append(iconWrap, label)
     btn.addEventListener("click", () => toggleBodyArea(a.id))
     els.bodyAreaGroup.append(btn)
   }
@@ -160,8 +170,14 @@ function selectSeverity(id) {
 function toggleBodyArea(id) {
   if (checkInForm.bodyAreas.has(id)) checkInForm.bodyAreas.delete(id)
   else checkInForm.bodyAreas.add(id)
-  els.bodyAreaGroup.querySelectorAll(".chip").forEach((chip) => {
-    chip.classList.toggle("chip--selected", checkInForm.bodyAreas.has(chip.dataset.area))
+  syncBodyAreaSelection()
+}
+
+function syncBodyAreaSelection() {
+  els.bodyAreaGroup.querySelectorAll(".bodyAreaChip").forEach((chip) => {
+    const selected = checkInForm.bodyAreas.has(chip.dataset.area)
+    chip.classList.toggle("bodyAreaChip--selected", selected)
+    chip.setAttribute("aria-pressed", selected ? "true" : "false")
   })
 }
 
@@ -180,9 +196,7 @@ async function loadCheckInForm() {
     els.checkInSavedNote.style.color = "#3d6b42"
     selectSeverity(today.severity)
   }
-  els.bodyAreaGroup.querySelectorAll(".chip").forEach((chip) => {
-    chip.classList.toggle("chip--selected", checkInForm.bodyAreas.has(chip.dataset.area))
-  })
+  syncBodyAreaSelection()
 }
 
 async function submitCheckIn() {
