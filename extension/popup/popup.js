@@ -16,7 +16,9 @@ import { SEVERITIES, BODY_AREAS, getSeverityLabel } from "../shared/checkins.js"
 import {
   bodyAreaIcon,
   iconBarChart,
+  iconBell,
   iconCalendar,
+  iconClock,
   iconHeart,
   severityIcon,
 } from "./icons.js"
@@ -36,9 +38,11 @@ const els = {
   viewSession: document.getElementById("viewSession"),
   errorBanner: document.getElementById("errorBanner"),
   errorText: document.getElementById("errorText"),
-  statusBadge: document.getElementById("statusBadge"),
-  statusMessage: document.getElementById("statusMessage"),
-  statusMeta: document.getElementById("statusMeta"),
+  activeValue: document.getElementById("activeValue"),
+  heroMeta: document.getElementById("heroMeta"),
+  statusPill: document.getElementById("statusPill"),
+  statusPillText: document.getElementById("statusPillText"),
+  reminderProgress: document.getElementById("reminderProgress"),
   checkInHint: document.getElementById("checkInHint"),
   goCheckIn: document.getElementById("goCheckIn"),
   notificationsEnabled: document.getElementById("notificationsEnabled"),
@@ -87,6 +91,7 @@ await init()
 async function init() {
   renderNavIcons()
   renderCheckInHeaderIcon()
+  renderHomeHeroChrome()
   renderSessionList()
   renderCheckInForm()
   bindNav()
@@ -108,6 +113,69 @@ function renderNavIcons() {
 function renderCheckInHeaderIcon() {
   const slot = document.getElementById("checkInHeaderIcon")
   if (slot) slot.innerHTML = iconHeart(22)
+}
+
+function renderHomeHeroChrome() {
+  const heroIcon = document.getElementById("heroIcon")
+  const pillIcon = document.getElementById("statusPillIcon")
+  if (heroIcon) heroIcon.innerHTML = iconClock(22)
+  if (pillIcon) pillIcon.innerHTML = iconBell(16)
+}
+
+function formatActiveMinutes(totalMinutes) {
+  const minutes = Math.max(0, Math.round(totalMinutes))
+  if (minutes < 60) return `${minutes}m`
+  const hours = Math.floor(minutes / 60)
+  const remaining = minutes % 60
+  return remaining === 0 ? `${hours}h` : `${hours}h ${remaining}m`
+}
+
+function updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed }) {
+  els.statusPill?.classList.remove("statusPill--muted", "statusPill--warm")
+  let progressRatio = 0
+
+  if (els.activeValue) {
+    els.activeValue.textContent =
+      activeMinutes == null ? "—" : formatActiveMinutes(activeMinutes)
+  }
+
+  if (!settings.notificationsEnabled) {
+    els.statusPill?.classList.add("statusPill--muted")
+    if (els.statusPillText) els.statusPillText.textContent = "Reminders off"
+    if (els.heroMeta) {
+      els.heroMeta.textContent = "Turn them on when you're ready for a gentle nudge."
+    }
+  } else if (isSnoozed) {
+    els.statusPill?.classList.add("statusPill--warm")
+    if (els.statusPillText) els.statusPillText.textContent = "Snoozed"
+    const until = new Date(runtime.snoozedUntilMs).toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    })
+    if (els.heroMeta) els.heroMeta.textContent = `We'll check back around ${until}.`
+  } else if (activeMinutes == null) {
+    if (els.statusPillText) els.statusPillText.textContent = "Reminders on"
+    if (els.heroMeta) {
+      els.heroMeta.textContent = `Next gentle reminder after ${settings.reminderIntervalMinutes} min of activity.`
+    }
+  } else {
+    if (els.statusPillText) els.statusPillText.textContent = "Reminders on"
+    const remaining = Math.max(0, settings.reminderIntervalMinutes - activeMinutes)
+    progressRatio =
+      settings.reminderIntervalMinutes > 0
+        ? Math.min(1, activeMinutes / settings.reminderIntervalMinutes)
+        : 0
+    if (els.heroMeta) {
+      els.heroMeta.textContent =
+        remaining > 0
+          ? `Next gentle reminder in about ${remaining} min.`
+          : "A reminder may appear soon."
+    }
+  }
+
+  if (els.reminderProgress) {
+    els.reminderProgress.style.width = `${Math.round(progressRatio * 100)}%`
+  }
 }
 
 function bindNav() {
@@ -429,10 +497,11 @@ async function completeSession() {
   activeTab = "home"
   setActiveTab("home")
   await hydrate()
-  els.statusBadge.className = "badge"
-  els.statusBadge.textContent = "Session done"
-  els.statusMessage.textContent = `${session.title} complete.`
-  els.statusMeta.textContent = "Small resets add up. Your body will thank you."
+  els.statusPill?.classList.remove("statusPill--muted", "statusPill--warm")
+  if (els.statusPillText) els.statusPillText.textContent = "Session done"
+  if (els.heroMeta) {
+    els.heroMeta.textContent = `${session.title} complete. Small resets add up.`
+  }
 }
 
 function startSessionTicker() {
@@ -505,34 +574,7 @@ async function hydrate() {
     runtime.activeSinceMs != null ? msToRoundedMinutes(nowMs() - runtime.activeSinceMs) : null
   const isSnoozed = runtime.snoozedUntilMs != null && nowMs() < runtime.snoozedUntilMs
 
-  els.statusBadge.className = "badge"
-  if (!settings.notificationsEnabled) {
-    els.statusBadge.textContent = "Paused"
-    els.statusBadge.classList.add("badge--paused")
-    els.statusMessage.textContent = "Reminders are off for now."
-    els.statusMeta.textContent = "Turn them on when you’re ready for a gentle nudge."
-  } else if (isSnoozed) {
-    els.statusBadge.textContent = "Snoozed"
-    els.statusBadge.classList.add("badge--snoozed")
-    const until = new Date(runtime.snoozedUntilMs).toLocaleTimeString([], {
-      hour: "numeric",
-      minute: "2-digit",
-    })
-    els.statusMessage.textContent = `We’ll check back around ${until}.`
-    els.statusMeta.textContent = "Take your time. No pressure."
-  } else if (activeMinutes == null) {
-    els.statusBadge.textContent = "Reminders on"
-    els.statusMessage.textContent = "Move a little on any tab to start tracking."
-    els.statusMeta.textContent = `Next reminder after ${settings.reminderIntervalMinutes} minutes of activity.`
-  } else {
-    els.statusBadge.textContent = "Reminders on"
-    els.statusMessage.textContent = `You’ve been active for about ${activeMinutes} minute${activeMinutes === 1 ? "" : "s"}.`
-    const remaining = Math.max(0, settings.reminderIntervalMinutes - activeMinutes)
-    els.statusMeta.textContent =
-      remaining > 0
-        ? `Next gentle reminder in about ${remaining} minute${remaining === 1 ? "" : "s"}.`
-        : "A reminder may appear soon."
-  }
+  updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed })
 
   if (runtime.lastNotificationError) {
     els.errorBanner.hidden = false

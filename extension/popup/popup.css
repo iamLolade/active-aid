@@ -147,46 +147,110 @@ body {
   color: var(--slate-muted);
 }
 
-.statusCard {
+.heroCard {
   background: var(--white);
   border: 1px solid var(--gray);
-  border-radius: var(--radius);
-  padding: 14px 16px;
+  border-radius: 22px;
+  padding: 16px 16px 14px;
   box-shadow: var(--shadow);
 }
 
-.badge {
-  display: inline-block;
-  padding: 4px 10px;
+.heroTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.heroIcon {
+  height: 46px;
+  width: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 999px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  background: var(--sage-soft);
+  background: rgba(232, 240, 233, 0.7);
+  color: #3d6b42;
+  flex-shrink: 0;
+}
+
+.heroText {
+  min-width: 0;
+  flex: 1;
+}
+
+.heroEyebrow {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--slate-muted);
+}
+
+.heroValue {
+  margin: 6px 0 0;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: #3d6b42;
 }
 
-.badge--paused {
-  background: #e5e7eb;
+.heroMeta {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--slate-muted);
+  line-height: 1.4;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(232, 240, 233, 0.8);
+  color: #3d6b42;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.statusPillIcon {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.statusPill--muted {
+  background: #eef0f2;
   color: #374151;
 }
 
-.badge--snoozed {
-  background: #f5ebe6;
+.statusPill--muted .statusPillIcon {
+  color: #374151;
+}
+
+.statusPill--warm {
+  background: rgba(201, 123, 99, 0.16);
   color: #8b5a48;
 }
 
-.statusMessage {
-  margin: 10px 0 0;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--slate);
+.statusPill--warm .statusPillIcon {
+  color: #8b5a48;
 }
 
-.statusMeta {
-  margin: 4px 0 0;
-  font-size: 12px;
-  color: var(--slate-muted);
+.progressTrack {
+  margin-top: 14px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(209, 213, 219, 0.55);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: #3d6b42;
+  transition: width 0.2s ease;
 }
 
 .card {
@@ -552,7 +616,8 @@ input[type="number"]:focus {
   .severityOption,
   .bodyAreaChip,
   .navBtn,
-  .view--checkin .btn--save {
+  .view--checkin .btn--save,
+  .progressFill {
     transition: none;
   }
 }
