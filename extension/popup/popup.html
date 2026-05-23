@@ -21,16 +21,23 @@
       <main class="main">
         <div id="viewHome" class="view">
           <header class="header">
-            <img
-              class="logo"
-              src="../assets/icon-48.png"
-              width="40"
-              height="40"
-              alt=""
-            />
-            <div class="headerText">
-              <h1 class="title">ActiveAid</h1>
-              <p class="subtitle">Wellness while you work.</p>
+            <div class="headerLeft">
+              <img
+                class="logo"
+                src="../assets/icon-48.png"
+                width="40"
+                height="40"
+                alt=""
+              />
+              <div class="headerText">
+                <h1 class="title">ActiveAid</h1>
+                <p class="subtitle">Wellness while you work.</p>
+              </div>
+            </div>
+            <div class="headerActions">
+              <button class="iconBtn" id="openSettings" type="button" aria-label="Open reminders settings">
+                <span id="openSettingsIcon" aria-hidden="true"></span>
+              </button>
             </div>
           </header>
 
@@ -79,7 +86,7 @@
             <p class="sessionStats" id="sessionStats"></p>
           </section>
 
-          <details class="card detailsCard" open>
+          <details class="card detailsCard" id="remindersDetails">
             <summary class="detailsSummary">
               <span class="sectionTitle sectionTitle--inline">Reminders</span>
               <span class="detailsHint">Interval and snooze</span>

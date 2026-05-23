@@ -22,6 +22,7 @@ import {
   iconClock,
   iconHeart,
   iconPlay,
+  iconSettings,
   sessionIcon,
   severityIcon,
 } from "./icons.js"
@@ -41,6 +42,9 @@ const els = {
   viewSession: document.getElementById("viewSession"),
   errorBanner: document.getElementById("errorBanner"),
   errorText: document.getElementById("errorText"),
+  openSettings: document.getElementById("openSettings"),
+  openSettingsIcon: document.getElementById("openSettingsIcon"),
+  remindersDetails: document.getElementById("remindersDetails"),
   activeValue: document.getElementById("activeValue"),
   heroMeta: document.getElementById("heroMeta"),
   statusPill: document.getElementById("statusPill"),
@@ -95,12 +99,14 @@ await init()
 async function init() {
   renderNavIcons()
   renderCheckInHeaderIcon()
+  renderSettingsChrome()
   renderHomeHeroChrome()
   renderHomeCheckInRowChrome()
   renderQuickReliefChrome()
   renderSessionList()
   renderCheckInForm()
   bindNav()
+  bindSettings()
   bindReminders()
   bindSessionPlayer()
   bindCheckIn()
@@ -119,6 +125,10 @@ function renderNavIcons() {
 function renderCheckInHeaderIcon() {
   const slot = document.getElementById("checkInHeaderIcon")
   if (slot) slot.innerHTML = iconHeart(22)
+}
+
+function renderSettingsChrome() {
+  if (els.openSettingsIcon) els.openSettingsIcon.innerHTML = iconSettings(18)
 }
 
 function renderHomeHeroChrome() {
@@ -194,6 +204,15 @@ function updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed }) {
   if (els.reminderProgress) {
     els.reminderProgress.style.width = `${Math.round(progressRatio * 100)}%`
   }
+}
+
+function bindSettings() {
+  els.openSettings?.addEventListener("click", () => {
+    if (!els.remindersDetails) return
+    els.remindersDetails.open = true
+    els.remindersDetails.scrollIntoView({ block: "start", behavior: "smooth" })
+    els.remindersDetails.querySelector("summary")?.focus()
+  })
 }
 
 function bindNav() {

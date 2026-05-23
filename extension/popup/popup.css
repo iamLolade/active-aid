@@ -121,7 +121,53 @@ body {
 .header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.iconBtn {
+  height: 36px;
+  width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--gray);
+  background: var(--white);
+  color: var(--slate-muted);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.iconBtn:hover {
+  background: #f3efe6;
+  color: var(--slate);
+  border-color: rgba(209, 213, 219, 0.9);
+}
+
+.iconBtn:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
+}
+
+.iconBtn span {
+  display: inline-flex;
+  line-height: 0;
 }
 
 .logo {
@@ -791,6 +837,12 @@ input[type="number"]:focus {
   padding: 14px 16px;
   cursor: pointer;
   user-select: none;
+}
+
+.detailsSummary:focus-visible {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
+  border-radius: 16px;
 }
 
 .detailsSummary::-webkit-details-marker {
