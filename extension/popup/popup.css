@@ -12,26 +12,40 @@
   --terracotta: #c97b63;
   --shadow: 0 10px 30px rgba(31, 41, 55, 0.09);
   --radius: 14px;
+  --popup-radius: 18px;
+  --popup-border: 1px solid rgba(209, 213, 219, 0.75);
+  --popup-shadow:
+    0 20px 48px rgba(31, 41, 55, 0.14),
+    0 8px 20px rgba(31, 41, 55, 0.08);
 }
 
 * {
   box-sizing: border-box;
 }
 
-html,
+html {
+  background: var(--cream);
+}
+
 body {
   margin: 0;
   padding: 0;
   width: 400px;
+  min-height: 480px;
   background: var(--cream);
   color: var(--slate);
   font: 14px/1.45 Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  border: var(--popup-border);
+  border-radius: var(--popup-radius);
+  box-shadow: var(--popup-shadow);
+  overflow: hidden;
 }
 
 .app {
   display: flex;
   flex-direction: column;
   min-height: 480px;
+  background: var(--cream);
 }
 
 .main {
