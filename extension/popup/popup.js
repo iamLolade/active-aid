@@ -4,7 +4,6 @@ import {
   getRuntimeState,
   setRuntimeState,
   addSessionLog,
-  getSessionStats,
   getTodayCheckIn,
   saveCheckIn,
   getWellnessSummary,
@@ -21,6 +20,7 @@ import {
   iconChevronRight,
   iconClock,
   iconHeart,
+  iconMoreVertical,
   iconPlay,
   iconSettings,
   sessionIcon,
@@ -32,6 +32,11 @@ const NAV_TAB_ICONS = {
   checkin: iconHeart,
   insights: iconBarChart,
 }
+
+/** Featured on Today tab per hero-popup.png */
+const HOME_QUICK_RELIEF_IDS = ["neck", "wrist", "lower-back", "shoulder"]
+
+let showAllQuickRelief = false
 
 const els = {
   nav: document.getElementById("nav"),
@@ -60,7 +65,6 @@ const els = {
   resetTimer: document.getElementById("resetTimer"),
   presets: document.querySelectorAll(".preset"),
   sessionList: document.getElementById("sessionList"),
-  sessionStats: document.getElementById("sessionStats"),
   severityGroup: document.getElementById("severityGroup"),
   bodyAreaGroup: document.getElementById("bodyAreaGroup"),
   saveCheckIn: document.getElementById("saveCheckIn"),
@@ -99,7 +103,7 @@ await init()
 async function init() {
   renderNavIcons()
   renderCheckInHeaderIcon()
-  renderSettingsChrome()
+  renderHeaderChrome()
   renderHomeHeroChrome()
   renderHomeCheckInRowChrome()
   renderQuickReliefChrome()
@@ -127,8 +131,10 @@ function renderCheckInHeaderIcon() {
   if (slot) slot.innerHTML = iconHeart(22)
 }
 
-function renderSettingsChrome() {
+function renderHeaderChrome() {
   if (els.openSettingsIcon) els.openSettingsIcon.innerHTML = iconSettings(18)
+  const moreIcon = document.getElementById("openMoreIcon")
+  if (moreIcon) moreIcon.innerHTML = iconMoreVertical(18)
 }
 
 function renderHomeHeroChrome() {
@@ -148,6 +154,12 @@ function renderHomeCheckInRowChrome() {
 function renderQuickReliefChrome() {
   const chevron = document.querySelector("#scrollQuickRelief .textBtnIcon")
   if (chevron) chevron.innerHTML = iconChevronRight(14)
+  updateQuickReliefToggleLabel()
+}
+
+function updateQuickReliefToggleLabel() {
+  const label = document.getElementById("quickReliefToggleLabel")
+  if (label) label.textContent = showAllQuickRelief ? "Show less" : "View all"
 }
 
 function formatActiveMinutes(totalMinutes) {
@@ -196,7 +208,7 @@ function updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed }) {
     if (els.heroMeta) {
       els.heroMeta.textContent =
         remaining > 0
-          ? `Next gentle reminder in about ${remaining} min.`
+          ? `Next gentle reminder in ${remaining} min`
           : "A reminder may appear soon."
     }
   }
@@ -218,7 +230,12 @@ function bindSettings() {
 function bindNav() {
   els.goCheckIn.addEventListener("click", () => setActiveTab("checkin"))
   document.getElementById("scrollQuickRelief")?.addEventListener("click", () => {
-    els.sessionList?.scrollIntoView({ block: "nearest", behavior: "smooth" })
+    showAllQuickRelief = !showAllQuickRelief
+    renderSessionList()
+    updateQuickReliefToggleLabel()
+    if (showAllQuickRelief) {
+      els.sessionList?.lastElementChild?.scrollIntoView({ block: "nearest", behavior: "smooth" })
+    }
   })
   els.navBtns.forEach((btn) => {
     btn.addEventListener("click", () => setActiveTab(btn.dataset.view))
@@ -444,7 +461,10 @@ function bindSessionPlayer() {
 
 function renderSessionList() {
   els.sessionList.replaceChildren()
-  for (const session of SESSIONS) {
+  const sessions = showAllQuickRelief
+    ? SESSIONS
+    : SESSIONS.filter((session) => HOME_QUICK_RELIEF_IDS.includes(session.id))
+  for (const session of sessions) {
     const btn = document.createElement("button")
     btn.type = "button"
     btn.className = "sessionRow"
@@ -488,14 +508,6 @@ function renderSessionList() {
     btn.addEventListener("click", () => openSession(session.id))
     els.sessionList.append(btn)
   }
-}
-
-async function renderSessionStats() {
-  const stats = await getSessionStats()
-  els.sessionStats.textContent =
-    stats.todayCount === 0
-      ? "No relief sessions yet today."
-      : `${stats.todayCount} session${stats.todayCount === 1 ? "" : "s"} completed today. Nice work.`
 }
 
 function openSession(sessionId) {
@@ -625,8 +637,6 @@ async function hydrate() {
   ])
 
   if (player.session) return
-
-  await renderSessionStats()
 
   if (todayCheckIn) {
     els.checkInHint.textContent = `Today · ${getSeverityLabel(todayCheckIn.severity)}`

@@ -67,6 +67,15 @@ export function iconSettings(size = 24) {
   )
 }
 
+export function iconMoreVertical(size = 24) {
+  return iconSvg(
+    size,
+    '<circle cx="12" cy="5" r="1.25" fill="currentColor" stroke="none"/>' +
+      '<circle cx="12" cy="12" r="1.25" fill="currentColor" stroke="none"/>' +
+      '<circle cx="12" cy="19" r="1.25" fill="currentColor" stroke="none"/>'
+  )
+}
+
 export function iconClock(size = 24) {
   return iconSvg(
     size,

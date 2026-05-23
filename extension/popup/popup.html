@@ -19,7 +19,7 @@
       </div>
 
       <main class="main">
-        <div id="viewHome" class="view">
+        <div id="viewHome" class="view view--home">
           <header class="header">
             <div class="headerLeft">
               <img
@@ -37,6 +37,9 @@
             <div class="headerActions">
               <button class="iconBtn" id="openSettings" type="button" aria-label="Open reminders settings">
                 <span id="openSettingsIcon" aria-hidden="true"></span>
+              </button>
+              <button class="iconBtn" id="openMore" type="button" aria-label="More options" aria-haspopup="true">
+                <span id="openMoreIcon" aria-hidden="true"></span>
               </button>
             </div>
           </header>
@@ -77,13 +80,13 @@
             <div class="sectionHeader">
               <h2 class="sectionHeaderTitle">Quick Relief</h2>
               <button class="textBtn" id="scrollQuickRelief" type="button">
-                View all
+                <span id="quickReliefToggleLabel">View all</span>
                 <span class="textBtnIcon" aria-hidden="true"></span>
               </button>
             </div>
             <p class="sessionIntro">Short guided resets you can do at your desk.</p>
             <div class="sessionList" id="sessionList"></div>
-            <p class="sessionStats" id="sessionStats"></p>
+            <p class="sessionStats" id="sessionStats" hidden></p>
           </section>
 
           <details class="card detailsCard" id="remindersDetails">

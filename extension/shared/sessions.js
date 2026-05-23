@@ -95,7 +95,7 @@ export const SESSIONS = [
   {
     id: "shoulder",
     title: "Shoulder Release",
-    tagline: "Unwind upper-body stiffness",
+    tagline: "Release tight shoulders",
     durationMinutes: 2,
     steps: [
       {
