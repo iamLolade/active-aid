@@ -104,23 +104,18 @@
               <h2 class="checkInTitle">Daily check-in</h2>
               <p class="checkInSubtitle">Log how your body feels today.</p>
             </div>
-            <div class="checkInHeaderIcon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
-                  stroke="currentColor"
-                  stroke-width="1.75"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
+            <div class="checkInHeaderIcon" id="checkInHeaderIcon" aria-hidden="true"></div>
           </header>
 
           <section class="card checkInCard">
             <h3 class="checkInCardTitle">Overall feeling</h3>
             <p class="checkInCardHint">How is your body feeling overall?</p>
-            <div class="severityGrid" id="severityGroup" role="radiogroup"></div>
+            <div
+              class="severityGrid"
+              id="severityGroup"
+              role="radiogroup"
+              aria-label="Overall feeling"
+            ></div>
           </section>
 
           <section class="card checkInCard">

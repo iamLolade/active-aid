@@ -86,6 +86,7 @@ await init()
 
 async function init() {
   renderNavIcons()
+  renderCheckInHeaderIcon()
   renderSessionList()
   renderCheckInForm()
   bindNav()
@@ -102,6 +103,11 @@ function renderNavIcons() {
     const slot = btn.querySelector(".navBtnIcon")
     if (render && slot) slot.innerHTML = render(18)
   })
+}
+
+function renderCheckInHeaderIcon() {
+  const slot = document.getElementById("checkInHeaderIcon")
+  if (slot) slot.innerHTML = iconHeart(22)
 }
 
 function bindNav() {
