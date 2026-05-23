@@ -183,27 +183,70 @@
           </section>
         </div>
 
-        <div id="viewSession" class="view" hidden>
-          <button class="backLink" id="sessionBack" type="button">← Back</button>
-          <header class="sessionHeader">
-            <h2 class="sessionTitle" id="sessionTitle"></h2>
-            <p class="sessionTagline" id="sessionTagline"></p>
+        <div id="viewSession" class="view view--session" hidden>
+          <button class="sessionBack" id="sessionBack" type="button">
+            <span class="sessionBackIcon" id="sessionBackIcon" aria-hidden="true"></span>
+            <span>Back</span>
+          </button>
+
+          <header class="sessionPlayerHeader">
+            <div class="sessionPlayerIcon" id="sessionPlayerIcon" aria-hidden="true"></div>
+            <div class="sessionPlayerText">
+              <h2 class="sessionTitle" id="sessionTitle"></h2>
+              <p class="sessionTagline" id="sessionTagline"></p>
+            </div>
           </header>
-          <div class="stepTop">
-            <p class="stepProgress" id="stepProgress"></p>
-            <p class="stepCountdown" id="stepCountdown"></p>
+
+          <div class="sessionProgressBlock">
+            <div class="sessionProgressTop">
+              <p class="stepProgress" id="stepProgress"></p>
+              <div class="stepTimer" aria-live="polite">
+                <span class="stepTimerLabel">
+                  <span class="stepTimerIcon" id="stepTimerIcon" aria-hidden="true"></span>
+                  Step time
+                </span>
+                <p class="stepCountdown" id="stepCountdown">00:00</p>
+              </div>
+            </div>
+            <div
+              class="stepSegments"
+              id="stepSegments"
+              role="progressbar"
+              aria-label="Session progress"
+            ></div>
           </div>
-          <p class="totalCountdown" id="totalCountdown"></p>
+
+          <div class="totalRemainingCard">
+            <span class="totalRemainingLabel">
+              <span class="totalRemainingIcon" id="totalRemainingIcon" aria-hidden="true"></span>
+              Total remaining
+            </span>
+            <span class="totalCountdown" id="totalCountdown">00:00</span>
+          </div>
+
           <article class="stepCard" id="stepCard">
-            <h3 class="stepTitle" id="stepTitle"></h3>
-            <p class="stepInstruction" id="stepInstruction"></p>
-            <p class="stepDuration" id="stepDuration"></p>
+            <div class="stepCardInner">
+              <div class="stepIllustration" id="stepIllustration" aria-hidden="true"></div>
+              <div class="stepCardBody">
+                <h3 class="stepTitle" id="stepTitle"></h3>
+                <p class="stepInstruction" id="stepInstruction"></p>
+                <p class="stepDisclaimer">Move gently. Stop if it hurts.</p>
+              </div>
+            </div>
           </article>
+
           <div class="actions actions--session">
-            <button class="btn btn--ghost" id="stepPrev" type="button" disabled>Previous</button>
-            <button class="btn btn--primary" id="stepNext" type="button">Next</button>
-            <button class="btn btn--primary" id="stepComplete" type="button" hidden>
-              Complete session
+            <button class="btn btn--sessionPrev" id="stepPrev" type="button" disabled>
+              <span class="btnIcon" id="stepPrevIcon" aria-hidden="true"></span>
+              Previous
+            </button>
+            <button class="btn btn--primary btn--sessionNext" id="stepNext" type="button">
+              Next
+              <span class="btnIcon" id="stepNextIcon" aria-hidden="true"></span>
+            </button>
+            <button class="btn btn--primary btn--sessionNext" id="stepComplete" type="button" hidden>
+              Complete
+              <span class="btnIcon" id="stepCompleteIcon" aria-hidden="true"></span>
             </button>
           </div>
         </div>

@@ -17,6 +17,7 @@ import {
   iconBarChart,
   iconBell,
   iconCalendar,
+  iconChevronLeft,
   iconChevronRight,
   iconClock,
   iconHeart,
@@ -34,7 +35,7 @@ const NAV_TAB_ICONS = {
 }
 
 /** Featured on Today tab per hero-popup.png */
-const HOME_QUICK_RELIEF_IDS = ["neck", "wrist", "lower-back", "shoulder"]
+const HOME_QUICK_RELIEF_IDS = ["neck", "wrist", "lower-back"]
 
 let showAllQuickRelief = false
 
@@ -80,9 +81,11 @@ const els = {
   stepCountdown: document.getElementById("stepCountdown"),
   totalCountdown: document.getElementById("totalCountdown"),
   stepCard: document.getElementById("stepCard"),
+  stepSegments: document.getElementById("stepSegments"),
+  stepIllustration: document.getElementById("stepIllustration"),
+  sessionPlayerIcon: document.getElementById("sessionPlayerIcon"),
   stepTitle: document.getElementById("stepTitle"),
   stepInstruction: document.getElementById("stepInstruction"),
-  stepDuration: document.getElementById("stepDuration"),
   stepPrev: document.getElementById("stepPrev"),
   stepNext: document.getElementById("stepNext"),
   stepComplete: document.getElementById("stepComplete"),
@@ -107,6 +110,7 @@ async function init() {
   renderHomeHeroChrome()
   renderHomeCheckInRowChrome()
   renderQuickReliefChrome()
+  renderSessionPlayerChrome()
   renderSessionList()
   renderCheckInForm()
   bindNav()
@@ -155,6 +159,41 @@ function renderQuickReliefChrome() {
   const chevron = document.querySelector("#scrollQuickRelief .textBtnIcon")
   if (chevron) chevron.innerHTML = iconChevronRight(14)
   updateQuickReliefToggleLabel()
+}
+
+function renderSessionPlayerChrome() {
+  const back = document.getElementById("sessionBackIcon")
+  const stepTimer = document.getElementById("stepTimerIcon")
+  const totalIcon = document.getElementById("totalRemainingIcon")
+  const prevIcon = document.getElementById("stepPrevIcon")
+  const nextIcon = document.getElementById("stepNextIcon")
+  const completeIcon = document.getElementById("stepCompleteIcon")
+  if (back) back.innerHTML = iconChevronLeft(16)
+  if (stepTimer) stepTimer.innerHTML = iconClock(14)
+  if (totalIcon) totalIcon.innerHTML = iconClock(14)
+  if (prevIcon) prevIcon.innerHTML = iconChevronLeft(16)
+  if (nextIcon) nextIcon.innerHTML = iconChevronRight(16)
+  if (completeIcon) completeIcon.innerHTML = iconChevronRight(16)
+}
+
+function renderSessionPlayerIcon(sessionId) {
+  if (els.sessionPlayerIcon) els.sessionPlayerIcon.innerHTML = sessionIcon(sessionId, 24)
+}
+
+function renderStepSegments() {
+  const session = player.session
+  if (!session || !els.stepSegments) return
+  const total = session.steps.length
+  const current = player.stepIndex + 1
+  els.stepSegments.replaceChildren()
+  els.stepSegments.setAttribute("aria-valuemin", "1")
+  els.stepSegments.setAttribute("aria-valuemax", String(total))
+  els.stepSegments.setAttribute("aria-valuenow", String(current))
+  session.steps.forEach((_, index) => {
+    const seg = document.createElement("span")
+    seg.className = `stepSegment${index <= player.stepIndex ? " stepSegment--active" : ""}`
+    els.stepSegments.append(seg)
+  })
 }
 
 function updateQuickReliefToggleLabel() {
@@ -519,6 +558,7 @@ function openSession(sessionId) {
   player.stepStartedAt = nowMs()
   els.sessionTitle.textContent = session.title
   els.sessionTagline.textContent = session.tagline
+  renderSessionPlayerIcon(session.id)
   els.viewHome.hidden = true
   els.viewCheckIn.hidden = true
   els.viewDashboard.hidden = true
@@ -552,7 +592,8 @@ function renderStep() {
   els.stepProgress.textContent = `Step ${player.stepIndex + 1} of ${session.steps.length}`
   els.stepTitle.textContent = step.title
   els.stepInstruction.textContent = step.instruction
-  els.stepDuration.textContent = `Move gently. Stop if it hurts.`
+  if (els.stepIllustration) els.stepIllustration.innerHTML = sessionIcon(session.id, 24)
+  renderStepSegments()
   els.stepPrev.disabled = player.stepIndex === 0
   els.stepNext.hidden = isLast
   els.stepComplete.hidden = !isLast
@@ -608,13 +649,13 @@ function updateCountdownUI() {
 
   const stepElapsed = (nowMs() - stepStart) / 1000
   const stepRemaining = Math.max(0, step.durationSeconds - stepElapsed)
-  els.stepCountdown.textContent = `Step: ${formatCountdown(stepRemaining)}`
+  els.stepCountdown.textContent = formatCountdown(stepRemaining)
 
   const remainingStepsSeconds = session.steps
     .slice(player.stepIndex + 1)
     .reduce((sum, s) => sum + s.durationSeconds, 0)
   const totalRemaining = stepRemaining + remainingStepsSeconds
-  els.totalCountdown.textContent = `Total remaining: ${formatCountdown(totalRemaining)}`
+  els.totalCountdown.textContent = formatCountdown(totalRemaining)
 
   const isStepDone = stepRemaining <= 0.25
   if (!isStepDone) return

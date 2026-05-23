@@ -97,6 +97,10 @@ export function iconChevronRight(size = 24) {
   return iconSvg(size, strokePath("m9 18 6-6-6-6"))
 }
 
+export function iconChevronLeft(size = 24) {
+  return iconSvg(size, strokePath("m15 18-6-6 6-6"))
+}
+
 export function iconPlay(size = 24) {
   return iconSvg(
     size,
