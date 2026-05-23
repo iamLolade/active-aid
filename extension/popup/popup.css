@@ -17,6 +17,53 @@
   --popup-shadow:
     0 16px 40px rgba(31, 41, 55, 0.12),
     0 6px 16px rgba(31, 41, 55, 0.07);
+  --focus-ring: 2px solid var(--sage);
+  --focus-offset: 2px;
+  --ease-ui: 0.15s ease;
+  --ease-press: 0.12s ease;
+}
+
+/* --- Shared interactive states (P2) --- */
+
+.iconBtn,
+.navBtn,
+.pillBtn,
+.textBtn,
+.preset,
+.btn,
+.severityOption,
+.bodyAreaChip,
+.sessionRow,
+.detailsSummary,
+.sessionBack,
+.btn--link {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.iconBtn:focus-visible,
+.navBtn:focus-visible,
+.pillBtn:focus-visible,
+.textBtn:focus-visible,
+.preset:focus-visible,
+.btn:focus-visible,
+.severityOption:focus-visible,
+.bodyAreaChip:focus-visible,
+.sessionRow:focus-visible,
+.detailsSummary:focus-visible,
+.sessionBack:focus-visible,
+.btn--link:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+button:disabled,
+.btn:disabled,
+.pillBtn:disabled,
+.iconBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 * {
@@ -92,7 +139,10 @@ body {
   color: var(--slate-muted);
   font: inherit;
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background var(--ease-ui),
+    color var(--ease-ui),
+    transform var(--ease-press);
 }
 
 .navBtnIcon {
@@ -106,9 +156,13 @@ body {
   line-height: 1.2;
 }
 
-.navBtn:hover {
+.navBtn:hover:not(:disabled) {
   background: #f3efe6;
   color: var(--slate);
+}
+
+.navBtn:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .navBtn--active {
@@ -116,9 +170,8 @@ body {
   color: #3d6b42;
 }
 
-.navBtn:focus-visible {
-  outline: 2px solid var(--sage);
-  outline-offset: 2px;
+.navBtn--active:hover:not(:disabled) {
+  background: rgba(232, 240, 233, 0.95);
 }
 
 .banner {
@@ -167,18 +220,24 @@ body {
   background: var(--white);
   color: var(--slate-muted);
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background var(--ease-ui),
+    color var(--ease-ui),
+    border-color var(--ease-ui),
+    transform var(--ease-press),
+    box-shadow var(--ease-ui);
 }
 
-.iconBtn:hover {
+.iconBtn:hover:not(:disabled) {
   background: #f3efe6;
   color: var(--slate);
   border-color: rgba(209, 213, 219, 0.9);
+  box-shadow: 0 2px 8px rgba(31, 41, 55, 0.06);
 }
 
-.iconBtn:focus-visible {
-  outline: 2px solid var(--sage);
-  outline-offset: 2px;
+.iconBtn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: none;
 }
 
 .iconBtn span {
@@ -392,8 +451,8 @@ body {
 }
 
 .toggle input:focus-visible + .toggleTrack {
-  outline: 2px solid var(--sage);
-  outline-offset: 2px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 
 .toggleLabel {
@@ -428,12 +487,19 @@ body {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition:
+    background var(--ease-ui),
+    border-color var(--ease-ui),
+    transform var(--ease-press);
 }
 
-.preset:hover {
+.preset:hover:not(:disabled) {
   border-color: var(--sage);
   background: #efe9dd;
+}
+
+.preset:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .preset--active {
@@ -473,7 +539,12 @@ input[type="number"]:focus {
   font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition:
+    background var(--ease-ui),
+    border-color var(--ease-ui),
+    color var(--ease-ui),
+    transform var(--ease-press),
+    box-shadow var(--ease-ui);
 }
 
 .btn--secondary {
@@ -484,9 +555,13 @@ input[type="number"]:focus {
   color: var(--slate);
 }
 
-.btn--secondary:hover {
+.btn--secondary:hover:not(:disabled) {
   border-color: var(--sage);
   background: var(--sage-soft);
+}
+
+.btn--secondary:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .btn--ghost {
@@ -499,9 +574,14 @@ input[type="number"]:focus {
   width: 100%;
 }
 
-.btn--ghost:hover {
+.btn--ghost:hover:not(:disabled) {
   color: var(--slate);
   background: var(--cream);
+  border-color: rgba(209, 213, 219, 0.95);
+}
+
+.btn--ghost:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .footerNote {
@@ -886,12 +966,20 @@ input[type="number"]:focus {
   cursor: pointer;
   font: inherit;
   text-align: left;
-  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color var(--ease-ui),
+    background var(--ease-ui),
+    box-shadow var(--ease-ui),
+    transform var(--ease-press);
 }
 
-.severityOption:hover {
+.severityOption:hover:not(:disabled) {
   border-color: var(--sage);
   background: rgba(232, 240, 233, 0.35);
+}
+
+.severityOption:active:not(:disabled) {
+  transform: scale(0.99);
 }
 
 .severityOption--selected {
@@ -919,11 +1007,6 @@ input[type="number"]:focus {
   color: #3d6b42;
 }
 
-.severityOption:focus-visible {
-  outline: 2px solid var(--sage);
-  outline-offset: 2px;
-}
-
 .bodyAreaGroup {
   display: flex;
   flex-wrap: wrap;
@@ -943,34 +1026,25 @@ input[type="number"]:focus {
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition:
+    border-color var(--ease-ui),
+    background var(--ease-ui),
+    transform var(--ease-press);
 }
 
-.bodyAreaChip:hover {
+.bodyAreaChip:hover:not(:disabled) {
   border-color: var(--sage);
   background: rgba(232, 240, 233, 0.35);
+}
+
+.bodyAreaChip:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .bodyAreaChip--selected {
   border-color: #3d6b42;
   background: rgba(232, 240, 233, 0.8);
   color: #3d6b42;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .severityOption,
-  .bodyAreaChip,
-  .navBtn,
-  .view--checkin .btn--save,
-  .progressFill,
-  .sessionRow,
-  .pillBtn {
-    transition: none;
-  }
-
-  .sessionRow:hover {
-    transform: none;
-  }
 }
 
 .bodyAreaChipIcon {
@@ -981,11 +1055,6 @@ input[type="number"]:focus {
 
 .bodyAreaChipLabel {
   line-height: 1.2;
-}
-
-.bodyAreaChip:focus-visible {
-  outline: 2px solid var(--sage);
-  outline-offset: 2px;
 }
 
 .card--compact {
@@ -1026,18 +1095,20 @@ input[type="number"]:focus {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: color 0.15s ease, background 0.15s ease;
   border-radius: 10px;
+  transition:
+    color var(--ease-ui),
+    background var(--ease-ui),
+    transform var(--ease-press);
 }
 
-.textBtn:hover {
+.textBtn:hover:not(:disabled) {
   color: #2f5835;
   background: rgba(232, 240, 233, 0.6);
 }
 
-.textBtn:focus-visible {
-  outline: 2px solid var(--sage);
-  outline-offset: 2px;
+.textBtn:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .textBtnIcon {
@@ -1101,20 +1172,21 @@ input[type="number"]:focus {
   font-weight: 700;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.15s ease, transform 0.12s ease;
+  transition:
+    background var(--ease-ui),
+    transform var(--ease-press),
+    box-shadow var(--ease-ui);
+  box-shadow: 0 2px 8px rgba(61, 107, 66, 0.22);
 }
 
-.pillBtn:hover {
+.pillBtn:hover:not(:disabled) {
   background: #2f5835;
+  box-shadow: 0 4px 12px rgba(61, 107, 66, 0.28);
 }
 
-.pillBtn:active {
+.pillBtn:active:not(:disabled) {
   transform: translateY(1px);
-}
-
-.pillBtn:focus-visible {
-  outline: 2px solid var(--sage);
-  outline-offset: 2px;
+  box-shadow: 0 1px 4px rgba(61, 107, 66, 0.2);
 }
 
 .pillBtnIcon {
@@ -1136,12 +1208,16 @@ input[type="number"]:focus {
   padding: 14px 16px;
   cursor: pointer;
   user-select: none;
+  border-radius: 16px;
+  transition: background var(--ease-ui);
 }
 
-.detailsSummary:focus-visible {
-  outline: 2px solid var(--sage);
-  outline-offset: 2px;
-  border-radius: 16px;
+.detailsSummary:hover {
+  background: rgba(243, 239, 230, 0.65);
+}
+
+.detailsSummary:active {
+  background: rgba(232, 240, 233, 0.45);
 }
 
 .detailsSummary::-webkit-details-marker {
@@ -1185,10 +1261,6 @@ input[type="number"]:focus {
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 3px;
-}
-
-.btn--link:hover {
-  color: var(--slate);
 }
 
 .cardHint {
@@ -1241,14 +1313,14 @@ input[type="number"]:focus {
   transition: background 0.15s ease, box-shadow 0.15s ease;
 }
 
-.view--checkin .btn--save:hover {
+.view--checkin .btn--save:hover:not(:disabled) {
   background: #2f5835;
   box-shadow: 0 4px 14px rgba(61, 107, 66, 0.34);
 }
 
-.view--checkin .btn--save:focus-visible {
-  outline: 2px solid var(--sage);
-  outline-offset: 2px;
+.view--checkin .btn--save:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(61, 107, 66, 0.24);
 }
 
 .btn--save {
@@ -1397,18 +1469,23 @@ input[type="number"]:focus {
   cursor: pointer;
   text-align: left;
   font: inherit;
-  transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
+  transition:
+    border-color var(--ease-ui),
+    background var(--ease-ui),
+    transform var(--ease-press),
+    box-shadow var(--ease-ui);
 }
 
-.sessionRow:hover {
+.sessionRow:hover:not(:disabled) {
   border-color: var(--sage);
   background: var(--sage-soft);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(31, 41, 55, 0.06);
 }
 
-.sessionRow:focus-visible {
-  outline: 2px solid var(--sage);
-  outline-offset: 2px;
+.sessionRow:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
 }
 
 .sessionRowLeft {
@@ -1513,10 +1590,17 @@ input[type="number"]:focus {
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition:
+    color var(--ease-ui),
+    transform var(--ease-press);
 }
 
-.sessionBack:hover {
+.sessionBack:hover:not(:disabled) {
   color: #2f5835;
+}
+
+.sessionBack:active:not(:disabled) {
+  transform: translateX(-1px);
 }
 
 .sessionBackIcon {
@@ -1736,6 +1820,10 @@ input[type="number"]:focus {
   border-color: rgba(209, 213, 219, 0.95);
 }
 
+.btn--sessionPrev:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
 .btn--sessionNext {
   display: inline-flex;
   align-items: center;
@@ -1745,11 +1833,18 @@ input[type="number"]:focus {
   min-width: 0;
   background: #3d6b42;
   border-color: #3d6b42;
+  box-shadow: 0 2px 8px rgba(61, 107, 66, 0.22);
 }
 
 .btn--sessionNext:hover:not(:disabled) {
   background: #2f5835;
   border-color: #2f5835;
+  box-shadow: 0 4px 12px rgba(61, 107, 66, 0.28);
+}
+
+.btn--sessionNext:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 1px 4px rgba(61, 107, 66, 0.2);
 }
 
 .actions--session .btnIcon {
@@ -1788,12 +1883,6 @@ input[type="number"]:focus {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .stepCard--enter,
-  .btn--pulse {
-    animation: none !important;
-  }
-}
 .btn--primary {
   flex: 1;
   background: var(--sage-strong);
@@ -1810,18 +1899,65 @@ input[type="number"]:focus {
   border-color: transparent;
 }
 
-.view--checkin .btn--primary.btn--save:hover {
+.view--checkin .btn--primary.btn--save:hover:not(:disabled) {
   background: #2f5835;
   border-color: transparent;
 }
 
-.btn--primary:hover {
+.btn--primary:hover:not(:disabled) {
   background: var(--sage-strong-hover);
+  box-shadow: 0 4px 12px rgba(94, 143, 98, 0.28);
 }
 
-.btn--primary:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
+.btn--primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn--link:hover:not(:disabled) {
+  color: var(--slate);
+}
+
+.btn--link:active:not(:disabled) {
+  opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconBtn,
+  .navBtn,
+  .pillBtn,
+  .textBtn,
+  .preset,
+  .btn,
+  .severityOption,
+  .bodyAreaChip,
+  .sessionRow,
+  .detailsSummary,
+  .sessionBack,
+  .view--checkin .btn--save,
+  .progressFill {
+    transition: none !important;
+  }
+
+  .iconBtn:active:not(:disabled),
+  .navBtn:active:not(:disabled),
+  .pillBtn:active:not(:disabled),
+  .textBtn:active:not(:disabled),
+  .preset:active:not(:disabled),
+  .btn:active:not(:disabled),
+  .severityOption:active:not(:disabled),
+  .bodyAreaChip:active:not(:disabled),
+  .sessionRow:hover:not(:disabled),
+  .sessionRow:active:not(:disabled),
+  .view--checkin .btn--save:active:not(:disabled),
+  .btn--sessionNext:active:not(:disabled),
+  .btn--sessionPrev:active:not(:disabled) {
+    transform: none !important;
+  }
+
+  .stepCard--enter,
+  .btn--pulse {
+    animation: none !important;
+  }
 }
 
 .actions--session .btn--ghost {
