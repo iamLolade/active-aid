@@ -444,6 +444,22 @@ function appendStatCard(stat) {
   els.statGrid.append(card)
 }
 
+function severityIndex(severityId) {
+  if (severityId === "great") return 0
+  if (severityId === "slight") return 1
+  if (severityId === "moderate") return 2
+  if (severityId === "severe") return 3
+  return null
+}
+
+function severityTone(severityId) {
+  if (severityId === "great") return "good"
+  if (severityId === "slight") return "ok"
+  if (severityId === "moderate") return "warn"
+  if (severityId === "severe") return "bad"
+  return "none"
+}
+
 async function renderDashboard() {
   const summary = await getWellnessSummary()
 
@@ -476,8 +492,33 @@ async function renderDashboard() {
   els.trendList.replaceChildren()
   for (const day of summary.discomfortTrend) {
     const li = document.createElement("li")
-    const label = day.severity ? day.label : "No check-in"
-    li.innerHTML = `<span class="trendDate">${formatShortDate(day.date)}</span><span class="trendLabel">${label}</span>`
+    li.className = "trendRow"
+
+    const left = document.createElement("div")
+    left.className = "trendLeft"
+
+    const date = document.createElement("span")
+    date.className = "trendDate"
+    date.textContent = formatShortDate(day.date)
+
+    const viz = document.createElement("span")
+    viz.className = `trendViz trendViz--${severityTone(day.severity)}`
+    viz.setAttribute("aria-hidden", "true")
+
+    const idx = severityIndex(day.severity)
+    for (let i = 0; i < 4; i++) {
+      const seg = document.createElement("span")
+      seg.className = `trendSeg${idx === i ? " trendSeg--active" : ""}`
+      viz.append(seg)
+    }
+
+    left.append(date, viz)
+
+    const pill = document.createElement("span")
+    pill.className = `trendPill trendPill--${severityTone(day.severity)}`
+    pill.textContent = day.severity ? day.label : "Not logged"
+
+    li.append(left, pill)
     els.trendList.append(li)
   }
 
