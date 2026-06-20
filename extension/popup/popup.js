@@ -10,6 +10,7 @@ import {
   isOnboardingComplete,
   completeOnboarding,
   exportAllData,
+  clearAllData,
 } from "../shared/storage.js"
 import { formatCountdown, minutesToMs, msToRoundedMinutes, nowMs } from "../shared/time.js"
 import { runtimeSendMessage } from "../shared/chrome-api.js"
@@ -78,6 +79,7 @@ const els = {
   snooze30: document.getElementById("snooze30"),
   resetTimer: document.getElementById("resetTimer"),
   exportData: document.getElementById("exportData"),
+  clearData: document.getElementById("clearData"),
   presets: document.querySelectorAll(".preset"),
   sessionList: document.getElementById("sessionList"),
   severityGroup: document.getElementById("severityGroup"),
@@ -115,6 +117,7 @@ const player = {
 }
 const checkInForm = { severity: null, bodyAreas: new Set() }
 let activeTab = "home"
+let pollIntervalId = null
 
 await init()
 
@@ -136,6 +139,7 @@ async function init() {
   bindCheckIn()
   bindOnboarding()
   bindExport()
+  bindClear()
 
   if (!(await isOnboardingComplete())) {
     renderOnboardingChrome()
@@ -677,6 +681,26 @@ function bindReminders() {
   })
 }
 
+function bindClear() {
+  els.clearData?.addEventListener("click", () => void handleClear())
+}
+
+async function handleClear() {
+  if (!window.confirm("Clear all local data and reset the extension? This cannot be undone.")) {
+    return
+  }
+
+  stopSessionTicker()
+  player.session = null
+  await clearAllData()
+
+  // Reset settings to defaults for the current session
+  await setSettings({})
+
+  stopPolling()
+  showOnboarding()
+}
+
 function bindExport() {
   els.exportData?.addEventListener("click", () => void handleExport())
 }
@@ -924,5 +948,13 @@ function updatePresetHighlight() {
 }
 
 function startPolling() {
-  window.setInterval(() => void hydrate(), 2_000)
+  stopPolling()
+  pollIntervalId = window.setInterval(() => void hydrate(), 2_000)
+}
+
+function stopPolling() {
+  if (pollIntervalId != null) {
+    window.clearInterval(pollIntervalId)
+    pollIntervalId = null
+  }
 }

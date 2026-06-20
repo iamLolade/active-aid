@@ -58,6 +58,26 @@ export function alarmsGet(name) {
   })
 }
 
+export function storageLocalRemove(keys) {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.remove(keys, () => {
+      const err = chrome.runtime.lastError
+      if (err) return reject(err)
+      resolve()
+    })
+  })
+}
+
+export function storageSyncRemove(keys) {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.remove(keys, () => {
+      const err = chrome.runtime.lastError
+      if (err) return reject(err)
+      resolve()
+    })
+  })
+}
+
 export function runtimeSendMessage(message) {
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage(message, (response) => {

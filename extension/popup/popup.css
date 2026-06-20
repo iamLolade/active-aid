@@ -1438,6 +1438,17 @@ input[type="number"]:focus {
   transform: translateY(1px);
 }
 
+.btn--actionRowDanger {
+  border-color: rgba(201, 123, 99, 0.5);
+  color: #8b5a48;
+}
+
+.btn--actionRowDanger:hover:not(:disabled) {
+  border-color: rgba(201, 123, 99, 0.85);
+  background: rgba(201, 123, 99, 0.12);
+  color: #7c3f32;
+}
+
 .actions--snooze {
   margin-top: 12px;
 }

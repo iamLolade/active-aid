@@ -1,8 +1,10 @@
 import {
   storageLocalGet,
   storageLocalSet,
+  storageLocalRemove,
   storageSyncGet,
   storageSyncSet,
+  storageSyncRemove,
 } from "./chrome-api.js"
 import { todayDateKey } from "./checkins.js"
 import { buildWellnessSummary } from "./wellness.js"
@@ -239,6 +241,13 @@ export async function exportAllData() {
       onboardingComplete: onboarding,
     },
   }
+}
+
+export async function clearAllData() {
+  await Promise.all([
+    storageLocalRemove([RUNTIME_KEY, SESSION_LOGS_KEY, CHECKINS_KEY, DAILY_KEY, ONBOARDING_KEY]),
+    storageSyncRemove([SETTINGS_KEY]),
+  ])
 }
 
 export async function isOnboardingComplete() {
