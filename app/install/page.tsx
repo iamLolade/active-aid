@@ -16,7 +16,7 @@ export default function InstallPage() {
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Install ActiveAid</h1>
             <p className="text-sm text-[#4b5563]">
-              Choose the option that matches your rollout.
+              Wellness while you work. Pick the install path that fits your setup.
             </p>
           </div>
         </header>

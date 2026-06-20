@@ -303,6 +303,52 @@ body {
   display: none;
 }
 
+/* --- Notification permission banner --- */
+
+.notifBanner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(201, 123, 99, 0.1);
+  border: 1px solid rgba(201, 123, 99, 0.35);
+}
+
+.notifBannerText {
+  margin: 0;
+  font-size: 12px;
+  line-height: var(--leading-hint);
+  color: #7c3f32;
+}
+
+.notifBannerBtn {
+  align-self: flex-start;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 123, 99, 0.5);
+  background: rgba(255, 255, 255, 0.65);
+  color: #7c3f32;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background var(--ease-ui),
+    border-color var(--ease-ui),
+    transform var(--ease-press);
+}
+
+.notifBannerBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(201, 123, 99, 0.7);
+}
+
+.notifBannerBtn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
 .subtitle {
   margin: 4px 0 0;
   font-size: 12px;
@@ -2146,6 +2192,7 @@ input[type="number"]:focus {
   .sessionBack,
   .view--checkin .btn--save,
   .btn--actionRow,
+  .notifBannerBtn,
   .progressFill {
     transition: none !important;
   }

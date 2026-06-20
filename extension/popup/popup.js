@@ -6,6 +6,7 @@ import {
   addSessionLog,
   getTodayCheckIn,
   saveCheckIn,
+  getSessionStats,
   getWellnessSummary,
   isOnboardingComplete,
   completeOnboarding,
@@ -80,6 +81,9 @@ const els = {
   resetTimer: document.getElementById("resetTimer"),
   exportData: document.getElementById("exportData"),
   clearData: document.getElementById("clearData"),
+  notifBanner: document.getElementById("notifBanner"),
+  notifBannerText: document.getElementById("notifBannerText"),
+  notifBannerBtn: document.getElementById("notifBannerBtn"),
   presets: document.querySelectorAll(".preset"),
   sessionList: document.getElementById("sessionList"),
   severityGroup: document.getElementById("severityGroup"),
@@ -149,6 +153,58 @@ async function init() {
 
   await hydrate()
   startPolling()
+}
+
+async function updateNotifPermissionUI(settings) {
+  const banner = els.notifBanner
+  const text = els.notifBannerText
+  const btn = els.notifBannerBtn
+  if (!banner || !text || !btn) return
+
+  // Only show the banner when reminders are enabled but the browser blocks notifications
+  if (!settings.notificationsEnabled) {
+    banner.hidden = true
+    return
+  }
+
+  let permission = ""
+  try {
+    permission = Notification.permission
+  } catch {
+    banner.hidden = true
+    return
+  }
+
+  if (permission === "granted" || permission === "default") {
+    banner.hidden = true
+    return
+  }
+
+  // permission === "denied"
+  banner.hidden = false
+  text.textContent =
+    "Notifications are blocked for this extension. ActiveAid needs them for reminders."
+  btn.textContent = "Allow notifications"
+  btn.onclick = () => {
+    void (async () => {
+      try {
+        const result = await Notification.requestPermission()
+        if (result === "granted") {
+          banner.hidden = true
+          return
+        }
+      } catch {
+        // fall through to guidance
+      }
+      // Still denied after prompt — show browser settings guidance
+      text.textContent =
+        "To enable, go to Chrome settings > Privacy and security > Site Settings > Notifications, and allow this extension."
+      btn.textContent = "Got it"
+      btn.onclick = () => {
+        banner.hidden = true
+      }
+    })()
+  }
 }
 
 function renderOnboardingChrome() {
@@ -780,6 +836,18 @@ function renderSessionList() {
   }
 }
 
+async function updateSessionNudge() {
+  if (!els.sessionStats) return
+  const stats = await getSessionStats()
+  if (stats.totalCount === 0) {
+    els.sessionStats.hidden = false
+    els.sessionStats.textContent =
+      "Not yet. Start a session above for a gentle movement break."
+  } else {
+    els.sessionStats.hidden = true
+  }
+}
+
 function openSession(sessionId) {
   const session = getSessionById(sessionId)
   if (!session) return
@@ -927,6 +995,9 @@ async function hydrate() {
   const isSnoozed = runtime.snoozedUntilMs != null && nowMs() < runtime.snoozedUntilMs
 
   updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed })
+
+  void updateNotifPermissionUI(settings)
+  void updateSessionNudge()
 
   if (runtime.lastNotificationError) {
     els.errorBanner.hidden = false
