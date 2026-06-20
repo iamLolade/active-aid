@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ActiveAid",
-  description: "A lightweight workplace wellness companion for desk workers.",
+  title: "ActiveAid | Wellness while you work",
+  description:
+    "Gentle movement reminders, desk-friendly relief sessions, and daily check-ins for modern desk workers. Local-first and private by default.",
 };
 
 export default function RootLayout({
