@@ -54,12 +54,26 @@ Run this end-to-end on a fresh install (or after **Clear my data** in Settings).
 ## 5. Privacy
 - [ ] No typed content, screenshots, or page content logged
 - [ ] Only activity timing + user-entered check-in data stored locally
+- [ ] `/privacy` page live on deployed site (Chrome Web Store policy URL)
 
-## 6. Package extension (optional)
+## 6. Package extension (Chrome Web Store)
 ```bash
 npm run package:extension
 ```
-Output: `dist/activeaid-extension.zip`
+Output: `dist/activeaid-extension.zip` (manifest validated before zip)
+
+### 6b. Chrome Web Store listing (Phase 6.2)
+
+- [ ] Deploy web app with `/privacy` reachable
+- [ ] Run `npm run package:extension`
+- [ ] Upload zip in [Developer Dashboard](https://chrome.google.com/webstore/devconsole)
+- [ ] Paste listing fields from `store/LISTING.md`
+- [ ] Upload screenshots (see `store/LISTING.md`)
+- [ ] Complete privacy practices certification (answers in `store/LISTING.md`)
+- [ ] Submit for review (unlisted recommended for beta)
+- [ ] Set `NEXT_PUBLIC_CHROME_STORE_URL` after approval and redeploy
+
+See `CHROME_WEB_STORE.md` for the full walkthrough.
 
 Notes:
 - This zip is **primarily for Chrome Web Store upload**.

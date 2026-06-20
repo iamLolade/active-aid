@@ -1,18 +1,23 @@
 import Image from "next/image"
+import Link from "next/link"
+
+const storeUrl = process.env.NEXT_PUBLIC_CHROME_STORE_URL?.trim()
 
 export default function InstallPage() {
   return (
     <main className="min-h-screen bg-[#f7f4ed] text-[#1f2937]">
       <div className="mx-auto flex max-w-3xl flex-col gap-10 px-6 py-16">
         <header className="flex items-center gap-4">
-          <Image
-            src="/active-aid_logo.png"
-            alt="ActiveAid"
-            width={44}
-            height={44}
-            className="rounded-2xl"
-            priority
-          />
+          <Link href="/">
+            <Image
+              src="/active-aid_logo.png"
+              alt="ActiveAid"
+              width={44}
+              height={44}
+              className="rounded-2xl"
+              priority
+            />
+          </Link>
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Install ActiveAid</h1>
             <p className="text-sm text-[#4b5563]">
@@ -29,20 +34,34 @@ export default function InstallPage() {
             This is how most users install browser extensions. It supports automatic updates
             and does not require Developer mode.
           </p>
-          <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">
-            Important: deploying this website does not automatically make the extension
-            installable. To use Option A, you (the developer) publish ActiveAid in the Chrome
-            Web Store, then users install from that listing link.
-          </p>
+          {storeUrl ? (
+            <a
+              href={storeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 inline-flex h-11 items-center justify-center rounded-full bg-[#6a9d6e] px-6 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#5e8f62]"
+            >
+              Add to Chrome
+            </a>
+          ) : (
+            <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">
+              The store listing is not linked yet. After you publish, set{" "}
+              <code className="rounded bg-[#f3efe6] px-1">NEXT_PUBLIC_CHROME_STORE_URL</code>{" "}
+              in production and redeploy.
+            </p>
+          )}
           <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-[#4b5563]">
             <li>Upload the packaged zip to the Chrome Web Store Developer Dashboard</li>
-            <li>Complete the listing details and privacy disclosures</li>
-            <li>Submit for review, then publish</li>
-            <li>Share the store listing link with users</li>
+            <li>
+              Use listing copy from{" "}
+              <code className="rounded bg-[#f3efe6] px-1">store/LISTING.md</code>
+            </li>
+            <li>
+              Set privacy policy URL to{" "}
+              <code className="rounded bg-[#f3efe6] px-1">/privacy</code> on your deployed site
+            </li>
+            <li>Submit for review, then publish (public or unlisted)</li>
           </ul>
-          <p className="mt-4 text-xs text-[#4b5563]">
-            You can publish publicly, or use an unlisted listing for a smaller beta group.
-          </p>
           <p className="mt-4 text-xs text-[#4b5563]">
             Publishing guide:{" "}
             <code className="rounded bg-[#f3efe6] px-1">CHROME_WEB_STORE.md</code>
@@ -78,7 +97,8 @@ export default function InstallPage() {
             Packaging
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">
-            The packaged zip is primarily for Chrome Web Store uploads.
+            The packaged zip is for Chrome Web Store uploads. The script validates the manifest
+            before zipping.
           </p>
           <pre className="mt-4 overflow-x-auto rounded-xl bg-[#1f2937] p-4 text-xs text-white">
             <code>npm run package:extension</code>
@@ -88,14 +108,15 @@ export default function InstallPage() {
           </p>
         </section>
 
-        <footer className="text-xs text-[#4b5563]">
-          <p>
-            Tip: if you want the extension to be installable by normal users without
-            Developer mode, use the Chrome Web Store (public or unlisted).
-          </p>
+        <footer className="flex flex-wrap gap-4 text-xs text-[#4b5563]">
+          <Link href="/privacy" className="font-semibold text-[#3d6b42] hover:underline">
+            Privacy policy
+          </Link>
+          <Link href="/" className="font-semibold text-[#3d6b42] hover:underline">
+            Back to home
+          </Link>
         </footer>
       </div>
     </main>
   )
 }
-

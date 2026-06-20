@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "package:extension": "mkdir -p dist && cd extension && zip -r ../dist/activeaid-extension.zip . -x '*.DS_Store'"
+    "package:extension": "node scripts/package-extension.mjs"
   },
   "dependencies": {
     "framer-motion": "^12.40.0",
