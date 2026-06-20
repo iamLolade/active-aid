@@ -7,6 +7,9 @@ import {
   getTodayCheckIn,
   saveCheckIn,
   getWellnessSummary,
+  isOnboardingComplete,
+  completeOnboarding,
+  exportAllData,
 } from "../shared/storage.js"
 import { formatCountdown, minutesToMs, msToRoundedMinutes, nowMs } from "../shared/time.js"
 import { runtimeSendMessage } from "../shared/chrome-api.js"
@@ -16,6 +19,7 @@ import {
   BODY_AREAS,
   getSeverityLabel,
   getSeverityShortLabel,
+  todayDateKey,
 } from "../shared/checkins.js"
 import {
   bodyAreaIcon,
@@ -49,6 +53,9 @@ const els = {
   nav: document.getElementById("nav"),
   navBtns: document.querySelectorAll(".navBtn"),
   viewHome: document.getElementById("viewHome"),
+  viewOnboarding: document.getElementById("viewOnboarding"),
+  onboardingReminders: document.getElementById("onboardingReminders"),
+  onboardingComplete: document.getElementById("onboardingComplete"),
   viewCheckIn: document.getElementById("viewCheckIn"),
   viewDashboard: document.getElementById("viewDashboard"),
   viewSession: document.getElementById("viewSession"),
@@ -70,6 +77,7 @@ const els = {
   snooze10: document.getElementById("snooze10"),
   snooze30: document.getElementById("snooze30"),
   resetTimer: document.getElementById("resetTimer"),
+  exportData: document.getElementById("exportData"),
   presets: document.querySelectorAll(".preset"),
   sessionList: document.getElementById("sessionList"),
   severityGroup: document.getElementById("severityGroup"),
@@ -126,6 +134,49 @@ async function init() {
   bindReminders()
   bindSessionPlayer()
   bindCheckIn()
+  bindOnboarding()
+  bindExport()
+
+  if (!(await isOnboardingComplete())) {
+    renderOnboardingChrome()
+    showOnboarding()
+    return
+  }
+
+  await hydrate()
+  startPolling()
+}
+
+function renderOnboardingChrome() {
+  const reminders = document.getElementById("onboardIconReminders")
+  const relief = document.getElementById("onboardIconRelief")
+  const checkin = document.getElementById("onboardIconCheckin")
+  if (reminders) reminders.innerHTML = iconBell(18)
+  if (relief) relief.innerHTML = iconPlay(18)
+  if (checkin) checkin.innerHTML = iconHeart(18)
+}
+
+function bindOnboarding() {
+  els.onboardingComplete?.addEventListener("click", () => void finishOnboarding())
+}
+
+function showOnboarding() {
+  els.viewOnboarding.hidden = false
+  els.viewHome.hidden = true
+  els.viewCheckIn.hidden = true
+  els.viewDashboard.hidden = true
+  els.viewSession.hidden = true
+  els.nav.hidden = true
+  els.errorBanner.hidden = true
+}
+
+async function finishOnboarding() {
+  const enableReminders = Boolean(els.onboardingReminders?.checked)
+  await setSettings({ notificationsEnabled: enableReminders })
+  await completeOnboarding()
+  els.viewOnboarding.hidden = true
+  activeTab = "home"
+  setActiveTab("home")
   await hydrate()
   startPolling()
 }
@@ -306,6 +357,7 @@ function setActiveTab(tab) {
 }
 
 function showMainView(tab) {
+  if (!els.viewOnboarding.hidden) return
   els.viewHome.hidden = tab !== "home"
   els.viewCheckIn.hidden = tab !== "checkin"
   els.viewDashboard.hidden = tab !== "insights"
@@ -623,6 +675,27 @@ function bindReminders() {
     await runtimeSendMessage({ type: "activeaid:reset" }).catch(() => undefined)
     await hydrate()
   })
+}
+
+function bindExport() {
+  els.exportData?.addEventListener("click", () => void handleExport())
+}
+
+async function handleExport() {
+  try {
+    const data = await exportAllData()
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `activeaid-export-${todayDateKey()}.json`
+    document.body.append(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  } catch {
+    // silently fail — export is best-effort
+  }
 }
 
 function bindSessionPlayer() {

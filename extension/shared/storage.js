@@ -12,6 +12,7 @@ const RUNTIME_KEY = "activeaid:runtime"
 const SESSION_LOGS_KEY = "activeaid:sessionLogs"
 const CHECKINS_KEY = "activeaid:checkins"
 const DAILY_KEY = "activeaid:daily"
+const ONBOARDING_KEY = "activeaid:onboarding"
 
 const MAX_SESSION_LOGS = 200
 const MAX_CHECKINS = 400
@@ -211,6 +212,44 @@ export async function getWellnessSummary() {
     getDailyStats(),
   ])
   return buildWellnessSummary(checkIns, sessionLogs, daily)
+}
+
+export async function exportAllData() {
+  const [settings, runtime, sessionLogs, checkIns, daily, onboarding] = await Promise.all([
+    getSettings(),
+    getRuntimeState(),
+    getSessionLogs(),
+    getCheckIns(),
+    getDailyStats(),
+    isOnboardingComplete(),
+  ])
+
+  return {
+    exportedAt: new Date().toISOString(),
+    version: 1,
+    data: {
+      settings,
+      runtime: {
+        snoozedUntilMs: runtime.snoozedUntilMs,
+        lastReminderMs: runtime.lastReminderMs,
+      },
+      sessionLogs,
+      checkIns,
+      daily,
+      onboardingComplete: onboarding,
+    },
+  }
+}
+
+export async function isOnboardingComplete() {
+  const stored = await storageLocalGet(ONBOARDING_KEY)
+  return Boolean(stored?.[ONBOARDING_KEY]?.complete)
+}
+
+export async function completeOnboarding() {
+  await storageLocalSet({
+    [ONBOARDING_KEY]: { complete: true, completedAt: Date.now() },
+  })
 }
 
 function normalizeCheckIn(raw) {

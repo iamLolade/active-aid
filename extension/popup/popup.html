@@ -19,6 +19,56 @@
       </div>
 
       <main class="main">
+        <div id="viewOnboarding" class="view view--onboarding" hidden>
+          <header class="onboardingHeader">
+            <img
+              class="onboardingLogo"
+              src="../assets/icon-48.png"
+              width="48"
+              height="48"
+              alt=""
+            />
+            <h2 class="onboardingTitle">Welcome to ActiveAid</h2>
+            <p class="onboardingSubtitle">Wellness while you work.</p>
+          </header>
+
+          <section class="card onboardingCard">
+            <h3 class="onboardingCardTitle">What you get</h3>
+            <ul class="onboardingList">
+              <li class="onboardingListItem">
+                <span class="onboardingListIcon" id="onboardIconReminders" aria-hidden="true"></span>
+                <span>Gentle reminders after sustained activity</span>
+              </li>
+              <li class="onboardingListItem">
+                <span class="onboardingListIcon" id="onboardIconRelief" aria-hidden="true"></span>
+                <span>Quick relief sessions at your desk</span>
+              </li>
+              <li class="onboardingListItem">
+                <span class="onboardingListIcon" id="onboardIconCheckin" aria-hidden="true"></span>
+                <span>Daily check-ins and simple insights</span>
+              </li>
+            </ul>
+          </section>
+
+          <section class="card onboardingCard onboardingPrivacy">
+            <h3 class="onboardingCardTitle">Your privacy</h3>
+            <p class="onboardingPrivacyText">
+              We only track activity timing on this device. We never log what you type, page
+              content, screenshots, or camera data.
+            </p>
+          </section>
+
+          <label class="toggle onboardingToggle">
+            <input type="checkbox" id="onboardingReminders" checked />
+            <span class="toggleTrack" aria-hidden="true"></span>
+            <span class="toggleLabel">Enable gentle reminders</span>
+          </label>
+
+          <button class="btn btn--primary btn--save onboardingCta" id="onboardingComplete" type="button">
+            Get started
+          </button>
+        </div>
+
         <div id="viewHome" class="view view--home">
           <header class="header">
             <div class="headerLeft">
@@ -35,7 +85,7 @@
               </div>
             </div>
             <div class="headerActions">
-              <button class="iconBtn" id="openSettings" type="button" aria-label="Open reminders settings">
+              <button class="iconBtn" id="openSettings" type="button" aria-label="Open settings">
                 <span id="openSettingsIcon" aria-hidden="true"></span>
               </button>
               <button class="iconBtn" id="openMore" type="button" aria-label="More options" aria-haspopup="true">
@@ -91,10 +141,12 @@
 
           <details class="card detailsCard" id="remindersDetails">
             <summary class="detailsSummary">
-              <span class="sectionTitle sectionTitle--inline">Reminders</span>
-              <span class="detailsHint">Interval and snooze</span>
+              <span class="sectionTitle sectionTitle--inline">Settings</span>
+              <span class="detailsHint">Reminders & privacy</span>
             </summary>
             <div class="detailsBody">
+              <h4 class="settingsSectionTitle">Reminders</h4>
+              <p class="settingsSectionHint">Gentle nudges after continuous activity on this device.</p>
               <label class="toggle">
                 <input type="checkbox" id="notificationsEnabled" />
                 <span class="toggleTrack" aria-hidden="true"></span>
@@ -122,10 +174,36 @@
                 <button class="btn btn--secondary" id="snooze30" type="button">Snooze 30m</button>
               </div>
               <button class="btn btn--link" id="resetTimer" type="button">Reset activity timer</button>
+
+              <div class="settingsDivider" aria-hidden="true"></div>
+
+              <h4 class="settingsSectionTitle">Privacy</h4>
+              <p class="settingsSectionHint">Everything stays on this device. No account required.</p>
+              <ul class="settingsPrivacyList">
+                <li>
+                  <span class="settingsPrivacyLabel">We track</span>
+                  Activity timing (keyboard, mouse, and tab focus) to schedule breaks.
+                </li>
+                <li>
+                  <span class="settingsPrivacyLabel">We store</span>
+                  Check-ins and relief sessions you save in the popup.
+                </li>
+                <li>
+                  <span class="settingsPrivacyLabel">We never log</span>
+                  What you type, page content, screenshots, or camera data.
+                </li>
+              </ul>
+              <div class="settingsDivider" aria-hidden="true"></div>
+
+              <h4 class="settingsSectionTitle">Your data</h4>
+              <p class="settingsSectionHint">Export or manage your local data anytime.</p>
+              <button class="btn--actionRow" id="exportData" type="button">
+                Export data
+              </button>
+
+              <p class="settingsDisclaimer">ActiveAid supports wellness habits. It is not a medical or diagnostic tool.</p>
             </div>
           </details>
-
-          <p class="footerNote">We only track activity timing, never what you type.</p>
         </div>
 
         <div id="viewCheckIn" class="view view--checkin" hidden>

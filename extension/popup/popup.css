@@ -640,6 +640,99 @@ input[type="number"]:focus {
   gap: var(--space-section);
 }
 
+/* --- First-run onboarding --- */
+
+.view--onboarding {
+  gap: 12px;
+  padding-bottom: 4px;
+}
+
+.onboardingHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 4px 8px 0;
+}
+
+.onboardingLogo {
+  border-radius: 14px;
+}
+
+.onboardingTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--slate);
+}
+
+.onboardingSubtitle {
+  margin: 0;
+  font-size: 13px;
+  color: var(--slate-muted);
+  line-height: var(--leading-hint);
+}
+
+.onboardingCard {
+  border-radius: 20px;
+  padding: 16px;
+}
+
+.onboardingCardTitle {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--slate);
+}
+
+.onboardingList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.onboardingListItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: var(--leading-hint);
+  color: var(--slate);
+}
+
+.onboardingListIcon {
+  height: 32px;
+  width: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(232, 240, 233, 0.85);
+  color: #3d6b42;
+  flex-shrink: 0;
+}
+
+.onboardingPrivacyText {
+  margin: 0;
+  font-size: 13px;
+  line-height: var(--leading-hint);
+  color: var(--slate-muted);
+}
+
+.onboardingToggle {
+  padding: 4px 2px 0;
+}
+
+.onboardingCta {
+  margin-top: 4px;
+}
+
 /* --- Insights tab --- */
 
 .insightsHeader {
@@ -1254,12 +1347,95 @@ input[type="number"]:focus {
 }
 
 .detailsBody {
-  padding: 0 16px 16px;
+  padding: 14px 16px 16px;
   border-top: 1px solid var(--gray);
 }
 
 .detailsBody .toggle {
-  padding-top: 12px;
+  padding-top: 0;
+}
+
+.settingsSectionTitle {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--slate);
+}
+
+.settingsSectionHint {
+  margin: 4px 0 12px;
+  font-size: 12px;
+  line-height: var(--leading-hint);
+  color: var(--slate-muted);
+}
+
+.settingsDivider {
+  margin: 16px 0;
+  height: 1px;
+  background: var(--gray);
+}
+
+.settingsPrivacyList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settingsPrivacyList li {
+  font-size: 12px;
+  line-height: var(--leading-hint);
+  color: var(--slate-muted);
+}
+
+.settingsPrivacyLabel {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #3d6b42;
+}
+
+.settingsDisclaimer {
+  margin: 12px 0 0;
+  font-size: 11px;
+  line-height: var(--leading-hint);
+  color: var(--slate-subtle);
+}
+
+.btn--actionRow {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--gray);
+  background: var(--cream);
+  color: var(--slate);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background var(--ease-ui),
+    border-color var(--ease-ui),
+    color var(--ease-ui),
+    transform var(--ease-press);
+}
+
+.btn--actionRow:hover:not(:disabled) {
+  border-color: var(--sage);
+  background: var(--sage-soft);
+  color: #3d6b42;
+}
+
+.btn--actionRow:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .actions--snooze {
@@ -1958,6 +2134,7 @@ input[type="number"]:focus {
   .detailsSummary,
   .sessionBack,
   .view--checkin .btn--save,
+  .btn--actionRow,
   .progressFill {
     transition: none !important;
   }
