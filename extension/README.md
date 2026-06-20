@@ -21,5 +21,10 @@
 - Open **Insights** for breaks taken, estimated active time, check-in streak, 7-day trends, and top noted areas.
 - All data stays in local browser storage (no account required).
 
+## Trust & control
+- First run shows onboarding once (privacy + optional reminders).
+- **Settings** (gear or **More options**): reminders, privacy copy, **Export data**, and **Clear my data**.
+- See `RELEASE.md` section **4b** for the full individual user journey QA checklist.
+
 ## Privacy
 This MVP tracks **timing of activity signals only** (e.g., that *some* activity occurred), and does not log typed content, page content, screenshots, or camera data.

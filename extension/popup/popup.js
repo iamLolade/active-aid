@@ -65,6 +65,7 @@ const els = {
   errorText: document.getElementById("errorText"),
   openSettings: document.getElementById("openSettings"),
   openSettingsIcon: document.getElementById("openSettingsIcon"),
+  openMore: document.getElementById("openMore"),
   remindersDetails: document.getElementById("remindersDetails"),
   activeValue: document.getElementById("activeValue"),
   heroMeta: document.getElementById("heroMeta"),
@@ -234,6 +235,13 @@ function showOnboarding() {
 async function finishOnboarding() {
   const enableReminders = Boolean(els.onboardingReminders?.checked)
   await setSettings({ notificationsEnabled: enableReminders })
+  if (enableReminders && typeof Notification !== "undefined") {
+    try {
+      await Notification.requestPermission()
+    } catch {
+      // best effort; blocked state is handled on Today tab
+    }
+  }
   await completeOnboarding()
   els.viewOnboarding.hidden = true
   activeTab = "home"
@@ -339,8 +347,7 @@ function updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed }) {
   let progressRatio = 0
 
   if (els.activeValue) {
-    els.activeValue.textContent =
-      activeMinutes == null ? "—" : formatActiveMinutes(activeMinutes)
+    els.activeValue.textContent = formatActiveMinutes(activeMinutes ?? 0)
   }
 
   if (!settings.notificationsEnabled) {
@@ -382,13 +389,16 @@ function updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed }) {
   }
 }
 
+function openSettingsPanel() {
+  if (!els.remindersDetails) return
+  els.remindersDetails.open = true
+  els.remindersDetails.scrollIntoView({ block: "start", behavior: "smooth" })
+  els.remindersDetails.querySelector("summary")?.focus()
+}
+
 function bindSettings() {
-  els.openSettings?.addEventListener("click", () => {
-    if (!els.remindersDetails) return
-    els.remindersDetails.open = true
-    els.remindersDetails.scrollIntoView({ block: "start", behavior: "smooth" })
-    els.remindersDetails.querySelector("summary")?.focus()
-  })
+  els.openSettings?.addEventListener("click", openSettingsPanel)
+  els.openMore?.addEventListener("click", openSettingsPanel)
 }
 
 function bindNav() {
@@ -742,6 +752,14 @@ function bindClear() {
   els.clearData?.addEventListener("click", () => void handleClear())
 }
 
+function resetLocalUiState() {
+  checkInForm.severity = null
+  checkInForm.bodyAreas = new Set()
+  showAllQuickRelief = false
+  updateQuickReliefToggleLabel()
+  renderSessionList()
+}
+
 async function handleClear() {
   if (!window.confirm("Clear all local data and reset the extension? This cannot be undone.")) {
     return
@@ -749,6 +767,7 @@ async function handleClear() {
 
   stopSessionTicker()
   player.session = null
+  resetLocalUiState()
   await clearAllData()
 
   // Reset settings to defaults for the current session
@@ -775,7 +794,8 @@ async function handleExport() {
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
   } catch {
-    // silently fail — export is best-effort
+    els.errorBanner.hidden = false
+    els.errorText.textContent = "Could not export data. Try again."
   }
 }
 

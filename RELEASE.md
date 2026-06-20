@@ -28,6 +28,29 @@ Use this before sharing the extension or deploying the web app.
 - [ ] Snooze and reset timer work
 - [ ] No em dashes in UI copy; Save check-in CTA has comfortable padding
 
+### 4b. Individual user journey (Phase 4.5)
+
+Run this end-to-end on a fresh install (or after **Clear my data** in Settings).
+
+| Step | Action | Expected result |
+|------|--------|-----------------|
+| 1 | Load unpacked from `extension/` | Extension appears in toolbar |
+| 2 | Open popup (first run) | Onboarding shows once; nav hidden |
+| 3 | Leave reminders on, tap **Get started** | Browser may prompt for notifications; Today tab appears |
+| 4 | Today tab (no data yet) | Check-in hint + Quick Relief empty nudge visible |
+| 5 | Tap gear or **More options** | Settings panel opens (Reminders & privacy) |
+| 6 | Start a Quick Relief session, complete it | Returns to Today; session nudge hides; hero shows completion message |
+| 7 | Check-in tab: pick severity, optional areas, **Save check-in** | Saved note appears; Today row updates |
+| 8 | Insights tab | Stats, 7-day trend, and areas reflect steps 6–7 |
+| 9 | Settings → **Export data** | JSON downloads; check-ins/sessions match Insights |
+| 10 | Snooze 10m / Reset timer | Hero status updates (Snoozed / timer reset) |
+| 11 | Settings → **Clear my data** → confirm | Onboarding shows again; Insights empty after re-onboarding |
+| 12 | Block notifications (Chrome site settings) with reminders on | Banner on Today explains how to re-enable |
+
+**Code-verified (2026-06-06):** build + `npm run package:extension` pass; privacy scope limited to activity timing + user-entered check-ins/sessions in local storage.
+
+**Manual sign-off:** _________________ Date: _________
+
 ## 5. Privacy
 - [ ] No typed content, screenshots, or page content logged
 - [ ] Only activity timing + user-entered check-in data stored locally
