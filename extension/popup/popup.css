@@ -37,6 +37,7 @@
 .insightsSubtitle,
 .insightsCardHint,
 .sessionIntro,
+.sessionStats,
 .cardHint,
 .detailsHint,
 .view--insights .statLabel,
@@ -298,8 +299,7 @@ body {
   border-radius: 999px;
 }
 
-.view--home .footerNote,
-.view--home .sessionStats {
+.view--home .footerNote {
   display: none;
 }
 

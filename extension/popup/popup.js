@@ -86,6 +86,7 @@ const els = {
   notifBannerBtn: document.getElementById("notifBannerBtn"),
   presets: document.querySelectorAll(".preset"),
   sessionList: document.getElementById("sessionList"),
+  sessionStats: document.getElementById("sessionStats"),
   severityGroup: document.getElementById("severityGroup"),
   bodyAreaGroup: document.getElementById("bodyAreaGroup"),
   saveCheckIn: document.getElementById("saveCheckIn"),
@@ -836,15 +837,22 @@ function renderSessionList() {
   }
 }
 
-async function updateSessionNudge() {
+async function updateTodayNudges(todayCheckIn) {
+  if (todayCheckIn) {
+    els.checkInHint.textContent = `Today · ${getSeverityLabel(todayCheckIn.severity)}`
+    if (els.checkInCtaText) els.checkInCtaText.textContent = "Update"
+  } else {
+    els.checkInHint.textContent = "Log how your body feels today."
+    if (els.checkInCtaText) els.checkInCtaText.textContent = "Check in"
+  }
+
   if (!els.sessionStats) return
   const stats = await getSessionStats()
-  if (stats.totalCount === 0) {
-    els.sessionStats.hidden = false
+  const showSessionNudge = stats.totalCount === 0
+  els.sessionStats.hidden = !showSessionNudge
+  if (showSessionNudge) {
     els.sessionStats.textContent =
       "Not yet. Start a session above for a gentle movement break."
-  } else {
-    els.sessionStats.hidden = true
   }
 }
 
@@ -978,14 +986,6 @@ async function hydrate() {
 
   if (player.session) return
 
-  if (todayCheckIn) {
-    els.checkInHint.textContent = `Today · ${getSeverityLabel(todayCheckIn.severity)}`
-    if (els.checkInCtaText) els.checkInCtaText.textContent = "Update"
-  } else {
-    els.checkInHint.textContent = "Log how your body feels today."
-    if (els.checkInCtaText) els.checkInCtaText.textContent = "Check in"
-  }
-
   els.notificationsEnabled.checked = settings.notificationsEnabled
   els.reminderIntervalMinutes.value = String(settings.reminderIntervalMinutes)
   updatePresetHighlight()
@@ -997,7 +997,7 @@ async function hydrate() {
   updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed })
 
   void updateNotifPermissionUI(settings)
-  void updateSessionNudge()
+  void updateTodayNudges(todayCheckIn)
 
   if (runtime.lastNotificationError) {
     els.errorBanner.hidden = false
