@@ -28,20 +28,19 @@ export function LandingNav() {
 
   return (
     <nav className="flex items-center justify-between">
-      <a href="/" className="flex items-center gap-3">
+      <Link href="/" className="flex items-center gap-3">
         <Image
           src="/active-aid_logo.png"
           alt="ActiveAid"
           width={40}
-          height={40}
-          className="rounded-2xl"
-          priority
-        />
-        <div className="leading-tight">
-          <div className="text-sm font-semibold tracking-tight">ActiveAid</div>
-          <div className="text-xs text-[#4b5563]">Wellness while you work</div>
-        </div>
-      </a>
+          height={40}            className="rounded-2xl"
+            priority
+          />
+          <div className="leading-tight">
+            <div className="text-sm font-semibold tracking-tight">ActiveAid</div>
+            <div className="text-xs text-[#4b5563]">Wellness while you work</div>
+          </div>
+        </Link>
 
       <div className="hidden items-center gap-6 text-sm text-[#4b5563] md:flex">
         {NAV_LINKS.map((link) => (

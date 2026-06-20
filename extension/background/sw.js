@@ -222,16 +222,6 @@ function storageSyncGet(key) {
   })
 }
 
-function storageSyncSet(items) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.set(items, () => {
-      const err = chrome.runtime.lastError
-      if (err) return reject(err)
-      resolve()
-    })
-  })
-}
-
 function storageLocalGet(key) {
   return new Promise((resolve, reject) => {
     chrome.storage.local.get(key, (result) => {
@@ -256,13 +246,6 @@ async function getSettings() {
   const stored = await storageSyncGet(SETTINGS_KEY)
   const raw = stored && stored[SETTINGS_KEY]
   return normalizeSettings(raw)
-}
-
-async function setSettings(partial) {
-  const current = await getSettings()
-  const next = normalizeSettings(Object.assign({}, current, partial))
-  await storageSyncSet({ [SETTINGS_KEY]: next })
-  return next
 }
 
 async function getRuntimeState() {

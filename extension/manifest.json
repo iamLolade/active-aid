@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "ActiveAid",
   "description": "Lightweight workplace wellness reminders and quick relief sessions.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "action": {
     "default_title": "ActiveAid",
     "default_popup": "popup/popup.html"
