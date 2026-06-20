@@ -10,7 +10,8 @@
   "permissions": ["alarms", "notifications", "storage"],
   "host_permissions": ["http://*/*", "https://*/*"],
   "background": {
-    "service_worker": "background/sw.js"
+    "service_worker": "background/sw.js",
+    "type": "module"
   },
   "content_scripts": [
     {
@@ -24,6 +25,12 @@
     "32": "assets/icon-32.png",
     "48": "assets/icon-48.png",
     "128": "assets/icon-128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "activeaid@activeaid.app",
+      "strict_min_version": "109.0"
+    }
   }
 }
 

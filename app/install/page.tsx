@@ -70,6 +70,20 @@ export default function InstallPage() {
 
         <section className="rounded-2xl border border-[#d1d5db] bg-white p-8 shadow-sm">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-[#4b5563]">
+            Option A2, Microsoft Edge and Firefox
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">
+            The same MV3 build publishes to Edge Add-ons and Firefox Add-ons (AMO). One
+            package script produces store-ready zips for all three browsers.
+          </p>
+          <p className="mt-4 text-xs text-[#4b5563]">
+            Testing and publish steps:{" "}
+            <code className="rounded bg-[#f3efe6] px-1">FIREFOX_EDGE.md</code>
+          </p>
+        </section>
+
+        <section className="rounded-2xl border border-[#d1d5db] bg-white p-8 shadow-sm">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-[#4b5563]">
             Option B, Private beta (load unpacked)
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">
@@ -97,14 +111,17 @@ export default function InstallPage() {
             Packaging
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">
-            The packaged zip is for Chrome Web Store uploads. The script validates the manifest
+            Store-ready zips for Chrome, Edge, and Firefox. The script validates the manifest
             before zipping.
           </p>
           <pre className="mt-4 overflow-x-auto rounded-xl bg-[#1f2937] p-4 text-xs text-white">
             <code>npm run package:extension</code>
           </pre>
           <p className="mt-3 text-xs text-[#4b5563]">
-            Output: <code className="rounded bg-[#f3efe6] px-1">dist/activeaid-extension.zip</code>
+            Output:{" "}
+            <code className="rounded bg-[#f3efe6] px-1">dist/activeaid-extension.zip</code>,{" "}
+            <code className="rounded bg-[#f3efe6] px-1">dist/activeaid-extension-edge.zip</code>,{" "}
+            <code className="rounded bg-[#f3efe6] px-1">dist/activeaid-extension-firefox.zip</code>
           </p>
         </section>
 

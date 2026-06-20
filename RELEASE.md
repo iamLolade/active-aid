@@ -96,7 +96,18 @@ Notes:
 - Automatic updates
 - You can publish **publicly** or **unlisted** (share link only)
 
-See `CHROME_WEB_STORE.md` for the full step-by-step publishing checklist.
+See `CHROME_WEB_STORE.md` for the full walkthrough.
+
+### 8b. Firefox and Edge (Phase 7.2)
+
+- [ ] `npm run package:extension` (produces Chrome, Edge, and Firefox zips)
+- [ ] Test load unpacked in Edge (`edge://extensions`) and Firefox (`about:debugging`)
+- [ ] Run cross-browser QA checklist in `FIREFOX_EDGE.md`
+- [ ] Submit `dist/activeaid-extension-edge.zip` to Microsoft Edge Add-ons (unlisted for beta)
+- [ ] Submit `dist/activeaid-extension-firefox.zip` to Firefox Add-ons / AMO (unlisted for beta)
+- [ ] Set store URLs in production env when approved (optional)
+
+See `FIREFOX_EDGE.md` for testing and publish steps.
 
 ### Private beta: load unpacked
 - Fastest for early testers

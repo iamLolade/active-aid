@@ -1,10 +1,23 @@
 # ActiveAid Extension (MVP)
 
-## Load unpacked (Chrome)
-1. Open Chrome and go to `chrome://extensions`.
-2. Enable **Developer mode**.
-3. Click **Load unpacked**.
-4. Select the `active-aid/extension` folder.
+Cross-browser MV3 extension for **Chrome**, **Edge**, and **Firefox**.
+
+## Load unpacked
+
+### Chrome
+1. Open `chrome://extensions`
+2. Enable **Developer mode**
+3. **Load unpacked** → select the `extension/` folder
+
+### Microsoft Edge
+1. Open `edge://extensions`
+2. Enable **Developer mode**
+3. **Load unpacked** → select the `extension/` folder
+
+### Firefox (109+)
+1. Open `about:debugging#/runtime/this-firefox`
+2. **Load Temporary Add-on…** → pick `extension/manifest.json`
+3. Re-load after browser restart (temporary add-ons do not persist)
 
 ## Quick test
 - Open any `https://` webpage and interact (mouse/keyboard).
@@ -25,6 +38,12 @@
 - First run shows onboarding once (privacy + optional reminders).
 - **Settings** (gear or **More options**): reminders, privacy copy, **Export data**, and **Clear my data**.
 - See `RELEASE.md` section **4b** for the full individual user journey QA checklist.
+
+## Package for stores
+```bash
+npm run package:extension
+```
+Produces zips for Chrome, Edge, and Firefox. See [FIREFOX_EDGE.md](../FIREFOX_EDGE.md) and [CHROME_WEB_STORE.md](../CHROME_WEB_STORE.md).
 
 ## Privacy
 This MVP tracks **timing of activity signals only** (e.g., that *some* activity occurred), and does not log typed content, page content, screenshots, or camera data.

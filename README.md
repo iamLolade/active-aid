@@ -43,6 +43,8 @@ See [RELEASE.md](./RELEASE.md) for the full QA checklist and Vercel deploy steps
 
 Chrome Web Store: [CHROME_WEB_STORE.md](./CHROME_WEB_STORE.md) and listing draft [store/LISTING.md](./store/LISTING.md).
 
+Firefox and Edge: [FIREFOX_EDGE.md](./FIREFOX_EDGE.md).
+
 ## Design
 - [DESIGN_GUIDELINES.md](./DESIGN_GUIDELINES.md)
 - [brand_identity.md](./brand_identity.md)

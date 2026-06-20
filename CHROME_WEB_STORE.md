@@ -5,7 +5,8 @@ Standard path for letting users install without Developer mode.
 ## Quick links
 - **Listing copy (paste into dashboard):** [`store/LISTING.md`](./store/LISTING.md)
 - **Privacy policy URL:** `{APP_URL}/privacy` (deploy `app/privacy/page.tsx` first)
-- **Package output:** `dist/activeaid-extension.zip`
+- **Package output:** `dist/activeaid-extension.zip` (also `dist/activeaid-extension-edge.zip`, `dist/activeaid-extension-firefox.zip`)
+- **Firefox / Edge:** [FIREFOX_EDGE.md](./FIREFOX_EDGE.md)
 
 ## Overview
 - Publish once (public or unlisted).
@@ -25,7 +26,7 @@ Deploying the website does **not** publish the extension.
 npm run package:extension
 ```
 
-This validates `extension/manifest.json` and creates `dist/activeaid-extension.zip`.
+This validates `extension/manifest.json` and creates store zips for Chrome, Edge, and Firefox (same cross-browser build). See [FIREFOX_EDGE.md](./FIREFOX_EDGE.md).
 
 ## 3. Prepare store assets
 

@@ -1,11 +1,11 @@
 import { execSync } from "node:child_process"
-import { readFileSync, existsSync } from "node:fs"
+import { readFileSync, existsSync, copyFileSync } from "node:fs"
 import { join } from "node:path"
 
 const root = process.cwd()
 const extDir = join(root, "extension")
+const distDir = join(root, "dist")
 const manifestPath = join(extDir, "manifest.json")
-const zipPath = join(root, "dist", "activeaid-extension.zip")
 
 if (!existsSync(manifestPath)) {
   console.error("Missing extension/manifest.json")
@@ -26,16 +26,32 @@ for (const key of ["name", "version", "description", "icons"]) {
   }
 }
 
-execSync("mkdir -p dist", { cwd: root, stdio: "inherit" })
-execSync(
-  'zip -r ../dist/activeaid-extension.zip . -x "*.DS_Store"',
-  { cwd: extDir, stdio: "inherit" }
-)
-
-const listing = execSync(`unzip -l "${zipPath}"`, { encoding: "utf8" })
-if (!listing.includes("manifest.json")) {
-  console.error("Package verification failed: manifest.json not found in zip")
+if (!manifest.browser_specific_settings?.gecko?.id) {
+  console.error("manifest.json missing browser_specific_settings.gecko.id (required for Firefox)")
   process.exit(1)
 }
 
-console.log(`Packaged ActiveAid v${manifest.version} → dist/activeaid-extension.zip`)
+function zipExtension(outPath) {
+  execSync(`mkdir -p "${distDir}"`, { cwd: root, stdio: "inherit" })
+  execSync(`rm -f "${outPath}"`, { cwd: root, stdio: "inherit" })
+  execSync(`zip -r "${outPath}" . -x "*.DS_Store"`, { cwd: extDir, stdio: "inherit" })
+
+  const listing = execSync(`unzip -l "${outPath}"`, { encoding: "utf8" })
+  if (!listing.includes("manifest.json")) {
+    console.error(`Package verification failed: manifest.json not found in ${outPath}`)
+    process.exit(1)
+  }
+}
+
+const zipPath = join(distDir, "activeaid-extension.zip")
+const edgePath = join(distDir, "activeaid-extension-edge.zip")
+const firefoxPath = join(distDir, "activeaid-extension-firefox.zip")
+
+zipExtension(zipPath)
+copyFileSync(zipPath, edgePath)
+copyFileSync(zipPath, firefoxPath)
+
+console.log(`Packaged ActiveAid v${manifest.version}`)
+console.log(`  Chrome Web Store → dist/activeaid-extension.zip`)
+console.log(`  Microsoft Edge   → dist/activeaid-extension-edge.zip (same build)`)
+console.log(`  Firefox (AMO)    → dist/activeaid-extension-firefox.zip (same build)`)
