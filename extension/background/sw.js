@@ -4,8 +4,11 @@ const TICK_MINUTES = 1
 const DEFAULT_INACTIVITY_RESET_MINUTES = 5
 const NOTIFICATION_SNOOZE_MINUTES = 10
 
+/** Cross-browser namespace: browser (Firefox) or chrome (Chrome/Edge) */
+const $ext = typeof browser !== "undefined" ? browser : chrome
+
 const NOTIFICATION_ICON_URL = () =>
-  chrome.runtime.getURL("assets/icon-128.png")
+  $ext.runtime.getURL("assets/icon-128.png")
 
 const SETTINGS_KEY = "activeaid:settings"
 const RUNTIME_KEY = "activeaid:runtime"
@@ -30,7 +33,7 @@ function msToRoundedMinutes(ms) {
 }
 
 function ensureAlarm() {
-  chrome.alarms.create(ALARM_NAME, { periodInMinutes: TICK_MINUTES })
+  $ext.alarms.create(ALARM_NAME, { periodInMinutes: TICK_MINUTES })
 }
 
 ensureAlarm()
@@ -98,7 +101,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   }
 
   if (message.type === "activeaid:debug:getAlarm") {
-    chrome.alarms.get(ALARM_NAME, (alarm) => {
+    $ext.alarms.get(ALARM_NAME, (alarm) => {
       sendResponse({ ok: true, alarm: alarm ?? null })
     })
     return true
@@ -204,8 +207,8 @@ async function showReminder(activeMinutes) {
 
 function notificationsCreate(notificationId, options) {
   return new Promise((resolve, reject) => {
-    chrome.notifications.create(notificationId, options, (createdId) => {
-      const err = chrome.runtime.lastError
+    $ext.notifications.create(notificationId, options, (createdId) => {
+      const err = $ext.runtime.lastError
       if (err) return reject(err)
       resolve(createdId)
     })
@@ -214,8 +217,8 @@ function notificationsCreate(notificationId, options) {
 
 function storageSyncGet(key) {
   return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(key, (result) => {
-      const err = chrome.runtime.lastError
+    $ext.storage.sync.get(key, (result) => {
+      const err = $ext.runtime.lastError
       if (err) return reject(err)
       resolve(result)
     })
@@ -224,8 +227,8 @@ function storageSyncGet(key) {
 
 function storageLocalGet(key) {
   return new Promise((resolve, reject) => {
-    chrome.storage.local.get(key, (result) => {
-      const err = chrome.runtime.lastError
+    $ext.storage.local.get(key, (result) => {
+      const err = $ext.runtime.lastError
       if (err) return reject(err)
       resolve(result)
     })
@@ -234,8 +237,8 @@ function storageLocalGet(key) {
 
 function storageLocalSet(items) {
   return new Promise((resolve, reject) => {
-    chrome.storage.local.set(items, () => {
-      const err = chrome.runtime.lastError
+    $ext.storage.local.set(items, () => {
+      const err = $ext.runtime.lastError
       if (err) return reject(err)
       resolve()
     })

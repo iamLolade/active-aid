@@ -2,13 +2,19 @@
   const PING_THROTTLE_MS = 10_000
   let lastPingMs = 0
 
+  /**
+   * Cross-browser runtime check for content script context.
+   * Uses browser.* (Firefox) or chrome.* (Chrome/Edge).
+   */
+  const runtime = typeof browser !== "undefined" ? browser.runtime : chrome.runtime
+
   function maybePing() {
     const t = Date.now()
     if (t - lastPingMs < PING_THROTTLE_MS) return
     lastPingMs = t
 
     try {
-      chrome.runtime.sendMessage({ type: "activeaid:activity" })
+      runtime.sendMessage({ type: "activeaid:activity" })
     } catch {
       // ignore
     }
@@ -29,4 +35,3 @@
     passive
   )
 })()
-

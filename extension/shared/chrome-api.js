@@ -1,90 +1,19 @@
-export function storageSyncGet(key) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(key, (result) => {
-      const err = chrome.runtime.lastError
-      if (err) return reject(err)
-      resolve(result)
-    })
-  })
-}
-
-export function storageSyncSet(items) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.set(items, () => {
-      const err = chrome.runtime.lastError
-      if (err) return reject(err)
-      resolve()
-    })
-  })
-}
-
-export function storageLocalGet(key) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get(key, (result) => {
-      const err = chrome.runtime.lastError
-      if (err) return reject(err)
-      resolve(result)
-    })
-  })
-}
-
-export function storageLocalSet(items) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.set(items, () => {
-      const err = chrome.runtime.lastError
-      if (err) return reject(err)
-      resolve()
-    })
-  })
-}
-
-export function notificationsCreate(notificationId, options) {
-  return new Promise((resolve, reject) => {
-    chrome.notifications.create(notificationId, options, (createdId) => {
-      const err = chrome.runtime.lastError
-      if (err) return reject(err)
-      resolve(createdId)
-    })
-  })
-}
-
-export function alarmsGet(name) {
-  return new Promise((resolve, reject) => {
-    chrome.alarms.get(name, (alarm) => {
-      const err = chrome.runtime.lastError
-      if (err) return reject(err)
-      resolve(alarm ?? null)
-    })
-  })
-}
-
-export function storageLocalRemove(keys) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.remove(keys, () => {
-      const err = chrome.runtime.lastError
-      if (err) return reject(err)
-      resolve()
-    })
-  })
-}
-
-export function storageSyncRemove(keys) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.remove(keys, () => {
-      const err = chrome.runtime.lastError
-      if (err) return reject(err)
-      resolve()
-    })
-  })
-}
-
-export function runtimeSendMessage(message) {
-  return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage(message, (response) => {
-      const err = chrome.runtime.lastError
-      if (err) return reject(err)
-      resolve(response)
-    })
-  })
-}
-
+/**
+ * Backward-compatibility re-exports.
+ *
+ * All cross-browser API logic now lives in ./browser-api.js.
+ * This file re-exports everything so existing imports still work.
+ */
+export {
+  storageSyncGet,
+  storageSyncSet,
+  storageSyncRemove,
+  storageLocalGet,
+  storageLocalSet,
+  storageLocalRemove,
+  notificationsCreate,
+  alarmsCreate,
+  alarmsGet,
+  runtimeSendMessage,
+  getURL,
+} from "./browser-api.js"
