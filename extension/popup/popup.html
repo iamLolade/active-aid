@@ -183,7 +183,7 @@
               <div class="settingsDivider" aria-hidden="true"></div>
 
               <h4 class="settingsSectionTitle">Privacy</h4>
-              <p class="settingsSectionHint">Everything stays on this device. No account required.</p>
+              <p class="settingsSectionHint">Everything stays on this device unless you opt in to cloud backup below.</p>
               <ul class="settingsPrivacyList">
                 <li>
                   <span class="settingsPrivacyLabel">We track</span>
@@ -198,6 +198,39 @@
                   What you type, page content, screenshots, or camera data.
                 </li>
               </ul>
+              <div class="settingsDivider" aria-hidden="true"></div>
+
+              <div id="syncSection">
+                <h4 class="settingsSectionTitle">Optional cloud backup</h4>
+                <p class="settingsSectionHint" id="syncHint">
+                  Back up check-ins, sessions, and reminder settings across devices. Off by default.
+                </p>
+                <p class="syncStatus" id="syncStatus" hidden role="status"></p>
+
+                <div id="syncSignedOut">
+                  <div class="field">
+                    <label class="fieldLabel" for="syncEmail">Email</label>
+                    <input type="email" id="syncEmail" autocomplete="username" />
+                  </div>
+                  <div class="field">
+                    <label class="fieldLabel" for="syncPassword">Password</label>
+                    <input type="password" id="syncPassword" autocomplete="current-password" />
+                  </div>
+                  <button class="btn--actionRow" id="syncSignIn" type="button">Sign in to sync</button>
+                </div>
+
+                <div id="syncSignedIn" hidden>
+                  <p class="syncAccount" id="syncAccount"></p>
+                  <label class="toggle syncToggle">
+                    <input type="checkbox" id="syncEnabled" />
+                    <span class="toggleTrack" aria-hidden="true"></span>
+                    <span class="toggleLabel">Enable cloud backup</span>
+                  </label>
+                  <button class="btn--actionRow" id="syncNow" type="button">Sync now</button>
+                  <button class="btn--actionRow" id="syncSignOut" type="button">Sign out</button>
+                </div>
+              </div>
+
               <div class="settingsDivider" aria-hidden="true"></div>
 
               <h4 class="settingsSectionTitle">Your data</h4>

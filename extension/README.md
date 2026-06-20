@@ -37,7 +37,10 @@ Cross-browser MV3 extension for **Chrome**, **Edge**, and **Firefox**.
 ## Trust & control
 - First run shows onboarding once (privacy + optional reminders).
 - **Settings** (gear or **More options**): reminders, privacy copy, **Export data**, and **Clear my data**.
+- **Optional cloud backup** (when Supabase is configured): sign in to sync check-ins, sessions, and settings across devices.
 - See `RELEASE.md` section **4b** for the full individual user journey QA checklist.
+
+Configure sync: `npm run sync:config` (see `supabase/README.md`).
 
 ## Package for stores
 ```bash

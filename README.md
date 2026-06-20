@@ -36,7 +36,8 @@ See `extension/README.md` for Chrome load-unpacked steps.
 | `npm run build` | Production build |
 | `npm run start` | Run production server |
 | `npm run lint` | ESLint |
-| `npm run package:extension` | Zip extension to `dist/activeaid-extension.zip` |
+| `npm run package:extension` | Zip extension to `dist/` (Chrome, Edge, Firefox) |
+| `npm run sync:config` | Write extension Supabase config from `.env` |
 
 ## Release
 See [RELEASE.md](./RELEASE.md) for the full QA checklist and Vercel deploy steps.

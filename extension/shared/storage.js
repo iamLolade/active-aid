@@ -245,9 +245,81 @@ export async function exportAllData() {
 
 export async function clearAllData() {
   await Promise.all([
-    storageLocalRemove([RUNTIME_KEY, SESSION_LOGS_KEY, CHECKINS_KEY, DAILY_KEY, ONBOARDING_KEY]),
+    storageLocalRemove([
+      RUNTIME_KEY,
+      SESSION_LOGS_KEY,
+      CHECKINS_KEY,
+      DAILY_KEY,
+      ONBOARDING_KEY,
+      "activeaid:sync",
+    ]),
     storageSyncRemove([SETTINGS_KEY]),
   ])
+}
+
+export async function mergeCheckInsFromRemote(remoteRows) {
+  const local = await getCheckIns()
+  const byDate = new Map(local.map((entry) => [entry.date, entry]))
+
+  for (const row of remoteRows) {
+    const entry = remoteCheckInToLocal(row)
+    if (!entry) continue
+    const existing = byDate.get(entry.date)
+    if (!existing || entry.createdAt >= existing.createdAt) {
+      byDate.set(entry.date, entry)
+    }
+  }
+
+  const next = [...byDate.values()]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, MAX_CHECKINS)
+  await storageLocalSet({ [CHECKINS_KEY]: next })
+  return next
+}
+
+export async function mergeSessionLogsFromRemote(remoteRows) {
+  const local = await getSessionLogs()
+  const byKey = new Map(local.map((entry) => [`${entry.sessionId}:${entry.completedAt}`, entry]))
+
+  for (const row of remoteRows) {
+    const entry = remoteSessionToLocal(row)
+    if (!entry) continue
+    const key = `${entry.sessionId}:${entry.completedAt}`
+    const existing = byKey.get(key)
+    if (!existing || entry.completedAt >= existing.completedAt) {
+      byKey.set(key, entry)
+    }
+  }
+
+  const next = [...byKey.values()]
+    .sort((a, b) => b.completedAt - a.completedAt)
+    .slice(0, MAX_SESSION_LOGS)
+  await storageLocalSet({ [SESSION_LOGS_KEY]: next })
+  return next
+}
+
+function remoteCheckInToLocal(row) {
+  if (!row || typeof row !== "object") return null
+  const date = typeof row.date === "string" ? row.date : null
+  const severity = typeof row.severity === "string" ? row.severity : null
+  if (!date || !severity) return null
+  const createdAt = row.created_at ? Date.parse(row.created_at) : Date.now()
+  const bodyAreas = Array.isArray(row.body_areas)
+    ? row.body_areas.filter((area) => typeof area === "string")
+    : []
+  return { date, severity, bodyAreas, createdAt }
+}
+
+function remoteSessionToLocal(row) {
+  if (!row || typeof row !== "object") return null
+  const sessionId = typeof row.session_type === "string" ? row.session_type : null
+  const completedAt = row.created_at ? Date.parse(row.created_at) : null
+  if (!sessionId || completedAt == null || !Number.isFinite(completedAt)) return null
+  return {
+    sessionId,
+    completedAt,
+    durationSeconds: Math.max(0, Math.round(Number(row.duration_seconds) || 0)),
+  }
 }
 
 export async function isOnboardingComplete() {

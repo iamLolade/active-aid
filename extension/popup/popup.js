@@ -13,6 +13,16 @@ import {
   exportAllData,
   clearAllData,
 } from "../shared/storage.js"
+import {
+  isSyncConfigured,
+  getSyncState,
+  signIn,
+  signOut,
+  setSyncEnabled,
+  syncNow,
+  scheduleSyncIfEnabled,
+  setSyncError,
+} from "../shared/sync.js"
 import { formatCountdown, minutesToMs, msToRoundedMinutes, nowMs } from "../shared/time.js"
 import { runtimeSendMessage } from "../shared/chrome-api.js"
 import { SESSIONS, getSessionById, getTotalDurationSeconds } from "../shared/sessions.js"
@@ -82,6 +92,18 @@ const els = {
   resetTimer: document.getElementById("resetTimer"),
   exportData: document.getElementById("exportData"),
   clearData: document.getElementById("clearData"),
+  syncSection: document.getElementById("syncSection"),
+  syncHint: document.getElementById("syncHint"),
+  syncStatus: document.getElementById("syncStatus"),
+  syncSignedOut: document.getElementById("syncSignedOut"),
+  syncSignedIn: document.getElementById("syncSignedIn"),
+  syncEmail: document.getElementById("syncEmail"),
+  syncPassword: document.getElementById("syncPassword"),
+  syncSignIn: document.getElementById("syncSignIn"),
+  syncEnabled: document.getElementById("syncEnabled"),
+  syncNow: document.getElementById("syncNow"),
+  syncSignOut: document.getElementById("syncSignOut"),
+  syncAccount: document.getElementById("syncAccount"),
   notifBanner: document.getElementById("notifBanner"),
   notifBannerText: document.getElementById("notifBannerText"),
   notifBannerBtn: document.getElementById("notifBannerBtn"),
@@ -146,6 +168,7 @@ async function init() {
   bindOnboarding()
   bindExport()
   bindClear()
+  bindSync()
 
   if (!(await isOnboardingComplete())) {
     renderOnboardingChrome()
@@ -543,6 +566,7 @@ async function submitCheckIn() {
   els.checkInSavedNote.textContent = "Saved for today. You can update anytime."
   els.checkInSavedNote.style.color = "#3d6b42"
   await hydrate()
+  scheduleSyncIfEnabled()
   if (activeTab === "insights") await renderDashboard()
 }
 
@@ -719,6 +743,7 @@ function bindReminders() {
   els.notificationsEnabled.addEventListener("change", async () => {
     await setSettings({ notificationsEnabled: els.notificationsEnabled.checked })
     await hydrate()
+    scheduleSyncIfEnabled()
   })
 
   let intervalSaveTimer = null
@@ -728,6 +753,7 @@ function bindReminders() {
     intervalSaveTimer = window.setTimeout(async () => {
       await setSettings({ reminderIntervalMinutes: Number(els.reminderIntervalMinutes.value) })
       await hydrate()
+      scheduleSyncIfEnabled()
     }, 250)
   })
 
@@ -737,6 +763,7 @@ function bindReminders() {
       els.reminderIntervalMinutes.value = String(minutes)
       await setSettings({ reminderIntervalMinutes: minutes })
       await hydrate()
+      scheduleSyncIfEnabled()
     })
   })
 
@@ -779,6 +806,114 @@ async function handleClear() {
 
 function bindExport() {
   els.exportData?.addEventListener("click", () => void handleExport())
+}
+
+function bindSync() {
+  els.syncSignIn?.addEventListener("click", () => void handleSyncSignIn())
+  els.syncSignOut?.addEventListener("click", () => void handleSyncSignOut())
+  els.syncNow?.addEventListener("click", () => void handleSyncNow())
+  els.syncEnabled?.addEventListener("change", () => void handleSyncEnabledChange())
+}
+
+function setSyncStatus(message, tone = "muted") {
+  if (!els.syncStatus) return
+  if (!message) {
+    els.syncStatus.hidden = true
+    els.syncStatus.textContent = ""
+    els.syncStatus.classList.remove("syncStatus--error", "syncStatus--ok")
+    return
+  }
+  els.syncStatus.hidden = false
+  els.syncStatus.textContent = message
+  els.syncStatus.classList.toggle("syncStatus--error", tone === "error")
+  els.syncStatus.classList.toggle("syncStatus--ok", tone === "ok")
+}
+
+async function updateSyncUI() {
+  if (!els.syncSection) return
+
+  if (!isSyncConfigured()) {
+    els.syncSection.hidden = true
+    return
+  }
+
+  els.syncSection.hidden = false
+  const state = await getSyncState()
+  const signedIn = Boolean(state.accessToken)
+
+  if (els.syncSignedOut) els.syncSignedOut.hidden = signedIn
+  if (els.syncSignedIn) els.syncSignedIn.hidden = !signedIn
+
+  if (signedIn) {
+    if (els.syncAccount) {
+      els.syncAccount.textContent = state.email ? `Signed in as ${state.email}` : "Signed in"
+    }
+    if (els.syncEnabled) els.syncEnabled.checked = state.enabled
+    if (state.lastSyncedAt) {
+      const when = new Date(state.lastSyncedAt).toLocaleString([], {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      })
+      setSyncStatus(`Last synced ${when}.`, "ok")
+    } else if (state.lastError) {
+      setSyncStatus(state.lastError, "error")
+    } else {
+      setSyncStatus("")
+    }
+  } else {
+    setSyncStatus(state.lastError || "", state.lastError ? "error" : "muted")
+  }
+}
+
+async function handleSyncSignIn() {
+  try {
+    setSyncStatus("Signing in...")
+    await signIn(els.syncEmail?.value ?? "", els.syncPassword?.value ?? "")
+    if (els.syncPassword) els.syncPassword.value = ""
+    await hydrate()
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Sign in failed"
+    setSyncStatus(message, "error")
+    await setSyncError(message)
+  }
+}
+
+async function handleSyncSignOut() {
+  await signOut()
+  if (els.syncEnabled) els.syncEnabled.checked = false
+  if (els.syncPassword) els.syncPassword.value = ""
+  setSyncStatus("")
+  await hydrate()
+}
+
+async function handleSyncNow() {
+  try {
+    setSyncStatus("Syncing...")
+    await syncNow()
+    await hydrate()
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Sync failed"
+    setSyncStatus(message, "error")
+    await setSyncError(message)
+  }
+}
+
+async function handleSyncEnabledChange() {
+  try {
+    await setSyncEnabled(Boolean(els.syncEnabled?.checked))
+    if (els.syncEnabled?.checked) {
+      setSyncStatus("Syncing...")
+      await syncNow()
+    }
+    await hydrate()
+  } catch (err) {
+    if (els.syncEnabled) els.syncEnabled.checked = false
+    const message = err instanceof Error ? err.message : "Could not enable sync"
+    setSyncStatus(message, "error")
+    await setSyncError(message)
+  }
 }
 
 async function handleExport() {
@@ -947,6 +1082,7 @@ async function completeSession() {
   activeTab = "home"
   setActiveTab("home")
   await hydrate()
+  scheduleSyncIfEnabled()
   els.statusPill?.classList.remove("statusPill--muted", "statusPill--warm")
   if (els.statusPillText) els.statusPillText.textContent = "Session done"
   if (els.heroMeta) {
@@ -1018,6 +1154,7 @@ async function hydrate() {
 
   void updateNotifPermissionUI(settings)
   void updateTodayNudges(todayCheckIn)
+  void updateSyncUI()
 
   if (runtime.lastNotificationError) {
     els.errorBanner.hidden = false

@@ -34,7 +34,16 @@ const SECTIONS = [
   },
   {
     title: "Where data lives",
-    body: "Extension data is stored in Chrome extension storage on your device (local and sync storage for settings). We do not transmit wellness logs to ActiveAid servers in the current MVP. The marketing website may use standard hosting logs from your browser when you visit our pages.",
+    body: "By default, extension data is stored in browser extension storage on your device. If you opt in to optional cloud backup, check-ins, completed relief sessions, and reminder settings are also stored in your Supabase account (encrypted in transit). Activity timing and page content are never uploaded. The marketing website may use standard hosting logs when you visit our pages.",
+  },
+  {
+    title: "Optional cloud backup",
+    bullets: [
+      "Disabled by default. You choose to sign in and enable it in extension Settings.",
+      "Uploads only wellness check-ins, completed session logs, and reminder settings.",
+      "Does not upload typed content, page content, activity timing samples, or screenshots.",
+      "You can sign out or clear local data anytime; cloud rows remain until you delete your account in Supabase.",
+    ],
   },
   {
     title: "Your controls",
@@ -54,7 +63,7 @@ const SECTIONS = [
   },
   {
     title: "Changes",
-    body: "If we add optional cloud sync or change how data is handled, we will update this page and the in-extension privacy copy before those features ship.",
+    body: "We will update this page and in-extension privacy copy when data practices change.",
   },
   {
     title: "Not medical advice",

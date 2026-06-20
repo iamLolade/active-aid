@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "package:extension": "node scripts/package-extension.mjs"
+    "package:extension": "node scripts/package-extension.mjs",
+    "sync:config": "node scripts/generate-sync-config.mjs"
   },
   "dependencies": {
     "framer-motion": "^12.40.0",

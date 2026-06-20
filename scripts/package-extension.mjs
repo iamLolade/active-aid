@@ -7,6 +7,8 @@ const extDir = join(root, "extension")
 const distDir = join(root, "dist")
 const manifestPath = join(extDir, "manifest.json")
 
+execSync("node scripts/generate-sync-config.mjs", { cwd: root, stdio: "inherit" })
+
 if (!existsSync(manifestPath)) {
   console.error("Missing extension/manifest.json")
   process.exit(1)
