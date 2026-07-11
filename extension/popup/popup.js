@@ -43,7 +43,6 @@ import {
   iconChevronRight,
   iconClock,
   iconHeart,
-  iconMoreVertical,
   iconPlay,
   iconSettings,
   sessionIcon,
@@ -54,6 +53,7 @@ const NAV_TAB_ICONS = {
   home: iconCalendar,
   checkin: iconHeart,
   insights: iconBarChart,
+  settings: iconSettings,
 }
 
 /** Featured on Today tab per hero-popup.png */
@@ -71,12 +71,10 @@ const els = {
   viewCheckIn: document.getElementById("viewCheckIn"),
   viewDashboard: document.getElementById("viewDashboard"),
   viewSession: document.getElementById("viewSession"),
+  viewSettings: document.getElementById("viewSettings"),
   errorBanner: document.getElementById("errorBanner"),
   errorText: document.getElementById("errorText"),
-  openSettings: document.getElementById("openSettings"),
-  openSettingsIcon: document.getElementById("openSettingsIcon"),
-  openMore: document.getElementById("openMore"),
-  remindersDetails: document.getElementById("remindersDetails"),
+  settingsViewHeaderIcon: document.getElementById("settingsViewHeaderIcon"),
   activeValue: document.getElementById("activeValue"),
   heroMeta: document.getElementById("heroMeta"),
   statusPill: document.getElementById("statusPill"),
@@ -104,9 +102,6 @@ const els = {
   syncNow: document.getElementById("syncNow"),
   syncSignOut: document.getElementById("syncSignOut"),
   syncAccount: document.getElementById("syncAccount"),
-  notifBanner: document.getElementById("notifBanner"),
-  notifBannerText: document.getElementById("notifBannerText"),
-  notifBannerBtn: document.getElementById("notifBannerBtn"),
   presets: document.querySelectorAll(".preset"),
   sessionList: document.getElementById("sessionList"),
   sessionStats: document.getElementById("sessionStats"),
@@ -145,6 +140,7 @@ const player = {
 }
 const checkInForm = { severity: null, bodyAreas: new Set() }
 let activeTab = "home"
+let previousActiveTab = "home"
 let pollIntervalId = null
 
 await init()
@@ -153,7 +149,7 @@ async function init() {
   renderNavIcons()
   renderCheckInHeaderIcon()
   renderInsightsHeaderIcon()
-  renderHeaderChrome()
+  renderSettingsViewHeaderIcon()
   renderHomeHeroChrome()
   renderHomeCheckInRowChrome()
   renderQuickReliefChrome()
@@ -180,58 +176,6 @@ async function init() {
   startPolling()
 }
 
-async function updateNotifPermissionUI(settings) {
-  const banner = els.notifBanner
-  const text = els.notifBannerText
-  const btn = els.notifBannerBtn
-  if (!banner || !text || !btn) return
-
-  // Only show the banner when reminders are enabled but the browser blocks notifications
-  if (!settings.notificationsEnabled) {
-    banner.hidden = true
-    return
-  }
-
-  let permission = ""
-  try {
-    permission = Notification.permission
-  } catch {
-    banner.hidden = true
-    return
-  }
-
-  if (permission === "granted" || permission === "default") {
-    banner.hidden = true
-    return
-  }
-
-  // permission === "denied"
-  banner.hidden = false
-  text.textContent =
-    "Notifications are blocked for this extension. ActiveAid needs them for reminders."
-  btn.textContent = "Allow notifications"
-  btn.onclick = () => {
-    void (async () => {
-      try {
-        const result = await Notification.requestPermission()
-        if (result === "granted") {
-          banner.hidden = true
-          return
-        }
-      } catch {
-        // fall through to guidance
-      }
-      // Still denied after prompt — show browser settings guidance
-      text.textContent =
-        "To enable, go to Chrome settings > Privacy and security > Site Settings > Notifications, and allow this extension."
-      btn.textContent = "Got it"
-      btn.onclick = () => {
-        banner.hidden = true
-      }
-    })()
-  }
-}
-
 function renderOnboardingChrome() {
   const reminders = document.getElementById("onboardIconReminders")
   const relief = document.getElementById("onboardIconRelief")
@@ -251,6 +195,7 @@ function showOnboarding() {
   els.viewCheckIn.hidden = true
   els.viewDashboard.hidden = true
   els.viewSession.hidden = true
+  els.viewSettings.hidden = true
   els.nav.hidden = true
   els.errorBanner.hidden = true
 }
@@ -291,10 +236,9 @@ function renderInsightsHeaderIcon() {
   if (slot) slot.innerHTML = iconBarChart(22)
 }
 
-function renderHeaderChrome() {
-  if (els.openSettingsIcon) els.openSettingsIcon.innerHTML = iconSettings(18)
-  const moreIcon = document.getElementById("openMoreIcon")
-  if (moreIcon) moreIcon.innerHTML = iconMoreVertical(18)
+function renderSettingsViewHeaderIcon() {
+  const slot = els.settingsViewHeaderIcon
+  if (slot) slot.innerHTML = iconSettings(22)
 }
 
 function renderHomeHeroChrome() {
@@ -365,7 +309,7 @@ function formatActiveMinutes(totalMinutes) {
   return remaining === 0 ? `${hours}h` : `${hours}h ${remaining}m`
 }
 
-function updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed }) {
+async function updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed }) {
   els.statusPill?.classList.remove("statusPill--muted", "statusPill--warm")
   let progressRatio = 0
 
@@ -410,18 +354,24 @@ function updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed }) {
   if (els.reminderProgress) {
     els.reminderProgress.style.width = `${Math.round(progressRatio * 100)}%`
   }
-}
 
-function openSettingsPanel() {
-  if (!els.remindersDetails) return
-  els.remindersDetails.open = true
-  els.remindersDetails.scrollIntoView({ block: "start", behavior: "smooth" })
-  els.remindersDetails.querySelector("summary")?.focus()
+  // Show today's session count in hero if any sessions have been done
+  const stats = await getSessionStats()
+  if (stats.todayCount > 0) {
+    let heroMeta = els.heroMeta
+    if (heroMeta) {
+      const baseText = heroMeta.textContent || ""
+      const sessionText =
+        stats.todayCount === 1
+          ? `${stats.todayCount} session today`
+          : `${stats.todayCount} sessions today`
+      heroMeta.textContent = `${sessionText} · ${baseText}`
+    }
+  }
 }
 
 function bindSettings() {
-  els.openSettings?.addEventListener("click", openSettingsPanel)
-  els.openMore?.addEventListener("click", openSettingsPanel)
+  // Settings tab is now a nav button — bindings handled by bindNav
 }
 
 function bindNav() {
@@ -448,6 +398,7 @@ function setActiveTab(tab) {
   })
   if (tab === "insights") void renderDashboard()
   if (tab === "checkin") void loadCheckInForm()
+  if (tab === "settings") void updateSyncUI()
 }
 
 function showMainView(tab) {
@@ -456,6 +407,7 @@ function showMainView(tab) {
   els.viewCheckIn.hidden = tab !== "checkin"
   els.viewDashboard.hidden = tab !== "insights"
   els.viewSession.hidden = true
+  els.viewSettings.hidden = tab !== "settings"
   els.nav.hidden = false
 }
 
@@ -554,17 +506,36 @@ async function submitCheckIn() {
     els.checkInSavedNote.hidden = false
     els.checkInSavedNote.textContent = "Please choose how you feel overall."
     els.checkInSavedNote.style.color = "#7c3f32"
+    els.checkInSavedNote.classList.add("formNote--error")
     return
   }
+
+  els.checkInSavedNote.classList.remove("formNote--error")
+
+  // Brief saving state
+  const saveBtn = els.saveCheckIn
+  saveBtn.textContent = "Saving..."
+  saveBtn.disabled = true
 
   await saveCheckIn({
     severity: checkInForm.severity,
     bodyAreas: [...checkInForm.bodyAreas],
   })
 
+  saveBtn.textContent = "Saved ✓"
+  saveBtn.classList.add("btn--save-success")
+
   els.checkInSavedNote.hidden = false
   els.checkInSavedNote.textContent = "Saved for today. You can update anytime."
   els.checkInSavedNote.style.color = "#3d6b42"
+
+  // Reset button after a moment
+  setTimeout(() => {
+    saveBtn.textContent = "Save check-in"
+    saveBtn.disabled = false
+    saveBtn.classList.remove("btn--save-success")
+  }, 1500)
+
   await hydrate()
   scheduleSyncIfEnabled()
   if (activeTab === "insights") await renderDashboard()
@@ -1003,9 +974,9 @@ async function updateTodayNudges(todayCheckIn) {
 
   if (!els.sessionStats) return
   const stats = await getSessionStats()
-  const showSessionNudge = stats.totalCount === 0
-  els.sessionStats.hidden = !showSessionNudge
-  if (showSessionNudge) {
+  const hasSessions = stats.totalCount > 0
+  els.sessionStats.hidden = hasSessions
+  if (!hasSessions) {
     els.sessionStats.textContent =
       "Not yet. Start a session above for a gentle movement break."
   }
@@ -1015,6 +986,7 @@ function openSession(sessionId) {
   const session = getSessionById(sessionId)
   if (!session) return
   player.session = session
+  previousActiveTab = activeTab
   player.stepIndex = 0
   player.startedAt = nowMs()
   player.stepStartedAt = nowMs()
@@ -1024,6 +996,7 @@ function openSession(sessionId) {
   els.viewHome.hidden = true
   els.viewCheckIn.hidden = true
   els.viewDashboard.hidden = true
+  els.viewSettings.hidden = true
   els.viewSession.hidden = false
   els.nav.hidden = true
   renderStep()
@@ -1072,15 +1045,31 @@ function renderStep() {
 async function completeSession() {
   const session = player.session
   if (!session || player.startedAt == null) return
+
+  // Brief completion state before closing
+  els.stepTitle.textContent = `${session.title} complete!`
+  els.stepInstruction.textContent = "Small resets add up. Taking a moment to breathe helps."
+  els.stepCard.classList.remove("stepCard--enter")
+  void els.stepCard.offsetWidth
+  els.stepCard.classList.add("stepCard--enter")
+  els.stepComplete.disabled = true
+  els.stepComplete.textContent = "Done ✓"
+  els.stepComplete.classList.add("btn--complete")
+
+  // Save the session
   await addSessionLog({
     sessionId: session.id,
     completedAt: nowMs(),
     durationSeconds:
       Math.round((nowMs() - player.startedAt) / 1000) || getTotalDurationSeconds(session),
   })
+
+  // Brief pause so user sees the completion state
+  await new Promise((r) => setTimeout(r, 1200))
+
   closeSession()
-  activeTab = "home"
-  setActiveTab("home")
+  activeTab = previousActiveTab || "home"
+  setActiveTab(activeTab)
   await hydrate()
   scheduleSyncIfEnabled()
   els.statusPill?.classList.remove("statusPill--muted", "statusPill--warm")
@@ -1150,9 +1139,7 @@ async function hydrate() {
     runtime.activeSinceMs != null ? msToRoundedMinutes(nowMs() - runtime.activeSinceMs) : null
   const isSnoozed = runtime.snoozedUntilMs != null && nowMs() < runtime.snoozedUntilMs
 
-  updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed })
-
-  void updateNotifPermissionUI(settings)
+  void updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed })
   void updateTodayNudges(todayCheckIn)
   void updateSyncUI()
 

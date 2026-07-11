@@ -84,14 +84,6 @@
                 <p class="subtitle">Wellness while you work.</p>
               </div>
             </div>
-            <div class="headerActions">
-              <button class="iconBtn" id="openSettings" type="button" aria-label="Open settings">
-                <span id="openSettingsIcon" aria-hidden="true"></span>
-              </button>
-              <button class="iconBtn" id="openMore" type="button" aria-label="More options" aria-haspopup="true">
-                <span id="openMoreIcon" aria-hidden="true"></span>
-              </button>
-            </div>
           </header>
 
           <section class="heroCard" id="heroCard" aria-label="Activity status">
@@ -111,11 +103,6 @@
               <div class="progressFill" id="reminderProgress"></div>
             </div>
           </section>
-
-          <div class="notifBanner" id="notifBanner" hidden role="status">
-            <p class="notifBannerText" id="notifBannerText"></p>
-            <button class="notifBannerBtn" id="notifBannerBtn" type="button"></button>
-          </div>
 
           <section class="card homeCheckInCard">
             <div class="cardRow cardRow--checkin">
@@ -143,108 +130,6 @@
             <div class="sessionList" id="sessionList"></div>
             <p class="sessionStats" id="sessionStats" hidden></p>
           </section>
-
-          <details class="card detailsCard" id="remindersDetails">
-            <summary class="detailsSummary">
-              <span class="sectionTitle sectionTitle--inline">Settings</span>
-              <span class="detailsHint">Reminders & privacy</span>
-            </summary>
-            <div class="detailsBody">
-              <h4 class="settingsSectionTitle">Reminders</h4>
-              <p class="settingsSectionHint">Gentle nudges after continuous activity on this device.</p>
-              <label class="toggle">
-                <input type="checkbox" id="notificationsEnabled" />
-                <span class="toggleTrack" aria-hidden="true"></span>
-                <span class="toggleLabel">Enable gentle reminders</span>
-              </label>
-              <div class="field">
-                <label class="fieldLabel" for="reminderIntervalMinutes">
-                  Remind me after (minutes)
-                </label>
-                <div class="presets" role="group" aria-label="Quick intervals">
-                  <button class="preset" type="button" data-minutes="30">30</button>
-                  <button class="preset" type="button" data-minutes="60">60</button>
-                  <button class="preset" type="button" data-minutes="90">90</button>
-                </div>
-                <input
-                  type="number"
-                  id="reminderIntervalMinutes"
-                  min="1"
-                  max="240"
-                  step="1"
-                />
-              </div>
-              <div class="actions actions--snooze">
-                <button class="btn btn--secondary" id="snooze10" type="button">Snooze 10m</button>
-                <button class="btn btn--secondary" id="snooze30" type="button">Snooze 30m</button>
-              </div>
-              <button class="btn btn--link" id="resetTimer" type="button">Reset activity timer</button>
-
-              <div class="settingsDivider" aria-hidden="true"></div>
-
-              <h4 class="settingsSectionTitle">Privacy</h4>
-              <p class="settingsSectionHint">Everything stays on this device unless you opt in to cloud backup below.</p>
-              <ul class="settingsPrivacyList">
-                <li>
-                  <span class="settingsPrivacyLabel">We track</span>
-                  Activity timing (keyboard, mouse, and tab focus) to schedule breaks.
-                </li>
-                <li>
-                  <span class="settingsPrivacyLabel">We store</span>
-                  Check-ins and relief sessions you save in the popup.
-                </li>
-                <li>
-                  <span class="settingsPrivacyLabel">We never log</span>
-                  What you type, page content, screenshots, or camera data.
-                </li>
-              </ul>
-              <div class="settingsDivider" aria-hidden="true"></div>
-
-              <div id="syncSection">
-                <h4 class="settingsSectionTitle">Optional cloud backup</h4>
-                <p class="settingsSectionHint" id="syncHint">
-                  Back up check-ins, sessions, and reminder settings across devices. Off by default.
-                </p>
-                <p class="syncStatus" id="syncStatus" hidden role="status"></p>
-
-                <div id="syncSignedOut">
-                  <div class="field">
-                    <label class="fieldLabel" for="syncEmail">Email</label>
-                    <input type="email" id="syncEmail" autocomplete="username" />
-                  </div>
-                  <div class="field">
-                    <label class="fieldLabel" for="syncPassword">Password</label>
-                    <input type="password" id="syncPassword" autocomplete="current-password" />
-                  </div>
-                  <button class="btn--actionRow" id="syncSignIn" type="button">Sign in to sync</button>
-                </div>
-
-                <div id="syncSignedIn" hidden>
-                  <p class="syncAccount" id="syncAccount"></p>
-                  <label class="toggle syncToggle">
-                    <input type="checkbox" id="syncEnabled" />
-                    <span class="toggleTrack" aria-hidden="true"></span>
-                    <span class="toggleLabel">Enable cloud backup</span>
-                  </label>
-                  <button class="btn--actionRow" id="syncNow" type="button">Sync now</button>
-                  <button class="btn--actionRow" id="syncSignOut" type="button">Sign out</button>
-                </div>
-              </div>
-
-              <div class="settingsDivider" aria-hidden="true"></div>
-
-              <h4 class="settingsSectionTitle">Your data</h4>
-              <p class="settingsSectionHint">Export or manage your local data anytime.</p>
-              <button class="btn--actionRow" id="exportData" type="button">
-                Export data
-              </button>
-              <button class="btn--actionRow btn--actionRowDanger" id="clearData" type="button">
-                Clear my data
-              </button>
-
-              <p class="settingsDisclaimer">ActiveAid supports wellness habits. It is not a medical or diagnostic tool.</p>
-            </div>
-          </details>
         </div>
 
         <div id="viewCheckIn" class="view view--checkin" hidden>
@@ -383,6 +268,110 @@
             </button>
           </div>
         </div>
+        <div id="viewSettings" class="view view--settings" hidden>
+          <header class="settingsViewHeader">
+            <div class="settingsViewHeaderText">
+              <h2 class="settingsViewTitle">Settings</h2>
+              <p class="settingsViewSubtitle">Reminders, privacy, and your data.</p>
+            </div>
+            <div class="settingsViewHeaderIcon" id="settingsViewHeaderIcon" aria-hidden="true"></div>
+          </header>
+
+          <section class="card settingsCard">
+            <h3 class="settingsSectionTitle">Reminders</h3>
+            <p class="settingsSectionHint">Gentle nudges after continuous activity on this device.</p>
+            <label class="toggle">
+              <input type="checkbox" id="notificationsEnabled" />
+              <span class="toggleTrack" aria-hidden="true"></span>
+              <span class="toggleLabel">Enable gentle reminders</span>
+            </label>
+            <div class="field">
+              <label class="fieldLabel" for="reminderIntervalMinutes">
+                Remind me after (minutes)
+              </label>
+              <div class="presets" role="group" aria-label="Quick intervals">
+                <button class="preset" type="button" data-minutes="30">30</button>
+                <button class="preset" type="button" data-minutes="60">60</button>
+                <button class="preset" type="button" data-minutes="90">90</button>
+              </div>
+              <input
+                type="number"
+                id="reminderIntervalMinutes"
+                min="1"
+                max="240"
+                step="1"
+              />
+            </div>
+            <div class="actions actions--snooze">
+              <button class="btn btn--secondary" id="snooze10" type="button">Snooze 10m</button>
+              <button class="btn btn--secondary" id="snooze30" type="button">Snooze 30m</button>
+            </div>
+            <button class="btn--link" id="resetTimer" type="button">Reset activity timer</button>
+          </section>
+
+          <section class="card settingsCard">
+            <h3 class="settingsSectionTitle">Privacy</h3>
+            <p class="settingsSectionHint">Everything stays on this device unless you opt in to cloud backup below.</p>
+            <ul class="settingsPrivacyList">
+              <li>
+                <span class="settingsPrivacyLabel">We track</span>
+                Activity timing (keyboard, mouse, and tab focus) to schedule breaks.
+              </li>
+              <li>
+                <span class="settingsPrivacyLabel">We store</span>
+                Check-ins and relief sessions you save in the popup.
+              </li>
+              <li>
+                <span class="settingsPrivacyLabel">We never log</span>
+                What you type, page content, screenshots, or camera data.
+              </li>
+            </ul>
+          </section>
+
+          <section class="card settingsCard" id="syncSection">
+            <h3 class="settingsSectionTitle">Optional cloud backup</h3>
+            <p class="settingsSectionHint" id="syncHint">
+              Back up check-ins, sessions, and reminder settings across devices. Off by default.
+            </p>
+            <p class="syncStatus" id="syncStatus" hidden role="status"></p>
+
+            <div id="syncSignedOut">
+              <div class="field">
+                <label class="fieldLabel" for="syncEmail">Email</label>
+                <input type="email" id="syncEmail" autocomplete="username" />
+              </div>
+              <div class="field">
+                <label class="fieldLabel" for="syncPassword">Password</label>
+                <input type="password" id="syncPassword" autocomplete="current-password" />
+              </div>
+              <button class="btn--actionRow" id="syncSignIn" type="button">Sign in to sync</button>
+            </div>
+
+            <div id="syncSignedIn" hidden>
+              <p class="syncAccount" id="syncAccount"></p>
+              <label class="toggle syncToggle">
+                <input type="checkbox" id="syncEnabled" />
+                <span class="toggleTrack" aria-hidden="true"></span>
+                <span class="toggleLabel">Enable cloud backup</span>
+              </label>
+              <button class="btn--actionRow" id="syncNow" type="button">Sync now</button>
+              <button class="btn--actionRow" id="syncSignOut" type="button">Sign out</button>
+            </div>
+          </section>
+
+          <section class="card settingsCard">
+            <h3 class="settingsSectionTitle">Your data</h3>
+            <p class="settingsSectionHint">Export or manage your local data anytime.</p>
+            <button class="btn--actionRow" id="exportData" type="button">
+              Export data
+            </button>
+            <button class="btn--actionRow btn--actionRowDanger" id="clearData" type="button">
+              Clear my data
+            </button>
+          </section>
+
+          <p class="settingsDisclaimer">ActiveAid supports wellness habits. It is not a medical or diagnostic tool.</p>
+        </div>
       </main>
 
       <nav class="nav" id="nav">
@@ -397,6 +386,10 @@
         <button class="navBtn" type="button" data-view="insights">
           <span class="navBtnIcon" aria-hidden="true"></span>
           <span class="navBtnLabel">Insights</span>
+        </button>
+        <button class="navBtn" type="button" data-view="settings">
+          <span class="navBtnIcon" aria-hidden="true"></span>
+          <span class="navBtnLabel">Settings</span>
         </button>
       </nav>
     </div>
