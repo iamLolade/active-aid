@@ -5,7 +5,7 @@ import {
   storageSyncGet,
   storageSyncSet,
   storageSyncRemove,
-} from "./chrome-api.js"
+} from "./browser-api.js"
 import { todayDateKey } from "./checkins.js"
 import { buildWellnessSummary } from "./wellness.js"
 

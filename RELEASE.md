@@ -2,6 +2,10 @@
 
 Use this before sharing the extension or deploying the web app.
 
+## 0. Automated validation
+- [ ] `npm run validate` succeeds (tests, lint, and production build)
+- [ ] `npm run package:extension` succeeds
+
 ## 1. Environment
 - [ ] `.env` exists locally (never commit it)
 - [ ] `NEXT_PUBLIC_SUPABASE_URL` set
@@ -66,7 +70,7 @@ Run with Supabase configured and an existing test account.
 | 7 | Confirm **Delete cloud backup data** | Backup turns off; cloud rows are deleted; local wellness data remains |
 | 8 | Sign out | Local sign-in session is cleared; local and existing cloud wellness data remain |
 
-**Code-verified (2026-09-06):** lint, production build, and extension packaging pass. Installed-extension and live-sync sign-off remain manual.
+**Code-verified (2026-09-06):** automated tests, lint, production build, and extension packaging pass. Installed-extension and live-sync sign-off remain manual.
 
 **Manual sign-off:** _________________ Date: _________
 

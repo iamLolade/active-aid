@@ -18,7 +18,7 @@ npm install
 Copy `.env.example` to `.env` and add your Supabase credentials.
 
 ### 3. Apply database migration
-Run `supabase/migrations/0001_init.sql` in the Supabase SQL Editor (see `supabase/README.md`).
+Apply the migrations through `supabase/migrations/0003_cloud_data_delete_policies.sql` in order (see `supabase/README.md`).
 
 ### 4. Run web app
 ```bash
@@ -36,6 +36,8 @@ See `extension/README.md` for Chrome load-unpacked steps.
 | `npm run build` | Production build |
 | `npm run start` | Run production server |
 | `npm run lint` | ESLint |
+| `npm test` | Run deterministic extension logic tests |
+| `npm run validate` | Run tests, lint, and the production build |
 | `npm run package:extension` | Zip extension to `dist/` (Chrome, Edge, Firefox) |
 | `npm run sync:config` | Write extension Supabase config from `.env` |
 

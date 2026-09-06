@@ -5,9 +5,10 @@ import { todayDateKey, getSeverityLabel, getBodyAreaLabel } from "./checkins.js"
  * @param {import("./storage.js").SessionLog[]} sessionLogs
  * @param {{ activityMs: number, reminders: number }} daily
  */
-export function buildWellnessSummary(checkIns, sessionLogs, daily) {
-  const today = todayDateKey()
-  const startOfDay = new Date()
+export function buildWellnessSummary(checkIns, sessionLogs, daily, currentDate = new Date()) {
+  const currentMs = currentDate.getTime()
+  const today = todayDateKey(currentDate)
+  const startOfDay = new Date(currentDate)
   startOfDay.setHours(0, 0, 0, 0)
   const dayStart = startOfDay.getTime()
 
@@ -17,7 +18,7 @@ export function buildWellnessSummary(checkIns, sessionLogs, daily) {
     sessionsToday.reduce((sum, l) => sum + l.durationSeconds, 0) / 60
   )
 
-  const weekStartMs = Date.now() - 7 * 86_400_000
+  const weekStartMs = currentMs - 7 * 86_400_000
   const sessionsLast7Days = sessionLogs.filter((l) => l.completedAt >= weekStartMs).length
 
   const activeMinutesToday = Math.round((daily.activityMs ?? 0) / 60_000)
@@ -25,7 +26,7 @@ export function buildWellnessSummary(checkIns, sessionLogs, daily) {
   const todayCheckIn = checkIns.find((c) => c.date === today) ?? null
   const checkInStreak = computeCheckInStreak(checkIns, today)
 
-  const last7 = lastNDays(7)
+  const last7 = lastNDays(7, currentDate)
   const discomfortTrend = last7.map((date) => {
     const entry = checkIns.find((c) => c.date === date)
     return entry
@@ -33,7 +34,7 @@ export function buildWellnessSummary(checkIns, sessionLogs, daily) {
       : { date, severity: null, label: "Not logged" }
   })
 
-  const areaCounts = countBodyAreas(checkIns, 30)
+  const areaCounts = countBodyAreas(checkIns, 30, currentMs)
   const topBodyAreas = Object.entries(areaCounts)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
@@ -55,7 +56,8 @@ export function buildWellnessSummary(checkIns, sessionLogs, daily) {
 function computeCheckInStreak(checkIns, today) {
   const dates = new Set(checkIns.map((c) => c.date))
   let streak = 0
-  let cursor = new Date(today)
+  const [year, month, day] = today.split("-").map(Number)
+  const cursor = new Date(year, month - 1, day)
 
   for (let i = 0; i < 365; i++) {
     const key = todayDateKey(cursor)
@@ -67,8 +69,8 @@ function computeCheckInStreak(checkIns, today) {
   return streak
 }
 
-function countBodyAreas(checkIns, days) {
-  const since = Date.now() - days * 86_400_000
+function countBodyAreas(checkIns, days, currentMs) {
+  const since = currentMs - days * 86_400_000
   const counts = {}
 
   for (const entry of checkIns) {
@@ -81,11 +83,10 @@ function countBodyAreas(checkIns, days) {
   return counts
 }
 
-function lastNDays(n) {
+function lastNDays(n, currentDate) {
   const out = []
-  const d = new Date()
   for (let i = n - 1; i >= 0; i--) {
-    const copy = new Date(d)
+    const copy = new Date(currentDate)
     copy.setDate(copy.getDate() - i)
     out.push(todayDateKey(copy))
   }

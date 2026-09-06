@@ -27,7 +27,7 @@ import {
 } from "../shared/sync.js"
 import { formatCountdown, minutesToMs, msToRoundedMinutes, nowMs } from "../shared/time.js"
 import { isActivityRecent } from "../shared/activity.js"
-import { runtimeSendMessage } from "../shared/chrome-api.js"
+import { runtimeSendMessage } from "../shared/browser-api.js"
 import { SESSIONS, getSessionById, getTotalDurationSeconds } from "../shared/sessions.js"
 import {
   SEVERITIES,

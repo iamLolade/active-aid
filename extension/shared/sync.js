@@ -1,5 +1,5 @@
 import { SUPABASE_URL, SUPABASE_ANON_KEY, isSyncConfigured } from "./sync-config.js"
-import { storageLocalGet, storageLocalSet, storageLocalRemove } from "./chrome-api.js"
+import { storageLocalGet, storageLocalSet, storageLocalRemove } from "./browser-api.js"
 import {
   getSettings,
   setSettings,

@@ -2,11 +2,14 @@
   "name": "active-aid",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "node --test tests",
+    "validate": "npm test && npm run lint && npm run build",
     "package:extension": "node scripts/package-extension.mjs",
     "sync:config": "node scripts/generate-sync-config.mjs"
   },

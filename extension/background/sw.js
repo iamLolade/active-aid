@@ -21,8 +21,9 @@ import {
   isOnboardingComplete,
   setQuickReliefIntent,
 } from "../shared/storage.js"
-import { minutesToMs, msToRoundedMinutes, nowMs } from "../shared/time.js"
+import { minutesToMs, nowMs } from "../shared/time.js"
 import { isActivityRecent } from "../shared/activity.js"
+import { getReminderDecision } from "../shared/reminders.js"
 
 const ALARM_NAME = "activeaid:tick"
 const TICK_MINUTES = 1
@@ -163,39 +164,18 @@ async function tick() {
   const settings = await getSettings()
   const state = await getRuntimeState()
   const t = nowMs()
+  const decision = getReminderDecision({ settings, runtime: state, currentMs: t })
 
-  await setRuntimeState({ lastTickMs: t, lastDecision: "tick", lastNotificationError: null })
+  await setRuntimeState({
+    lastTickMs: t,
+    lastDecision: decision.status,
+    lastNotificationError: null,
+    ...(decision.clearActiveSession ? { activeSinceMs: null } : {}),
+  })
 
-  if (!settings.notificationsEnabled) {
-    await setRuntimeState({ lastDecision: "disabled" })
-    return
-  }
+  if (decision.status !== "due") return
 
-  if (state.activeSinceMs == null || state.lastActivityMs == null) {
-    await setRuntimeState({ lastDecision: "no-activity" })
-    return
-  }
-
-  if (!isActivityRecent(state.lastActivityMs, t)) {
-    await setRuntimeState({ activeSinceMs: null, lastDecision: "inactive" })
-    return
-  }
-
-  if (state.snoozedUntilMs != null && t < state.snoozedUntilMs) {
-    await setRuntimeState({ lastDecision: "snoozed" })
-    return
-  }
-
-  const reminderIntervalMs = minutesToMs(settings.reminderIntervalMinutes)
-  const activeDurationMs = t - state.activeSinceMs
-
-  if (activeDurationMs < reminderIntervalMs) {
-    await setRuntimeState({ lastDecision: "waiting" })
-    return
-  }
-
-  const minutes = msToRoundedMinutes(activeDurationMs)
-  const ok = await showReminder(minutes)
+  const ok = await showReminder(decision.activeMinutes)
   if (!ok) return
 
   await recordReminderShown()

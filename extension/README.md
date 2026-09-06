@@ -46,6 +46,14 @@ Cross-browser MV3 extension for **Chrome**, **Edge**, and **Firefox**.
 
 Configure sync: `npm run sync:config` (see `supabase/README.md`).
 
+## Validate changes
+```bash
+npm test
+npm run validate
+```
+
+The tests cover reminder decisions and inactivity boundaries, wellness-summary date logic, time helpers, and relief-session catalog integrity. Installed notification, permission, and browser-lifecycle behavior still requires the manual release checklist.
+
 ## Package for stores
 ```bash
 npm run package:extension
