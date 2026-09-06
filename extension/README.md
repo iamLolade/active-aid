@@ -23,6 +23,8 @@ Cross-browser MV3 extension for **Chrome**, **Edge**, and **Firefox**.
 - Open any `https://` webpage and interact (mouse/keyboard).
 - Open the popup, enable reminders, and pick an interval (30 / 60 / 90 presets).
 - After your chosen interval of continuous activity, you should receive a gentle notification.
+- Select **Choose a quick reset** (or the notification body) to open ActiveAid at the expanded Quick Relief list. **Snooze 10m** delays the next nudge.
+- Stop interacting for five minutes and confirm stale activity does not produce a reminder.
 
 ## Wellness sessions
 - In the popup, open **Quick relief** and start any session (neck, wrist, lower back, shoulder, eyes).

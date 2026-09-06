@@ -44,7 +44,7 @@ ActiveAid is a calm wellness companion for desk workers.
 It helps you build healthier work habits with gentle movement reminders, short guided relief sessions at your desk, and a simple daily check-in. Everything stays on your device by default. No account required.
 
 WHAT YOU GET
-• Gentle reminders after sustained activity (with snooze and reset)
+• Gentle reminders after sustained activity, with a direct path to Quick Relief
 • Quick relief sessions for neck, wrist, lower back, and more
 • Daily check-in to log how your body feels
 • Simple Insights from your local data (streaks, trends, breaks)

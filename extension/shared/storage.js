@@ -15,7 +15,9 @@ const SESSION_LOGS_KEY = "activeaid:sessionLogs"
 const CHECKINS_KEY = "activeaid:checkins"
 const DAILY_KEY = "activeaid:daily"
 const ONBOARDING_KEY = "activeaid:onboarding"
+const REMINDER_INTENT_KEY = "activeaid:reminderIntent"
 const PRIVACY_CONSENT_VERSION = 1
+const REMINDER_INTENT_TTL_MS = 5 * 60 * 1000
 
 const MAX_SESSION_LOGS = 200
 const MAX_CHECKINS = 400
@@ -208,6 +210,26 @@ export async function recordReminderShown() {
   return next
 }
 
+export async function setQuickReliefIntent() {
+  await storageLocalSet({
+    [REMINDER_INTENT_KEY]: {
+      type: "quick-relief",
+      createdAt: Date.now(),
+    },
+  })
+}
+
+export async function consumeQuickReliefIntent() {
+  const stored = await storageLocalGet(REMINDER_INTENT_KEY)
+  await storageLocalRemove(REMINDER_INTENT_KEY)
+
+  const intent = stored?.[REMINDER_INTENT_KEY]
+  const createdAt = numberOrNull(intent?.createdAt)
+  if (intent?.type !== "quick-relief" || createdAt == null) return false
+  const ageMs = Date.now() - createdAt
+  return ageMs >= 0 && ageMs <= REMINDER_INTENT_TTL_MS
+}
+
 export async function getWellnessSummary() {
   const [checkIns, sessionLogs, daily] = await Promise.all([
     getCheckIns(),
@@ -252,6 +274,7 @@ export async function clearAllData() {
       CHECKINS_KEY,
       DAILY_KEY,
       ONBOARDING_KEY,
+      REMINDER_INTENT_KEY,
       "activeaid:sync",
     ]),
     storageSyncRemove([SETTINGS_KEY]),

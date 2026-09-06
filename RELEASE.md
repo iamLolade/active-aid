@@ -22,6 +22,8 @@ Use this before sharing the extension or deploying the web app.
 ## 4. Extension (Chrome)
 - [ ] Load unpacked from `extension/` (or install packaged zip)
 - [ ] Reminders: enable, set interval, receive notification after active time
+- [ ] Reminder notification opens the expanded Quick Relief list
+- [ ] Five minutes without activity prevents a stale reminder
 - [ ] Quick relief: start session, countdown runs, complete session
 - [ ] Check-in: save severity + optional body areas
 - [ ] Insights: stats update after sessions and check-ins
@@ -43,9 +45,11 @@ Run this end-to-end on a fresh install (or after **Clear my data** in Settings).
 | 7 | Check-in tab: pick severity, optional areas, **Save check-in** | Saved note appears; Today row updates |
 | 8 | Insights tab | Stats, 7-day trend, and areas reflect steps 6–7 |
 | 9 | Settings → **Export data** | JSON downloads; check-ins/sessions match Insights |
-| 10 | Snooze 10m / Reset timer | Hero status updates (Snoozed / timer reset) |
-| 11 | Settings → **Clear my data** → confirm | Onboarding shows again; Insights empty after re-onboarding |
-| 12 | Block notifications (Chrome site settings) with reminders on | Banner on Today explains how to re-enable |
+| 10 | Notification → **Choose a quick reset** | Popup opens at the expanded Quick Relief list with the first session focused |
+| 11 | Notification → **Snooze 10m** / Settings → **Reset activity timer** | Hero status updates (Snoozed / timer reset) |
+| 12 | Stop activity for five minutes before a reminder is due | No stale reminder appears; new activity starts a fresh timer |
+| 13 | Settings → **Clear my data** → confirm | Onboarding shows again; Insights empty after re-onboarding |
+| 14 | Block notifications (Chrome site settings) with reminders on | Banner on Today explains how to re-enable |
 
 ### 4c. Optional cloud backup consent
 

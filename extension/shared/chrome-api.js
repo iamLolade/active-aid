@@ -12,6 +12,8 @@ export {
   storageLocalSet,
   storageLocalRemove,
   notificationsCreate,
+  openActionPopup,
+  tabsCreate,
   alarmsCreate,
   alarmsGet,
   runtimeSendMessage,

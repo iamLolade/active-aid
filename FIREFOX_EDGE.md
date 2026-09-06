@@ -79,7 +79,9 @@ Run on each browser before publishing:
 - [ ] No activity timing begins before onboarding consent
 - [ ] Activity timer updates after mouse/keyboard on a web page
 - [ ] Reminder notification fires after interval (or use debug tick if needed)
-- [ ] Snooze and reset timer update hero status
+- [ ] Notification body and **Choose a quick reset** open the expanded Quick Relief list
+- [ ] **Snooze 10m** and Settings → reset timer update hero status
+- [ ] Five minutes without activity prevents a stale reminder
 - [ ] Quick Relief session completes and logs locally
 - [ ] Check-in saves; Insights updates
 - [ ] Export downloads JSON; Clear data resets to onboarding

@@ -105,6 +105,16 @@ export function notificationsCreate(notificationId, options) {
   })
 }
 
+export function openActionPopup() {
+  const action = ns.action ?? ns.browserAction
+  if (!action?.openPopup) return Promise.reject(new Error("Opening the extension popup is unsupported"))
+  return action.openPopup()
+}
+
+export function tabsCreate(createProperties) {
+  return promisify((cb) => ns.tabs.create(createProperties, cb))
+}
+
 // --- Alarms ---
 
 export function alarmsCreate(name, alarmInfo) {
@@ -160,6 +170,10 @@ export function onNotificationButtonClicked(handler) {
   ns.notifications.onButtonClicked.addListener(handler)
 }
 
+export function onNotificationClicked(handler) {
+  ns.notifications.onClicked.addListener(handler)
+}
+
 // --- Alarms listener ---
 
 export function onAlarm(handler) {
@@ -181,4 +195,3 @@ export function onStartup(handler) {
 export function onMessage(handler) {
   ns.runtime.onMessage.addListener(handler)
 }
-

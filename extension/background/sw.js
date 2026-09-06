@@ -3,10 +3,13 @@ import {
   alarmsGet,
   getURL,
   notificationsCreate,
+  openActionPopup,
+  tabsCreate,
   onAlarm,
   onInstalled,
   onMessage,
   onNotificationButtonClicked,
+  onNotificationClicked,
   onStartup,
 } from "../shared/browser-api.js"
 import {
@@ -16,13 +19,14 @@ import {
   recordActivityMs,
   recordReminderShown,
   isOnboardingComplete,
+  setQuickReliefIntent,
 } from "../shared/storage.js"
 import { minutesToMs, msToRoundedMinutes, nowMs } from "../shared/time.js"
+import { isActivityRecent } from "../shared/activity.js"
 
 const ALARM_NAME = "activeaid:tick"
 const TICK_MINUTES = 1
 
-const DEFAULT_INACTIVITY_RESET_MINUTES = 5
 const NOTIFICATION_SNOOZE_MINUTES = 10
 const ACTIVITY_PING_CAP_MS = 10_000
 
@@ -51,14 +55,19 @@ onNotificationButtonClicked((notificationId, buttonIndex) => {
   if (!notificationId || !notificationId.startsWith("activeaid:reminder:")) return
 
   if (buttonIndex === 0) {
+    void openQuickRelief()
+  }
+
+  if (buttonIndex === 1) {
     void setRuntimeState({
       snoozedUntilMs: nowMs() + minutesToMs(NOTIFICATION_SNOOZE_MINUTES),
     })
   }
+})
 
-  if (buttonIndex === 1) {
-    void resetActiveSession()
-  }
+onNotificationClicked((notificationId) => {
+  if (!notificationId || !notificationId.startsWith("activeaid:reminder:")) return
+  void openQuickRelief()
 })
 
 onMessage((message, _sender, sendResponse) => {
@@ -109,13 +118,12 @@ async function handleActivityPing() {
   const t = nowMs()
   const state = await getRuntimeState()
 
-  const inactiveResetMs = minutesToMs(DEFAULT_INACTIVITY_RESET_MINUTES)
   const lastActivityMs = state.lastActivityMs ?? null
 
   const shouldStartNewSession =
     state.activeSinceMs == null ||
     lastActivityMs == null ||
-    t - lastActivityMs > inactiveResetMs
+    !isActivityRecent(lastActivityMs, t)
 
   if (!shouldStartNewSession && lastActivityMs != null) {
     const delta = Math.min(t - lastActivityMs, ACTIVITY_PING_CAP_MS)
@@ -137,6 +145,20 @@ async function resetActiveSession() {
   })
 }
 
+async function openQuickRelief() {
+  await setQuickReliefIntent()
+
+  try {
+    await openActionPopup()
+  } catch {
+    try {
+      await tabsCreate({ url: getURL("popup/popup.html") })
+    } catch {
+      // The intent remains available when the user next opens ActiveAid.
+    }
+  }
+}
+
 async function tick() {
   const settings = await getSettings()
   const state = await getRuntimeState()
@@ -149,13 +171,18 @@ async function tick() {
     return
   }
 
-  if (state.snoozedUntilMs != null && t < state.snoozedUntilMs) {
-    await setRuntimeState({ lastDecision: "snoozed" })
+  if (state.activeSinceMs == null || state.lastActivityMs == null) {
+    await setRuntimeState({ lastDecision: "no-activity" })
     return
   }
 
-  if (state.activeSinceMs == null || state.lastActivityMs == null) {
-    await setRuntimeState({ lastDecision: "no-activity" })
+  if (!isActivityRecent(state.lastActivityMs, t)) {
+    await setRuntimeState({ activeSinceMs: null, lastDecision: "inactive" })
+    return
+  }
+
+  if (state.snoozedUntilMs != null && t < state.snoozedUntilMs) {
+    await setRuntimeState({ lastDecision: "snoozed" })
     return
   }
 
@@ -190,7 +217,10 @@ async function showReminder(activeMinutes) {
       title: "ActiveAid",
       message: `You've been active for about ${activeMinutes} minutes. Want a quick movement break?`,
       priority: 0,
-      buttons: [{ title: `Snooze ${NOTIFICATION_SNOOZE_MINUTES}m` }, { title: "Reset timer" }],
+      buttons: [
+        { title: "Choose a quick reset" },
+        { title: `Snooze ${NOTIFICATION_SNOOZE_MINUTES}m` },
+      ],
     })
     return true
   } catch (err) {

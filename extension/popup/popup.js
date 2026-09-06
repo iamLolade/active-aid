@@ -12,6 +12,7 @@ import {
   completeOnboarding,
   exportAllData,
   clearAllData,
+  consumeQuickReliefIntent,
 } from "../shared/storage.js"
 import {
   isSyncConfigured,
@@ -25,6 +26,7 @@ import {
   setSyncError,
 } from "../shared/sync.js"
 import { formatCountdown, minutesToMs, msToRoundedMinutes, nowMs } from "../shared/time.js"
+import { isActivityRecent } from "../shared/activity.js"
 import { runtimeSendMessage } from "../shared/chrome-api.js"
 import { SESSIONS, getSessionById, getTotalDurationSeconds } from "../shared/sessions.js"
 import {
@@ -106,6 +108,7 @@ const els = {
   syncAccount: document.getElementById("syncAccount"),
   presets: document.querySelectorAll(".preset"),
   sessionList: document.getElementById("sessionList"),
+  quickReliefSection: document.getElementById("quickReliefSection"),
   sessionStats: document.getElementById("sessionStats"),
   severityGroup: document.getElementById("severityGroup"),
   bodyAreaGroup: document.getElementById("bodyAreaGroup"),
@@ -175,6 +178,7 @@ async function init() {
   }
 
   await hydrate()
+  await handleQuickReliefIntent()
   startPolling()
 }
 
@@ -1033,6 +1037,18 @@ function openSession(sessionId) {
   startSessionTicker()
 }
 
+async function handleQuickReliefIntent() {
+  if (!(await consumeQuickReliefIntent())) return
+
+  activeTab = "home"
+  showAllQuickRelief = true
+  setActiveTab("home")
+  renderSessionList()
+  updateQuickReliefToggleLabel()
+  els.quickReliefSection?.scrollIntoView({ block: "start" })
+  els.sessionList?.querySelector("button")?.focus({ preventScroll: true })
+}
+
 function closeSession() {
   stopSessionTicker()
   player.session = null
@@ -1165,9 +1181,12 @@ async function hydrate() {
   els.reminderIntervalMinutes.value = String(settings.reminderIntervalMinutes)
   updatePresetHighlight()
 
+  const currentMs = nowMs()
   const activeMinutes =
-    runtime.activeSinceMs != null ? msToRoundedMinutes(nowMs() - runtime.activeSinceMs) : null
-  const isSnoozed = runtime.snoozedUntilMs != null && nowMs() < runtime.snoozedUntilMs
+    runtime.activeSinceMs != null && isActivityRecent(runtime.lastActivityMs, currentMs)
+      ? msToRoundedMinutes(currentMs - runtime.activeSinceMs)
+      : null
+  const isSnoozed = runtime.snoozedUntilMs != null && currentMs < runtime.snoozedUntilMs
 
   void updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed })
   void updateTodayNudges(todayCheckIn)
