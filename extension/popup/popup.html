@@ -4,18 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>ActiveAid</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="./popup.css" />
   </head>
   <body>
     <div class="app">
-      <div class="banner banner--error" id="errorBanner" hidden>
+      <div class="banner banner--error" id="errorBanner" role="alert" hidden>
         <span id="errorText"></span>
+        <button class="bannerDismiss" id="errorDismiss" type="button" aria-label="Dismiss message">×</button>
       </div>
 
       <main class="main">
@@ -163,7 +158,7 @@
             <button class="btn btn--primary btn--save" id="saveCheckIn" type="button">
               Save check-in
             </button>
-            <p class="formNote" id="checkInSavedNote" hidden>
+            <p class="formNote" id="checkInSavedNote" role="status" hidden>
               Saved for today. You can update anytime.
             </p>
           </div>
@@ -219,7 +214,7 @@
           <div class="sessionProgressBlock">
             <div class="sessionProgressTop">
               <p class="stepProgress" id="stepProgress"></p>
-              <div class="stepTimer" aria-live="polite">
+              <div class="stepTimer">
                 <span class="stepTimerLabel">
                   <span class="stepTimerIcon" id="stepTimerIcon" aria-hidden="true"></span>
                   Step time
@@ -247,7 +242,7 @@
             <div class="stepCardInner">
               <div class="stepIllustration" id="stepIllustration" aria-hidden="true"></div>
               <div class="stepCardBody">
-                <h3 class="stepTitle" id="stepTitle"></h3>
+                <h3 class="stepTitle" id="stepTitle" tabindex="-1"></h3>
                 <p class="stepInstruction" id="stepInstruction"></p>
                 <p class="stepDisclaimer">Move gently. Stop if it hurts.</p>
               </div>
@@ -260,11 +255,11 @@
               Previous
             </button>
             <button class="btn btn--primary btn--sessionNext" id="stepNext" type="button">
-              Next
+              <span>Next</span>
               <span class="btnIcon" id="stepNextIcon" aria-hidden="true"></span>
             </button>
             <button class="btn btn--primary btn--sessionNext" id="stepComplete" type="button" hidden>
-              Complete
+              <span id="stepCompleteLabel">Complete</span>
               <span class="btnIcon" id="stepCompleteIcon" aria-hidden="true"></span>
             </button>
           </div>
@@ -337,17 +332,17 @@
             </p>
             <p class="syncStatus" id="syncStatus" hidden role="status"></p>
 
-            <div id="syncSignedOut">
+            <form id="syncSignedOut">
               <div class="field">
                 <label class="fieldLabel" for="syncEmail">Email</label>
-                <input type="email" id="syncEmail" autocomplete="username" />
+                <input type="email" id="syncEmail" autocomplete="username" required />
               </div>
               <div class="field">
                 <label class="fieldLabel" for="syncPassword">Password</label>
-                <input type="password" id="syncPassword" autocomplete="current-password" />
+                <input type="password" id="syncPassword" autocomplete="current-password" required />
               </div>
-              <button class="btn--actionRow" id="syncSignIn" type="button">Sign in</button>
-            </div>
+              <button class="btn--actionRow" id="syncSignIn" type="submit">Sign in</button>
+            </form>
 
             <div id="syncSignedIn" hidden>
               <p class="syncAccount" id="syncAccount"></p>
@@ -377,31 +372,44 @@
             <button class="btn--actionRow btn--actionRowDanger" id="clearData" type="button">
               Clear my data
             </button>
+            <p class="dataStatus" id="dataStatus" role="status" hidden></p>
           </section>
 
           <p class="settingsDisclaimer">ActiveAid supports wellness habits. It is not a medical or diagnostic tool.</p>
         </div>
       </main>
 
-      <nav class="nav" id="nav">
-        <button class="navBtn navBtn--active" type="button" data-view="home">
+      <nav class="nav" id="nav" aria-label="Primary navigation">
+        <button class="navBtn navBtn--active" type="button" data-view="home" aria-controls="viewHome" aria-current="page">
           <span class="navBtnIcon" aria-hidden="true"></span>
           <span class="navBtnLabel">Today</span>
         </button>
-        <button class="navBtn" type="button" data-view="checkin">
+        <button class="navBtn" type="button" data-view="checkin" aria-controls="viewCheckIn">
           <span class="navBtnIcon" aria-hidden="true"></span>
           <span class="navBtnLabel">Check-in</span>
         </button>
-        <button class="navBtn" type="button" data-view="insights">
+        <button class="navBtn" type="button" data-view="insights" aria-controls="viewDashboard">
           <span class="navBtnIcon" aria-hidden="true"></span>
           <span class="navBtnLabel">Insights</span>
         </button>
-        <button class="navBtn" type="button" data-view="settings">
+        <button class="navBtn" type="button" data-view="settings" aria-controls="viewSettings">
           <span class="navBtnIcon" aria-hidden="true"></span>
           <span class="navBtnLabel">Settings</span>
         </button>
       </nav>
     </div>
+
+    <dialog class="confirmDialog" id="confirmDialog" aria-labelledby="confirmDialogTitle" aria-describedby="confirmDialogDescription">
+      <form class="confirmDialogPanel" method="dialog">
+        <p class="confirmDialogEyebrow">Please confirm</p>
+        <h2 class="confirmDialogTitle" id="confirmDialogTitle"></h2>
+        <p class="confirmDialogDescription" id="confirmDialogDescription"></p>
+        <div class="confirmDialogActions">
+          <button class="btn btn--ghost" id="confirmDialogCancel" type="submit" value="cancel">Cancel</button>
+          <button class="btn btn--danger" id="confirmDialogSubmit" type="submit" value="confirm"></button>
+        </div>
+      </form>
+    </dialog>
 
     <script type="module" src="./popup.js"></script>
   </body>

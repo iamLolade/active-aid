@@ -75,7 +75,8 @@
 .sessionRow,
 .detailsSummary,
 .sessionBack,
-.btn--link {
+.btn--link,
+.bannerDismiss {
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -90,7 +91,8 @@
 .sessionRow:focus-visible,
 .detailsSummary:focus-visible,
 .sessionBack:focus-visible,
-.btn--link:focus-visible {
+.btn--link:focus-visible,
+.bannerDismiss:focus-visible {
   outline: var(--focus-ring);
   outline-offset: var(--focus-offset);
 }
@@ -231,10 +233,34 @@ body {
 }
 
 .banner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
   padding: 10px 12px;
   border-radius: 10px;
   font-size: 12px;
   line-height: 1.4;
+}
+
+.bannerDismiss {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  margin: -3px -4px -3px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: currentColor;
+  font: inherit;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.bannerDismiss:hover {
+  background: rgba(124, 63, 50, 0.1);
 }
 
 .banner--error {
@@ -1513,6 +1539,10 @@ input[type="text"]:focus {
   transform: translateY(1px);
 }
 
+.btn--actionRow[aria-busy="true"] {
+  cursor: wait;
+}
+
 .btn--actionRowDanger {
   border-color: rgba(201, 123, 99, 0.5);
   color: #8b5a48;
@@ -1521,6 +1551,18 @@ input[type="text"]:focus {
 .btn--actionRowDanger:hover:not(:disabled) {
   border-color: rgba(201, 123, 99, 0.85);
   background: rgba(201, 123, 99, 0.12);
+  color: #7c3f32;
+}
+
+.dataStatus {
+  margin: 10px 0 0;
+  color: #3d6b42;
+  font-size: 12px;
+  line-height: var(--leading-hint);
+  text-align: center;
+}
+
+.dataStatus--error {
   color: #7c3f32;
 }
 
@@ -2238,6 +2280,86 @@ input[type="text"]:focus {
   opacity: 0.85;
 }
 
+.btn--danger {
+  flex: 1;
+  border-color: #9f513f;
+  background: #9f513f;
+  color: #ffffff;
+}
+
+.btn--danger:hover:not(:disabled) {
+  border-color: #874433;
+  background: #874433;
+}
+
+.confirmDialog {
+  width: calc(100% - 32px);
+  max-width: 360px;
+  margin: auto;
+  padding: 0;
+  border: 1px solid rgba(209, 213, 219, 0.9);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  color: var(--slate);
+  box-shadow: var(--shadow-lg);
+}
+
+.confirmDialog::backdrop {
+  background: rgba(31, 41, 55, 0.46);
+}
+
+.confirmDialog[open] {
+  animation: dialogIn 160ms ease-out;
+}
+
+.confirmDialogPanel {
+  padding: 20px;
+}
+
+.confirmDialogEyebrow {
+  margin: 0 0 6px;
+  color: #8b5a48;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.confirmDialogTitle {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.confirmDialogDescription {
+  margin: 8px 0 0;
+  color: var(--slate-muted);
+  font-size: 13px;
+  line-height: var(--leading-hint);
+}
+
+.confirmDialogActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.confirmDialogActions .btn {
+  flex: 1;
+  min-height: 42px;
+}
+
+@keyframes dialogIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .iconBtn,
   .navBtn,
@@ -2273,7 +2395,8 @@ input[type="text"]:focus {
   }
 
   .stepCard--enter,
-  .btn--pulse {
+  .btn--pulse,
+  .confirmDialog[open] {
     animation: none !important;
   }
 }

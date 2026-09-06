@@ -40,6 +40,7 @@ Cross-browser MV3 extension for **Chrome**, **Edge**, and **Firefox**.
 - First run shows onboarding once (privacy + optional reminders).
 - Activity timing begins only after the user reviews onboarding and selects **Agree and get started**.
 - **Settings** in bottom navigation: reminders, privacy copy, **Export data**, and **Clear my data**.
+- Destructive local and cloud actions use an in-product confirmation dialog with keyboard cancellation and focus return.
 - **Optional cloud backup** (when Supabase is configured): signing in does not upload data. Turn on **Back up my wellness data** separately to sync check-ins, completed sessions, and reminder settings.
 - **Delete cloud backup data** removes backed-up records without deleting local wellness data.
 - See `RELEASE.md` section **4b** for the full individual user journey QA checklist.
@@ -52,7 +53,7 @@ npm test
 npm run validate
 ```
 
-The tests cover reminder decisions and inactivity boundaries, wellness-summary date logic, time helpers, and relief-session catalog integrity. Installed notification, permission, and browser-lifecycle behavior still requires the manual release checklist.
+The tests cover reminder decisions and inactivity boundaries, wellness-summary date logic, time helpers, and relief-session catalog integrity. Installed notification, permission, dialog, keyboard, and browser-lifecycle behavior still requires the manual release checklist.
 
 ## Package for stores
 ```bash

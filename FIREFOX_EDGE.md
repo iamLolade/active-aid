@@ -85,6 +85,8 @@ Run on each browser before publishing:
 - [ ] Quick Relief session completes and logs locally
 - [ ] Check-in saves; Insights updates
 - [ ] Export downloads JSON; Clear data resets to onboarding
+- [ ] Local and cloud deletion dialogs support Cancel, Escape, and focus return
+- [ ] Check-in radio options support arrow-key selection
 - [ ] Blocked notifications show banner on Today (when reminders on)
 
 ---

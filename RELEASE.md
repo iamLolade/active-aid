@@ -55,7 +55,16 @@ Run this end-to-end on a fresh install (or after **Clear my data** in Settings).
 | 13 | Settings → **Clear my data** → confirm | Onboarding shows again; Insights empty after re-onboarding |
 | 14 | Block notifications (Chrome site settings) with reminders on | Banner on Today explains how to re-enable |
 
-### 4c. Optional cloud backup consent
+### 4c. Keyboard and interaction states
+
+- [ ] Bottom navigation exposes the active destination and every item works by keyboard
+- [ ] Arrow keys move and select options in the Overall feeling radio group
+- [ ] Session steps move focus to the new instruction; Escape exits and returns focus
+- [ ] Local and cloud deletion dialogs focus Cancel, close with Escape, and return focus to their trigger
+- [ ] Sign-in submits with Enter and pending actions cannot be submitted twice
+- [ ] Failed check-in and session saves remain recoverable without reopening the popup
+
+### 4d. Optional cloud backup consent
 
 Run with Supabase configured and an existing test account.
 

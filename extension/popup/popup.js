@@ -51,6 +51,7 @@ import {
   sessionIcon,
   severityIcon,
 } from "./icons.js"
+import { createConfirmationDialog } from "./confirmation-dialog.js"
 
 const NAV_TAB_ICONS = {
   home: iconCalendar,
@@ -77,6 +78,8 @@ const els = {
   viewSettings: document.getElementById("viewSettings"),
   errorBanner: document.getElementById("errorBanner"),
   errorText: document.getElementById("errorText"),
+  errorDismiss: document.getElementById("errorDismiss"),
+  confirmDialog: document.getElementById("confirmDialog"),
   settingsViewHeaderIcon: document.getElementById("settingsViewHeaderIcon"),
   activeValue: document.getElementById("activeValue"),
   heroMeta: document.getElementById("heroMeta"),
@@ -93,6 +96,7 @@ const els = {
   resetTimer: document.getElementById("resetTimer"),
   exportData: document.getElementById("exportData"),
   clearData: document.getElementById("clearData"),
+  dataStatus: document.getElementById("dataStatus"),
   syncSection: document.getElementById("syncSection"),
   syncHint: document.getElementById("syncHint"),
   syncStatus: document.getElementById("syncStatus"),
@@ -134,7 +138,10 @@ const els = {
   stepPrev: document.getElementById("stepPrev"),
   stepNext: document.getElementById("stepNext"),
   stepComplete: document.getElementById("stepComplete"),
+  stepCompleteLabel: document.getElementById("stepCompleteLabel"),
 }
+
+const confirmAction = createConfirmationDialog(els.confirmDialog)
 
 const player = {
   session: null,
@@ -142,11 +149,13 @@ const player = {
   startedAt: null,
   stepStartedAt: null,
   tickId: null,
+  returnFocus: null,
 }
 const checkInForm = { severity: null, bodyAreas: new Set() }
 let activeTab = "home"
 let previousActiveTab = "home"
 let pollIntervalId = null
+let uiErrorMessage = ""
 
 await init()
 
@@ -170,6 +179,7 @@ async function init() {
   bindExport()
   bindClear()
   bindSync()
+  bindErrorBanner()
 
   if (!(await isOnboardingComplete())) {
     renderOnboardingChrome()
@@ -180,6 +190,48 @@ async function init() {
   await hydrate()
   await handleQuickReliefIntent()
   startPolling()
+}
+
+function bindErrorBanner() {
+  els.errorDismiss?.addEventListener("click", () => {
+    uiErrorMessage = ""
+    renderErrorBanner("")
+  })
+}
+
+function renderErrorBanner(message) {
+  if (!els.errorBanner || !els.errorText) return
+  els.errorBanner.hidden = !message
+  els.errorText.textContent = message
+}
+
+function showUiError(message) {
+  uiErrorMessage = message
+  renderErrorBanner(message)
+}
+
+async function runButtonAction(button, pendingLabel, action) {
+  if (!button || button.disabled) return undefined
+
+  const originalLabel = button.textContent.trim()
+  button.disabled = true
+  button.setAttribute("aria-busy", "true")
+  button.textContent = pendingLabel
+
+  try {
+    return await action()
+  } finally {
+    button.textContent = originalLabel
+    button.disabled = false
+    button.removeAttribute("aria-busy")
+  }
+}
+
+function setDataStatus(message, tone = "ok") {
+  if (!els.dataStatus) return
+  els.dataStatus.hidden = !message
+  els.dataStatus.textContent = message
+  els.dataStatus.classList.toggle("dataStatus--error", tone === "error")
 }
 
 function renderOnboardingChrome() {
@@ -203,7 +255,8 @@ function showOnboarding() {
   els.viewSession.hidden = true
   els.viewSettings.hidden = true
   els.nav.hidden = true
-  els.errorBanner.hidden = true
+  uiErrorMessage = ""
+  renderErrorBanner("")
 }
 
 async function finishOnboarding() {
@@ -400,7 +453,10 @@ function setActiveTab(tab) {
   activeTab = tab
   showMainView(tab)
   els.navBtns.forEach((btn) => {
-    btn.classList.toggle("navBtn--active", btn.dataset.view === tab)
+    const isActive = btn.dataset.view === tab
+    btn.classList.toggle("navBtn--active", isActive)
+    if (isActive) btn.setAttribute("aria-current", "page")
+    else btn.removeAttribute("aria-current")
   })
   if (tab === "insights") void renderDashboard()
   if (tab === "checkin") void loadCheckInForm()
@@ -419,6 +475,7 @@ function showMainView(tab) {
 
 function bindCheckIn() {
   els.saveCheckIn.addEventListener("click", () => void submitCheckIn())
+  els.severityGroup.addEventListener("keydown", handleSeverityKeydown)
 }
 
 function renderCheckInForm() {
@@ -430,6 +487,7 @@ function renderCheckInForm() {
     btn.dataset.severity = s.id
     btn.setAttribute("role", "radio")
     btn.setAttribute("aria-checked", "false")
+    btn.tabIndex = checkInForm.severity === s.id || (!checkInForm.severity && s === SEVERITIES[0]) ? 0 : -1
 
     const iconWrap = document.createElement("span")
     iconWrap.className = "severityOptionIcon"
@@ -467,12 +525,31 @@ function renderCheckInForm() {
 }
 
 function selectSeverity(id) {
-  checkInForm.severity = id || null
-  els.severityGroup.querySelectorAll(".severityOption").forEach((option) => {
-    const selected = Boolean(id && option.dataset.severity === id)
+  const selectedId = SEVERITIES.some((severity) => severity.id === id) ? id : null
+  checkInForm.severity = selectedId
+  const options = [...els.severityGroup.querySelectorAll(".severityOption")]
+  options.forEach((option, index) => {
+    const selected = Boolean(selectedId && option.dataset.severity === selectedId)
     option.classList.toggle("severityOption--selected", selected)
     option.setAttribute("aria-checked", selected ? "true" : "false")
+    option.tabIndex = selected || (!selectedId && index === 0) ? 0 : -1
   })
+  els.severityGroup.removeAttribute("aria-invalid")
+}
+
+function handleSeverityKeydown(event) {
+  if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return
+
+  const options = [...els.severityGroup.querySelectorAll(".severityOption")]
+  const currentIndex = options.indexOf(document.activeElement)
+  if (currentIndex < 0) return
+
+  event.preventDefault()
+  const direction = event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1
+  const nextIndex = (currentIndex + direction + options.length) % options.length
+  const nextOption = options[nextIndex]
+  selectSeverity(nextOption.dataset.severity)
+  nextOption.focus()
 }
 
 function toggleBodyArea(id) {
@@ -495,13 +572,14 @@ async function loadCheckInForm() {
     checkInForm.severity = null
     checkInForm.bodyAreas = new Set()
     els.checkInSavedNote.hidden = true
+    els.checkInSavedNote.classList.remove("formNote--error")
     selectSeverity(null)
   } else {
     checkInForm.severity = today.severity
     checkInForm.bodyAreas = new Set(today.bodyAreas)
     els.checkInSavedNote.hidden = false
     els.checkInSavedNote.textContent = "Saved for today. You can update anytime."
-    els.checkInSavedNote.style.color = "#3d6b42"
+    els.checkInSavedNote.classList.remove("formNote--error")
     selectSeverity(today.severity)
   }
   syncBodyAreaSelection()
@@ -509,10 +587,11 @@ async function loadCheckInForm() {
 
 async function submitCheckIn() {
   if (!checkInForm.severity) {
+    els.severityGroup.setAttribute("aria-invalid", "true")
     els.checkInSavedNote.hidden = false
     els.checkInSavedNote.textContent = "Please choose how you feel overall."
-    els.checkInSavedNote.style.color = "#7c3f32"
     els.checkInSavedNote.classList.add("formNote--error")
+    els.severityGroup.querySelector('[tabindex="0"]')?.focus()
     return
   }
 
@@ -522,18 +601,29 @@ async function submitCheckIn() {
   const saveBtn = els.saveCheckIn
   saveBtn.textContent = "Saving..."
   saveBtn.disabled = true
+  saveBtn.setAttribute("aria-busy", "true")
 
-  await saveCheckIn({
-    severity: checkInForm.severity,
-    bodyAreas: [...checkInForm.bodyAreas],
-  })
+  try {
+    await saveCheckIn({
+      severity: checkInForm.severity,
+      bodyAreas: [...checkInForm.bodyAreas],
+    })
+  } catch {
+    saveBtn.textContent = "Save check-in"
+    saveBtn.disabled = false
+    saveBtn.removeAttribute("aria-busy")
+    els.checkInSavedNote.hidden = false
+    els.checkInSavedNote.textContent = "Could not save your check-in. Try again."
+    els.checkInSavedNote.classList.add("formNote--error")
+    return
+  }
 
   saveBtn.textContent = "Saved ✓"
+  saveBtn.removeAttribute("aria-busy")
   saveBtn.classList.add("btn--save-success")
 
   els.checkInSavedNote.hidden = false
   els.checkInSavedNote.textContent = "Saved for today. You can update anytime."
-  els.checkInSavedNote.style.color = "#3d6b42"
 
   // Reset button after a moment
   setTimeout(() => {
@@ -723,15 +813,18 @@ function bindReminders() {
     scheduleSyncIfEnabled()
   })
 
-  let intervalSaveTimer = null
   els.reminderIntervalMinutes.addEventListener("input", () => {
     updatePresetHighlight()
-    if (intervalSaveTimer) window.clearTimeout(intervalSaveTimer)
-    intervalSaveTimer = window.setTimeout(async () => {
-      await setSettings({ reminderIntervalMinutes: Number(els.reminderIntervalMinutes.value) })
+  })
+
+  els.reminderIntervalMinutes.addEventListener("change", async () => {
+    if (!els.reminderIntervalMinutes.checkValidity()) {
       await hydrate()
-      scheduleSyncIfEnabled()
-    }, 250)
+      return
+    }
+    await setSettings({ reminderIntervalMinutes: els.reminderIntervalMinutes.valueAsNumber })
+    await hydrate()
+    scheduleSyncIfEnabled()
   })
 
   els.presets.forEach((btn) => {
@@ -765,20 +858,26 @@ function resetLocalUiState() {
 }
 
 async function handleClear() {
-  if (!window.confirm("Clear all local data and reset the extension? This cannot be undone.")) {
-    return
+  const confirmed = await confirmAction({
+    title: "Clear local data?",
+    description:
+      "This removes activity totals, check-ins, completed sessions, settings, and sign-in from this device. Cloud backup data is not deleted.",
+    confirmLabel: "Clear local data",
+  })
+  if (!confirmed) return
+
+  try {
+    await runButtonAction(els.clearData, "Clearing...", async () => {
+      await clearAllData()
+      stopSessionTicker()
+      player.session = null
+      resetLocalUiState()
+      stopPolling()
+      showOnboarding()
+    })
+  } catch {
+    showUiError("Could not clear local data. Try again.")
   }
-
-  stopSessionTicker()
-  player.session = null
-  resetLocalUiState()
-  await clearAllData()
-
-  // Reset settings to defaults for the current session
-  await setSettings({})
-
-  stopPolling()
-  showOnboarding()
 }
 
 function bindExport() {
@@ -786,7 +885,10 @@ function bindExport() {
 }
 
 function bindSync() {
-  els.syncSignIn?.addEventListener("click", () => void handleSyncSignIn())
+  els.syncSignedOut?.addEventListener("submit", (event) => {
+    event.preventDefault()
+    void handleSyncSignIn()
+  })
   els.syncSignOut?.addEventListener("click", () => void handleSyncSignOut())
   els.syncNow?.addEventListener("click", () => void handleSyncNow())
   els.syncDeleteCloudData?.addEventListener("click", () => void handleDeleteCloudData())
@@ -849,42 +951,56 @@ async function updateSyncUI() {
 }
 
 async function handleSyncSignIn() {
-  try {
-    setSyncStatus("Signing in...")
-    await signIn(els.syncEmail?.value ?? "", els.syncPassword?.value ?? "")
-    await hydrate()
-    setSyncStatus("Signed in. Cloud backup is still off.", "ok")
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Sign in failed"
-    setSyncStatus(message, "error")
-    await setSyncError(message)
-  } finally {
-    if (els.syncPassword) els.syncPassword.value = ""
-  }
+  await runButtonAction(els.syncSignIn, "Signing in...", async () => {
+    try {
+      setSyncStatus("Signing in...")
+      await signIn(els.syncEmail?.value ?? "", els.syncPassword?.value ?? "")
+      await hydrate()
+      setSyncStatus("Signed in. Cloud backup is still off.", "ok")
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Sign in failed"
+      setSyncStatus(message, "error")
+      await setSyncError(message)
+    } finally {
+      if (els.syncPassword) els.syncPassword.value = ""
+    }
+  })
 }
 
 async function handleSyncSignOut() {
-  await signOut()
-  if (els.syncEnabled) els.syncEnabled.checked = false
-  if (els.syncPassword) els.syncPassword.value = ""
-  setSyncStatus("")
-  await hydrate()
+  await runButtonAction(els.syncSignOut, "Signing out...", async () => {
+    try {
+      await signOut()
+      if (els.syncEnabled) els.syncEnabled.checked = false
+      if (els.syncPassword) els.syncPassword.value = ""
+      setSyncStatus("")
+      await hydrate()
+    } catch {
+      setSyncStatus("Could not sign out. Try again.", "error")
+    }
+  })
 }
 
 async function handleSyncNow() {
-  try {
-    setSyncStatus("Syncing...")
-    await syncNow()
-    await hydrate()
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Sync failed"
-    setSyncStatus(message, "error")
-    await setSyncError(message)
-  }
+  await runButtonAction(els.syncNow, "Syncing...", async () => {
+    try {
+      setSyncStatus("Syncing...")
+      await syncNow()
+      await hydrate()
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Sync failed"
+      setSyncStatus(message, "error")
+      await setSyncError(message)
+    }
+  })
 }
 
 async function handleSyncEnabledChange() {
   const enabled = Boolean(els.syncEnabled?.checked)
+  if (els.syncEnabled) {
+    els.syncEnabled.disabled = true
+    els.syncEnabled.setAttribute("aria-busy", "true")
+  }
   try {
     await setSyncEnabled(enabled)
     if (enabled) {
@@ -898,45 +1014,57 @@ async function handleSyncEnabledChange() {
     const message = err instanceof Error ? err.message : "Could not enable sync"
     setSyncStatus(message, "error")
     await setSyncError(message)
+  } finally {
+    if (els.syncEnabled) {
+      els.syncEnabled.disabled = false
+      els.syncEnabled.removeAttribute("aria-busy")
+    }
   }
 }
 
 async function handleDeleteCloudData() {
-  const confirmed = window.confirm(
-    "Delete all cloud backup data? Your data on this device will stay here, and cloud backup will be turned off."
-  )
+  const confirmed = await confirmAction({
+    title: "Delete cloud backup?",
+    description:
+      "This permanently deletes your backed-up wellness data and turns cloud backup off. Local data on this device stays here.",
+    confirmLabel: "Delete cloud data",
+  })
   if (!confirmed) return
 
-  try {
-    setSyncStatus("Deleting cloud backup data...")
-    await deleteCloudData()
-    await hydrate()
-    setSyncStatus("Cloud backup data deleted. Local data is still on this device.", "ok")
-  } catch (err) {
-    if (els.syncEnabled) els.syncEnabled.checked = false
-    if (els.syncNow) els.syncNow.hidden = true
-    const message = err instanceof Error ? err.message : "Could not delete cloud backup data"
-    setSyncStatus(message, "error")
-    await setSyncError(message)
-  }
+  await runButtonAction(els.syncDeleteCloudData, "Deleting...", async () => {
+    try {
+      setSyncStatus("Deleting cloud backup data...")
+      await deleteCloudData()
+      await hydrate()
+      setSyncStatus("Cloud backup data deleted. Local data is still on this device.", "ok")
+    } catch (err) {
+      if (els.syncEnabled) els.syncEnabled.checked = false
+      if (els.syncNow) els.syncNow.hidden = true
+      const message = err instanceof Error ? err.message : "Could not delete cloud backup data"
+      setSyncStatus(message, "error")
+      await setSyncError(message)
+    }
+  })
 }
 
 async function handleExport() {
-  try {
-    const data = await exportAllData()
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `activeaid-export-${todayDateKey()}.json`
-    document.body.append(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  } catch {
-    els.errorBanner.hidden = false
-    els.errorText.textContent = "Could not export data. Try again."
-  }
+  await runButtonAction(els.exportData, "Exporting...", async () => {
+    try {
+      const data = await exportAllData()
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `activeaid-export-${todayDateKey()}.json`
+      document.body.append(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      setDataStatus("Your local data export is ready.")
+    } catch {
+      setDataStatus("Could not export data. Try again.", "error")
+    }
+  })
 }
 
 function bindSessionPlayer() {
@@ -944,6 +1072,9 @@ function bindSessionPlayer() {
   els.stepPrev.addEventListener("click", () => goToStep(player.stepIndex - 1))
   els.stepNext.addEventListener("click", () => goToStep(player.stepIndex + 1))
   els.stepComplete.addEventListener("click", () => void completeSession())
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && player.session && !els.confirmDialog.open) closeSession()
+  })
 }
 
 function renderSessionList() {
@@ -1024,6 +1155,7 @@ function openSession(sessionId) {
   player.stepIndex = 0
   player.startedAt = nowMs()
   player.stepStartedAt = nowMs()
+  player.returnFocus = document.activeElement
   els.sessionTitle.textContent = session.title
   els.sessionTagline.textContent = session.tagline
   renderSessionPlayerIcon(session.id)
@@ -1034,6 +1166,7 @@ function openSession(sessionId) {
   els.viewSession.hidden = false
   els.nav.hidden = true
   renderStep()
+  els.stepTitle.focus()
   startSessionTicker()
 }
 
@@ -1050,12 +1183,15 @@ async function handleQuickReliefIntent() {
 }
 
 function closeSession() {
+  const returnFocus = player.returnFocus
   stopSessionTicker()
   player.session = null
   player.stepIndex = 0
   player.startedAt = null
   player.stepStartedAt = null
+  player.returnFocus = null
   setActiveTab(activeTab)
+  if (returnFocus instanceof HTMLElement && returnFocus.isConnected) returnFocus.focus()
 }
 
 function goToStep(index) {
@@ -1063,6 +1199,7 @@ function goToStep(index) {
   player.stepIndex = Math.min(player.session.steps.length - 1, Math.max(0, index))
   player.stepStartedAt = nowMs()
   renderStep()
+  els.stepTitle.focus()
 }
 
 function renderStep() {
@@ -1078,8 +1215,10 @@ function renderStep() {
   els.stepPrev.disabled = player.stepIndex === 0
   els.stepNext.hidden = isLast
   els.stepComplete.hidden = !isLast
+  els.stepComplete.disabled = false
+  if (els.stepCompleteLabel) els.stepCompleteLabel.textContent = "Complete"
   els.stepNext.classList.remove("btn--pulse")
-  els.stepComplete.classList.remove("btn--pulse")
+  els.stepComplete.classList.remove("btn--pulse", "btn--complete")
 
   els.stepCard.classList.remove("stepCard--enter")
   // retrigger animation
@@ -1092,23 +1231,35 @@ async function completeSession() {
   const session = player.session
   if (!session || player.startedAt == null) return
 
-  // Brief completion state before closing
+  els.stepComplete.disabled = true
+  els.stepComplete.setAttribute("aria-busy", "true")
+  if (els.stepCompleteLabel) els.stepCompleteLabel.textContent = "Saving..."
+
+  try {
+    await addSessionLog({
+      sessionId: session.id,
+      completedAt: nowMs(),
+      durationSeconds:
+        Math.round((nowMs() - player.startedAt) / 1000) || getTotalDurationSeconds(session),
+    })
+  } catch {
+    els.stepComplete.disabled = false
+    els.stepComplete.removeAttribute("aria-busy")
+    if (els.stepCompleteLabel) els.stepCompleteLabel.textContent = "Try again"
+    showUiError("Could not save this session. Try completing it again.")
+    return
+  }
+
+  uiErrorMessage = ""
+  renderErrorBanner("")
+  els.stepComplete.removeAttribute("aria-busy")
+  if (els.stepCompleteLabel) els.stepCompleteLabel.textContent = "Done ✓"
+  els.stepComplete.classList.add("btn--complete")
   els.stepTitle.textContent = `${session.title} complete!`
   els.stepInstruction.textContent = "Small resets add up. Taking a moment to breathe helps."
   els.stepCard.classList.remove("stepCard--enter")
   void els.stepCard.offsetWidth
   els.stepCard.classList.add("stepCard--enter")
-  els.stepComplete.disabled = true
-  els.stepComplete.textContent = "Done ✓"
-  els.stepComplete.classList.add("btn--complete")
-
-  // Save the session
-  await addSessionLog({
-    sessionId: session.id,
-    completedAt: nowMs(),
-    durationSeconds:
-      Math.round((nowMs() - player.startedAt) / 1000) || getTotalDurationSeconds(session),
-  })
 
   // Brief pause so user sees the completion state
   await new Promise((r) => setTimeout(r, 1200))
@@ -1193,12 +1344,9 @@ async function hydrate() {
   void updateSyncUI()
 
   if (runtime.lastNotificationError) {
-    els.errorBanner.hidden = false
-    els.errorText.textContent =
-      "We couldn’t show a reminder just now. Try reloading the extension."
+    renderErrorBanner("We couldn’t show a reminder just now. Try reloading the extension.")
   } else {
-    els.errorBanner.hidden = true
-    els.errorText.textContent = ""
+    renderErrorBanner(uiErrorMessage)
   }
 
   if (activeTab === "insights") await renderDashboard()
