@@ -55,10 +55,10 @@ Tip: use 1280×800 or 640×400 screenshots; keep text readable.
 Must match extension behavior and [`app/privacy/page.tsx`](./app/privacy/page.tsx):
 
 - No typed content, page content, screenshots, or camera data
-- Activity timing + user wellness logs stored **locally**
-- Export and clear available in Settings
-
-If you add backend sync later, update the privacy page and store listing before shipping.
+- Activity timing begins after first-run consent, is stored locally, and is never uploaded
+- Check-ins, completed sessions, and reminder settings are stored locally by default
+- Optional cloud backup requires sign-in followed by a separate opt-in and uses encrypted transport
+- Local export, local clearing, and cloud-backup deletion are available in Settings
 
 ## 6. After approval
 

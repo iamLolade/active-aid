@@ -64,7 +64,7 @@ Edge accepts the same MV3 package as Chrome in most cases.
 3. **Gecko ID** (in manifest): `activeaid@activeaid.app`
 4. Reuse listing copy from `store/LISTING.md` (adjust store name references if needed)
 5. Privacy policy URL: `{APP_URL}/privacy`
-6. Complete AMO privacy questionnaire (same answers as Chrome; data stays local)
+6. Complete AMO privacy questionnaire consistently with the local-first and optional cloud-backup behavior
 7. Choose **Unlisted** for beta
 
 Firefox review may ask about `host_permissions`: explain activity timing only, no page content (see permission justifications in `store/LISTING.md`).
@@ -75,7 +75,8 @@ Firefox review may ask about `host_permissions`: explain activity timing only, n
 
 Run on each browser before publishing:
 
-- [ ] Onboarding shows once; **Get started** lands on Today
+- [ ] Onboarding shows once; **Agree and get started** lands on Today
+- [ ] No activity timing begins before onboarding consent
 - [ ] Activity timer updates after mouse/keyboard on a web page
 - [ ] Reminder notification fires after interval (or use debug tick if needed)
 - [ ] Snooze and reset timer update hero status

@@ -1453,6 +1453,13 @@ input[type="text"]:focus {
   color: var(--slate-muted);
 }
 
+.syncConsentText {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: var(--leading-hint);
+  color: var(--slate-muted);
+}
+
 .syncToggle {
   margin-bottom: 10px;
 }
@@ -1490,6 +1497,10 @@ input[type="text"]:focus {
     border-color var(--ease-ui),
     color var(--ease-ui),
     transform var(--ease-press);
+}
+
+.btn--actionRow + .btn--actionRow {
+  margin-top: 8px;
 }
 
 .btn--actionRow:hover:not(:disabled) {

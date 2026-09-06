@@ -53,8 +53,9 @@
           <section class="card onboardingCard onboardingPrivacy">
             <h3 class="onboardingCardTitle">Your privacy</h3>
             <p class="onboardingPrivacyText">
-              We only track activity timing on this device. We never log what you type, page
-              content, screenshots, or camera data.
+              By selecting Agree and get started, you allow ActiveAid to use activity timing on this
+              device for reminders and active-time insights. We never log what you type, page
+              content, URLs, screenshots, or camera data.
             </p>
           </section>
 
@@ -65,7 +66,7 @@
           </label>
 
           <button class="btn btn--primary btn--save onboardingCta" id="onboardingComplete" type="button">
-            Get started
+            Agree and get started
           </button>
         </div>
 
@@ -331,7 +332,8 @@
           <section class="card settingsCard" id="syncSection">
             <h3 class="settingsSectionTitle">Optional cloud backup</h3>
             <p class="settingsSectionHint" id="syncHint">
-              Back up check-ins, sessions, and reminder settings across devices. Off by default.
+              Signing in sends your account details securely to Supabase. No wellness data is
+              uploaded until you turn cloud backup on.
             </p>
             <p class="syncStatus" id="syncStatus" hidden role="status"></p>
 
@@ -344,17 +346,24 @@
                 <label class="fieldLabel" for="syncPassword">Password</label>
                 <input type="password" id="syncPassword" autocomplete="current-password" />
               </div>
-              <button class="btn--actionRow" id="syncSignIn" type="button">Sign in to sync</button>
+              <button class="btn--actionRow" id="syncSignIn" type="button">Sign in</button>
             </div>
 
             <div id="syncSignedIn" hidden>
               <p class="syncAccount" id="syncAccount"></p>
+              <p class="syncConsentText" id="syncConsentText">
+                When enabled, ActiveAid syncs your check-ins, completed sessions, and reminder
+                settings. Activity timing never leaves this device.
+              </p>
               <label class="toggle syncToggle">
-                <input type="checkbox" id="syncEnabled" />
+                <input type="checkbox" id="syncEnabled" aria-describedby="syncConsentText" />
                 <span class="toggleTrack" aria-hidden="true"></span>
-                <span class="toggleLabel">Enable cloud backup</span>
+                <span class="toggleLabel">Back up my wellness data</span>
               </label>
-              <button class="btn--actionRow" id="syncNow" type="button">Sync now</button>
+              <button class="btn--actionRow" id="syncNow" type="button" hidden>Sync now</button>
+              <button class="btn--actionRow btn--actionRowDanger" id="syncDeleteCloudData" type="button">
+                Delete cloud backup data
+              </button>
               <button class="btn--actionRow" id="syncSignOut" type="button">Sign out</button>
             </div>
           </section>

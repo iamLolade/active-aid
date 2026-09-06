@@ -20,6 +20,7 @@ import {
   signOut,
   setSyncEnabled,
   syncNow,
+  deleteCloudData,
   scheduleSyncIfEnabled,
   setSyncError,
 } from "../shared/sync.js"
@@ -100,6 +101,7 @@ const els = {
   syncSignIn: document.getElementById("syncSignIn"),
   syncEnabled: document.getElementById("syncEnabled"),
   syncNow: document.getElementById("syncNow"),
+  syncDeleteCloudData: document.getElementById("syncDeleteCloudData"),
   syncSignOut: document.getElementById("syncSignOut"),
   syncAccount: document.getElementById("syncAccount"),
   presets: document.querySelectorAll(".preset"),
@@ -783,6 +785,7 @@ function bindSync() {
   els.syncSignIn?.addEventListener("click", () => void handleSyncSignIn())
   els.syncSignOut?.addEventListener("click", () => void handleSyncSignOut())
   els.syncNow?.addEventListener("click", () => void handleSyncNow())
+  els.syncDeleteCloudData?.addEventListener("click", () => void handleDeleteCloudData())
   els.syncEnabled?.addEventListener("change", () => void handleSyncEnabledChange())
 }
 
@@ -820,7 +823,12 @@ async function updateSyncUI() {
       els.syncAccount.textContent = state.email ? `Signed in as ${state.email}` : "Signed in"
     }
     if (els.syncEnabled) els.syncEnabled.checked = state.enabled
-    if (state.lastSyncedAt) {
+    if (els.syncNow) els.syncNow.hidden = !state.enabled
+    if (state.lastError) {
+      setSyncStatus(state.lastError, "error")
+    } else if (!state.enabled) {
+      setSyncStatus("Cloud backup is off. Nothing will be uploaded.")
+    } else if (state.lastSyncedAt) {
       const when = new Date(state.lastSyncedAt).toLocaleString([], {
         month: "short",
         day: "numeric",
@@ -828,10 +836,8 @@ async function updateSyncUI() {
         minute: "2-digit",
       })
       setSyncStatus(`Last synced ${when}.`, "ok")
-    } else if (state.lastError) {
-      setSyncStatus(state.lastError, "error")
     } else {
-      setSyncStatus("")
+      setSyncStatus("Cloud backup is on.", "ok")
     }
   } else {
     setSyncStatus(state.lastError || "", state.lastError ? "error" : "muted")
@@ -842,12 +848,14 @@ async function handleSyncSignIn() {
   try {
     setSyncStatus("Signing in...")
     await signIn(els.syncEmail?.value ?? "", els.syncPassword?.value ?? "")
-    if (els.syncPassword) els.syncPassword.value = ""
     await hydrate()
+    setSyncStatus("Signed in. Cloud backup is still off.", "ok")
   } catch (err) {
     const message = err instanceof Error ? err.message : "Sign in failed"
     setSyncStatus(message, "error")
     await setSyncError(message)
+  } finally {
+    if (els.syncPassword) els.syncPassword.value = ""
   }
 }
 
@@ -872,16 +880,38 @@ async function handleSyncNow() {
 }
 
 async function handleSyncEnabledChange() {
+  const enabled = Boolean(els.syncEnabled?.checked)
   try {
-    await setSyncEnabled(Boolean(els.syncEnabled?.checked))
-    if (els.syncEnabled?.checked) {
+    await setSyncEnabled(enabled)
+    if (enabled) {
       setSyncStatus("Syncing...")
       await syncNow()
     }
     await hydrate()
   } catch (err) {
     if (els.syncEnabled) els.syncEnabled.checked = false
+    if (enabled) await setSyncEnabled(false).catch(() => undefined)
     const message = err instanceof Error ? err.message : "Could not enable sync"
+    setSyncStatus(message, "error")
+    await setSyncError(message)
+  }
+}
+
+async function handleDeleteCloudData() {
+  const confirmed = window.confirm(
+    "Delete all cloud backup data? Your data on this device will stay here, and cloud backup will be turned off."
+  )
+  if (!confirmed) return
+
+  try {
+    setSyncStatus("Deleting cloud backup data...")
+    await deleteCloudData()
+    await hydrate()
+    setSyncStatus("Cloud backup data deleted. Local data is still on this device.", "ok")
+  } catch (err) {
+    if (els.syncEnabled) els.syncEnabled.checked = false
+    if (els.syncNow) els.syncNow.hidden = true
+    const message = err instanceof Error ? err.message : "Could not delete cloud backup data"
     setSyncStatus(message, "error")
     await setSyncError(message)
   }

@@ -50,10 +50,12 @@ WHAT YOU GET
 • Simple Insights from your local data (streaks, trends, breaks)
 
 PRIVACY FIRST
-• We track activity timing only (keyboard, mouse, and tab focus) to schedule breaks
+• After first-run consent, we track activity timing only (keyboard, mouse, scroll, and tab focus) to schedule breaks
 • We never log what you type, page content, screenshots, or camera data
 • Check-ins and session history are stored locally in your browser
-• Export or clear your data anytime from Settings
+• Optional cloud backup starts only after you sign in and separately turn it on
+• Activity timing is never uploaded
+• Export local data, clear local data, or delete cloud backup data anytime from Settings
 
 NOT MEDICAL ADVICE
 ActiveAid supports wellness habits. It is not a medical or diagnostic tool. Stop any movement if it hurts and follow your own medical guidance.
@@ -77,7 +79,7 @@ ActiveAid provides workplace wellness reminders and guided desk relief sessions 
 |------------|---------------|
 | **alarms** | Run periodic background checks so reminders can fire after the user’s chosen active-time interval. |
 | **notifications** | Show gentle break reminders when sustained activity reaches the user’s interval. |
-| **storage** | Save reminder settings, check-ins, session history, and onboarding state locally on the device. |
+| **storage** | Save reminder settings, check-ins, session history, onboarding state, and an optional cloud-backup sign-in session locally on the device. |
 | **Host permissions (http/https)** | Detect activity timing signals (keyboard, mouse, scroll, tab focus) on pages the user visits to estimate active work time. No page content is read, stored, or transmitted. |
 
 ---
@@ -92,16 +94,37 @@ Answer consistently with `{APP_URL}/privacy` and extension behavior:
 | Is collection required for core functionality? | **Yes** (activity timing for reminders; user-entered check-ins/sessions) |
 | Is data sold to third parties? | **No** |
 | Is data used for purposes unrelated to the extension? | **No** |
-| Is data encrypted in transit? | **N/A** for MVP (data stays local; no backend sync by default) |
-| Can users request data deletion? | **Yes** (Clear my data in Settings) |
+| Is data encrypted in transit? | **Yes** when the user enables optional cloud backup; otherwise data stays local. |
+| Can users request data deletion? | **Yes** (Clear local data and Delete cloud backup data in Settings) |
 
-**Data types collected (local only):**
+**Data handled locally by the extension:**
 - Activity timing signals (not content)
 - User wellness check-ins (severity, optional body areas)
 - Completed relief session logs
 - Reminder settings
+- Account email and session tokens when the user signs in for optional cloud backup
+
+**Optional cloud backup, only after explicit opt-in:**
+- User wellness check-ins
+- Completed relief session logs
+- Reminder settings
+
+Activity timing is never uploaded. Cloud-backup traffic is encrypted in transit. Users can delete backed-up records from Settings without deleting local data.
+
+**Dashboard data-type selections:**
+- **Health information:** wellness check-ins, optional body areas, and completed relief sessions
+- **Personally identifiable information:** account email used for optional cloud backup
+- **Authentication information:** session tokens used for optional cloud backup
+
+Use the closest labels shown in the current dashboard. Do not select browsing history unless ActiveAid begins recording URLs, domains, page titles, or page content.
 
 **Not collected:** typed content, page content, browsing history content, screenshots, camera, location, financial info.
+
+**Consent and limited use:**
+- Activity timing begins only after the user reviews the first-run disclosure and selects **Agree and get started**.
+- Optional cloud backup begins only after a separate in-product opt-in.
+- User data is used only to provide and improve ActiveAid's disclosed workplace-wellness features.
+- User data is not sold, used for advertising or credit decisions, or made available for routine human review.
 
 ---
 

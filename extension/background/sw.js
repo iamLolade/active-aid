@@ -15,6 +15,7 @@ import {
   setRuntimeState,
   recordActivityMs,
   recordReminderShown,
+  isOnboardingComplete,
 } from "../shared/storage.js"
 import { minutesToMs, msToRoundedMinutes, nowMs } from "../shared/time.js"
 
@@ -103,6 +104,8 @@ onMessage((message, _sender, sendResponse) => {
 })
 
 async function handleActivityPing() {
+  if (!(await isOnboardingComplete())) return
+
   const t = nowMs()
   const state = await getRuntimeState()
 

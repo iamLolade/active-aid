@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const SECTIONS = [
   {
     title: "Overview",
-    body: "ActiveAid is a workplace wellness browser extension. This policy describes what the extension stores on your device. The MVP is local-first: no account is required and wellness data stays in your browser by default.",
+    body: "ActiveAid is a workplace wellness browser extension. This policy describes how the extension handles data. The MVP is local-first: no account is required and wellness data stays in your browser by default. Activity timing begins only after you review the first-run disclosure and select Agree and get started.",
   },
   {
     title: "What we store (on your device)",
@@ -21,6 +21,7 @@ const SECTIONS = [
       "Daily check-ins you save (overall feeling and optional body areas).",
       "Completed relief session logs (session type, time completed, duration).",
       "Simple daily stats derived from the above (for example, estimated active minutes and breaks taken).",
+      "If you sign in for optional cloud backup, your account email and Supabase session tokens are stored locally so you can stay signed in.",
     ],
   },
   {
@@ -34,28 +35,43 @@ const SECTIONS = [
   },
   {
     title: "Where data lives",
-    body: "By default, extension data is stored in browser extension storage on your device. If you opt in to optional cloud backup, check-ins, completed relief sessions, and reminder settings are also stored in your Supabase account (encrypted in transit). Activity timing and page content are never uploaded. The marketing website may use standard hosting logs when you visit our pages.",
+    body: "By default, extension data is stored in browser extension storage on your device. If you sign in and then turn on optional cloud backup, check-ins, completed relief sessions, and reminder settings are also stored in Supabase and encrypted in transit. Activity timing and page content are never uploaded. The marketing website may use standard hosting logs when you visit our pages.",
   },
   {
     title: "Optional cloud backup",
     bullets: [
-      "Disabled by default. You choose to sign in and enable it in extension Settings.",
+      "Disabled by default. Signing in sends account and authentication data to Supabase but does not upload wellness data.",
+      "Backup starts only after you separately turn on Back up my wellness data in Settings.",
       "Uploads only wellness check-ins, completed session logs, and reminder settings.",
       "Does not upload typed content, page content, activity timing samples, or screenshots.",
-      "You can sign out or clear local data anytime; cloud rows remain until you delete your account in Supabase.",
+      "Turning backup off or signing out stops future sync but does not delete existing cloud records.",
+      "Delete cloud backup data removes your backed-up wellness records and reminder settings while leaving local data on your device.",
     ],
+  },
+  {
+    title: "Cloud service provider",
+    body: "ActiveAid uses Supabase to provide optional account authentication and cloud backup. When you use that feature, Supabase processes your account email, authentication data, and the wellness data you choose to back up on ActiveAid's behalf. Your password is sent to Supabase over HTTPS for authentication and is not stored by the extension.",
+  },
+  {
+    title: "Retention",
+    body: "Local data remains in browser extension storage until you clear it or remove the extension. Optional cloud-backup records remain until you use Delete cloud backup data. Signing out does not delete local or cloud wellness records.",
   },
   {
     title: "Your controls",
     bullets: [
       "Export: download a JSON file of your local data from Settings in the extension popup.",
-      "Clear: remove all local extension data from Settings (with confirmation).",
+      "Clear local data: remove all data stored by the extension on this device, including the local sign-in session.",
+      "Delete cloud backup data: remove backed-up check-ins, completed sessions, and reminder settings without deleting local data.",
       "Reminders: turn notifications off anytime in Settings or during first-run onboarding.",
     ],
   },
   {
     title: "Permissions",
     body: "The extension requests alarms and notifications for break reminders, storage for local wellness data, and access to http/https pages so a lightweight content script can detect activity timing. It does not read or store page content.",
+  },
+  {
+    title: "Chrome Web Store Limited Use",
+    body: "ActiveAid uses information received through Chrome APIs only to provide and improve its disclosed workplace-wellness features. This use complies with the Chrome Web Store User Data Policy, including the Limited Use requirements. ActiveAid does not sell user data, use it for advertising or credit decisions, or allow human access except when required for security, legal compliance, or support that you explicitly request.",
   },
   {
     title: "Children",
@@ -89,7 +105,7 @@ export default function PrivacyPage() {
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Privacy Policy</h1>
             <p className="text-sm text-[#4b5563]">
-              Last updated: June 2026 · ActiveAid browser extension (MVP)
+              Last updated: September 2026 · ActiveAid browser extension (MVP)
             </p>
           </div>
         </header>

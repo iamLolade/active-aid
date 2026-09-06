@@ -50,3 +50,4 @@ Firefox and Edge: [FIREFOX_EDGE.md](./FIREFOX_EDGE.md).
 - [DESIGN_GUIDELINES.md](./DESIGN_GUIDELINES.md)
 - [brand_identity.md](./brand_identity.md)
 - [plan.md](./plan.md) (product spec)
+- [PHASE_0_BASELINE.md](./PHASE_0_BASELINE.md) (release-improvement baseline and regression checklist)

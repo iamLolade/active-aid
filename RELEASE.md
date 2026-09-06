@@ -7,7 +7,7 @@ Use this before sharing the extension or deploying the web app.
 - [ ] `NEXT_PUBLIC_SUPABASE_URL` set
 - [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY` set
 - [ ] `SUPABASE_SERVICE_ROLE_KEY` set (server only)
-- [ ] Supabase migration applied: `supabase/migrations/0001_init.sql`
+- [ ] Supabase migrations applied through `supabase/migrations/0003_cloud_data_delete_policies.sql`
 
 ## 2. Backend health
 - [ ] `npm run dev` running
@@ -36,9 +36,9 @@ Run this end-to-end on a fresh install (or after **Clear my data** in Settings).
 |------|--------|-----------------|
 | 1 | Load unpacked from `extension/` | Extension appears in toolbar |
 | 2 | Open popup (first run) | Onboarding shows once; nav hidden |
-| 3 | Leave reminders on, tap **Get started** | Browser may prompt for notifications; Today tab appears |
+| 3 | Leave reminders on, tap **Agree and get started** | Today tab appears and activity timing can begin |
 | 4 | Today tab (no data yet) | Check-in hint + Quick Relief empty nudge visible |
-| 5 | Tap gear or **More options** | Settings panel opens (Reminders & privacy) |
+| 5 | Open **Settings** from bottom navigation | Settings view opens |
 | 6 | Start a Quick Relief session, complete it | Returns to Today; session nudge hides; hero shows completion message |
 | 7 | Check-in tab: pick severity, optional areas, **Save check-in** | Saved note appears; Today row updates |
 | 8 | Insights tab | Stats, 7-day trend, and areas reflect steps 6–7 |
@@ -47,13 +47,31 @@ Run this end-to-end on a fresh install (or after **Clear my data** in Settings).
 | 11 | Settings → **Clear my data** → confirm | Onboarding shows again; Insights empty after re-onboarding |
 | 12 | Block notifications (Chrome site settings) with reminders on | Banner on Today explains how to re-enable |
 
-**Code-verified (2026-06-06):** build + `npm run package:extension` pass; privacy scope limited to activity timing + user-entered check-ins/sessions in local storage.
+### 4c. Optional cloud backup consent
+
+Run with Supabase configured and an existing test account.
+
+| Step | Action | Expected result |
+|------|--------|-----------------|
+| 1 | Sign in from Settings | Account appears; backup remains off; no wellness-data request is sent |
+| 2 | Turn on **Back up my wellness data** | First sync begins and completes over encrypted transport |
+| 3 | Change a check-in or complete a session | Enabled backup syncs the change |
+| 4 | Turn backup off | Future local changes are not uploaded |
+| 5 | Force a first-sync failure | Toggle returns to off and stored backup state remains off |
+| 6 | Select **Delete cloud backup data**, then cancel | No local or cloud data changes |
+| 7 | Confirm **Delete cloud backup data** | Backup turns off; cloud rows are deleted; local wellness data remains |
+| 8 | Sign out | Local sign-in session is cleared; local and existing cloud wellness data remain |
+
+**Code-verified (2026-09-06):** lint, production build, and extension packaging pass. Installed-extension and live-sync sign-off remain manual.
 
 **Manual sign-off:** _________________ Date: _________
 
 ## 5. Privacy
 - [ ] No typed content, screenshots, or page content logged
-- [ ] Only activity timing + user-entered check-in data stored locally
+- [ ] Activity timing stays local and is never uploaded
+- [ ] Signing in alone does not upload wellness data
+- [ ] Optional backup uploads only check-ins, completed sessions, and reminder settings after explicit opt-in
+- [ ] Users can separately clear local data and delete cloud backup data
 - [ ] `/privacy` page live on deployed site (Chrome Web Store policy URL)
 
 ## 6. Package extension (Chrome Web Store)

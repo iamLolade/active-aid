@@ -36,8 +36,10 @@ Cross-browser MV3 extension for **Chrome**, **Edge**, and **Firefox**.
 
 ## Trust & control
 - First run shows onboarding once (privacy + optional reminders).
-- **Settings** (gear or **More options**): reminders, privacy copy, **Export data**, and **Clear my data**.
-- **Optional cloud backup** (when Supabase is configured): sign in to sync check-ins, sessions, and settings across devices.
+- Activity timing begins only after the user reviews onboarding and selects **Agree and get started**.
+- **Settings** in bottom navigation: reminders, privacy copy, **Export data**, and **Clear my data**.
+- **Optional cloud backup** (when Supabase is configured): signing in does not upload data. Turn on **Back up my wellness data** separately to sync check-ins, completed sessions, and reminder settings.
+- **Delete cloud backup data** removes backed-up records without deleting local wellness data.
 - See `RELEASE.md` section **4b** for the full individual user journey QA checklist.
 
 Configure sync: `npm run sync:config` (see `supabase/README.md`).
@@ -49,4 +51,4 @@ npm run package:extension
 Produces zips for Chrome, Edge, and Firefox. See [FIREFOX_EDGE.md](../FIREFOX_EDGE.md) and [CHROME_WEB_STORE.md](../CHROME_WEB_STORE.md).
 
 ## Privacy
-This MVP tracks **timing of activity signals only** (e.g., that *some* activity occurred), and does not log typed content, page content, screenshots, or camera data.
+This MVP tracks **timing of activity signals only** (e.g., that *some* activity occurred), and does not log typed content, page content, screenshots, or camera data. Activity timing never leaves the device. Optional cloud backup uploads only check-ins, completed sessions, and reminder settings after explicit opt-in.

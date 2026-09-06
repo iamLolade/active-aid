@@ -21,7 +21,9 @@ function sessionClientEventId(sessionId, completedAt) {
 function decodeJwtSub(accessToken) {
   const part = accessToken.split(".")[1]
   if (!part) throw new Error("Invalid session token")
-  const payload = JSON.parse(atob(part.replace(/-/g, "+").replace(/_/g, "/")))
+  const base64 = part.replace(/-/g, "+").replace(/_/g, "/")
+  const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, "=")
+  const payload = JSON.parse(atob(padded))
   if (!payload.sub) throw new Error("Invalid session token")
   return payload.sub
 }
@@ -97,7 +99,7 @@ async function apiRequest(path, { method = "GET", token, prefer, body } = {}) {
   return data
 }
 
-function applyAuthResponse(data, email) {
+function applyAuthResponse(data, email, overrides = {}) {
   const expiresAt = Date.now() + (Number(data.expires_in) || 3600) * 1000
   return setSyncState({
     email,
@@ -105,6 +107,7 @@ function applyAuthResponse(data, email) {
     refreshToken: data.refresh_token,
     expiresAt,
     lastError: "",
+    ...overrides,
   })
 }
 
@@ -117,13 +120,29 @@ export async function signIn(email, password) {
     password,
   })
 
-  await applyAuthResponse(data, trimmedEmail)
-  await syncNow({ reason: "sign-in" })
+  await applyAuthResponse(data, trimmedEmail, {
+    enabled: false,
+    lastSyncedAt: 0,
+  })
   return getSyncState()
 }
 
 export async function signOut() {
-  await clearSyncState()
+  cancelScheduledSync()
+  const state = await getSyncState()
+
+  try {
+    if (state.accessToken && isSyncConfigured()) {
+      await apiRequest("/auth/v1/logout", {
+        method: "POST",
+        token: state.accessToken,
+      })
+    }
+  } catch {
+    // Clearing the local session remains the priority when offline.
+  } finally {
+    await clearSyncState()
+  }
 }
 
 export async function setSyncEnabled(enabled) {
@@ -131,6 +150,7 @@ export async function setSyncEnabled(enabled) {
   if (enabled && !state.accessToken) {
     throw new Error("Sign in before enabling cloud sync")
   }
+  if (!enabled) cancelScheduledSync()
   await setSyncState({ enabled: Boolean(enabled), lastError: "" })
 }
 
@@ -240,12 +260,12 @@ async function pushLocalData(token, userId) {
   })
 }
 
-export async function syncNow({ reason = "manual", applyRemoteSettingsOnFirstSync = true } = {}) {
+export async function syncNow({ applyRemoteSettingsOnFirstSync = true } = {}) {
   if (!isSyncConfigured()) throw new Error("Cloud sync is not configured")
 
   const state = await getSyncState()
   if (!state.accessToken) throw new Error("Not signed in")
-  if (!state.enabled && reason !== "sign-in") throw new Error("Cloud sync is off")
+  if (!state.enabled) throw new Error("Cloud sync is off")
 
   const { token, userId } = await ensureAccessToken()
   const isFirstSync = !state.lastSyncedAt
@@ -274,15 +294,41 @@ export async function syncNow({ reason = "manual", applyRemoteSettingsOnFirstSyn
   return getSyncState()
 }
 
+export async function deleteCloudData() {
+  cancelScheduledSync()
+  await setSyncState({ enabled: false, lastError: "" })
+
+  const { token, userId } = await ensureAccessToken()
+  const ownRows = `user_id=eq.${encodeURIComponent(userId)}`
+
+  await Promise.all([
+    apiRequest(`/rest/v1/wellness_logs?${ownRows}`, { method: "DELETE", token }),
+    apiRequest(`/rest/v1/discomfort_logs?${ownRows}`, { method: "DELETE", token }),
+    apiRequest(`/rest/v1/reminder_settings?${ownRows}`, { method: "DELETE", token }),
+  ])
+
+  return setSyncState({
+    enabled: false,
+    lastSyncedAt: 0,
+    lastError: "",
+  })
+}
+
+function cancelScheduledSync() {
+  if (!scheduledSyncTimer) return
+  window.clearTimeout(scheduledSyncTimer)
+  scheduledSyncTimer = null
+}
+
 export function scheduleSyncIfEnabled() {
-  if (scheduledSyncTimer) window.clearTimeout(scheduledSyncTimer)
+  cancelScheduledSync()
   scheduledSyncTimer = window.setTimeout(() => {
     scheduledSyncTimer = null
     void (async () => {
       try {
         const state = await getSyncState()
         if (!state.enabled || !state.accessToken || !isSyncConfigured()) return
-        await syncNow({ reason: "auto" })
+        await syncNow()
       } catch {
         // auto-sync is best-effort
       }

@@ -15,6 +15,7 @@ const SESSION_LOGS_KEY = "activeaid:sessionLogs"
 const CHECKINS_KEY = "activeaid:checkins"
 const DAILY_KEY = "activeaid:daily"
 const ONBOARDING_KEY = "activeaid:onboarding"
+const PRIVACY_CONSENT_VERSION = 1
 
 const MAX_SESSION_LOGS = 200
 const MAX_CHECKINS = 400
@@ -329,7 +330,11 @@ export async function isOnboardingComplete() {
 
 export async function completeOnboarding() {
   await storageLocalSet({
-    [ONBOARDING_KEY]: { complete: true, completedAt: Date.now() },
+    [ONBOARDING_KEY]: {
+      complete: true,
+      completedAt: Date.now(),
+      privacyConsentVersion: PRIVACY_CONSENT_VERSION,
+    },
   })
 }
 
@@ -356,4 +361,3 @@ function normalizeDaily(raw) {
     reminders: Math.max(0, Math.round(Number(raw.reminders) || 0)),
   }
 }
-

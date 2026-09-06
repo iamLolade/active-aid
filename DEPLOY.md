@@ -97,8 +97,8 @@ Answer consistently with `app/privacy/page.tsx`:
 | Does the extension collect user data? | **Yes** (activity timing for reminders; user-entered check-ins/sessions) |
 | Is data sold to third parties? | **No** |
 | Is data used for unrelated purposes? | **No** |
-| Is data encrypted in transit? | **N/A for MVP** (data stays local; no backend sync by default) |
-| Can users request data deletion? | **Yes** (Clear my data in Settings) |
+| Is data encrypted in transit? | **Yes** when optional cloud backup is enabled; otherwise data stays local. |
+| Can users request data deletion? | **Yes** (Clear local data and Delete cloud backup data in Settings) |
 
 ### Distribution
 

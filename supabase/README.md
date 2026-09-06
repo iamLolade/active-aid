@@ -6,12 +6,13 @@
   - `discomfort_logs` (daily check-ins)
   - `reminder_settings` (user settings)
 - RLS enabled + policies for `authenticated` users (each user can only access their own rows).
-- Optional extension cloud sync (Phase 8.1)
+- Optional extension cloud sync
 
 ## Apply migrations
 In the Supabase dashboard **SQL Editor**, run in order:
 1. `supabase/migrations/0001_init.sql`
 2. `supabase/migrations/0002_sync_client_ids.sql`
+3. `supabase/migrations/0003_cloud_data_delete_policies.sql`
 
 ## Auth for extension sync (optional)
 Cloud sync uses Supabase email + password auth from the extension popup.
@@ -32,10 +33,12 @@ This writes `extension/shared/sync-config.js` from `NEXT_PUBLIC_SUPABASE_URL` an
 Reload the extension. Settings → **Optional cloud backup** appears when configured.
 
 ### Sync behavior
-- **Off by default.** User signs in and toggles **Enable cloud backup**.
+- **Off by default.** Signing in authenticates only and does not upload wellness data.
+- User must separately turn on **Back up my wellness data** before the first sync.
 - Backs up check-ins, completed sessions, and reminder settings (not activity timing or page content).
 - **Sync now** and auto-sync (debounced) when backup is enabled.
-- First sign-in merges remote data into local storage, then pushes local changes.
+- First enabled sync merges remote data into local storage, then pushes local changes.
+- **Delete cloud backup data** turns backup off and deletes the user's backed-up rows. Local data remains on the device.
 
 ## Verify from the app
 With `npm run dev` running, open:
