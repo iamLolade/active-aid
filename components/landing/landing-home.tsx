@@ -1,20 +1,11 @@
 "use client"
 
-import Image from "next/image"
 import Link from "next/link"
 import { motion, useReducedMotion } from "framer-motion"
+import { Activity, Bell, ChevronRight, Clock3, HeartPulse, LockKeyhole } from "lucide-react"
 import { LandingNav } from "@/components/landing/landing-nav"
 import { Reveal } from "@/components/landing/reveal"
 import { SmoothAnchor } from "@/components/landing/smooth-anchor"
-
-const PREVIEWS = [
-  { src: "/hero-popup.png", alt: "ActiveAid Today tab", label: "Today" },
-  { src: "/check-in-tab.png", alt: "ActiveAid check-in tab", label: "Check-in" },
-  { src: "/relief-ui.png", alt: "ActiveAid relief session", label: "Quick relief" },
-  { src: "/screenshots/extension-today.png", alt: "ActiveAid insights view", label: "Insights" },
-] as const
-
-const BROWSERS = ["Chrome", "Edge", "Firefox"] as const
 
 const FEATURES = [
   {
@@ -50,12 +41,12 @@ const FEATURES = [
 ] as const
 
 const STEPS = [
-  { title: "Install", body: "Add ActiveAid from the store or load unpacked for beta testing." },
-  { title: "Set your rhythm", body: "Pick a reminder interval. Enable notifications when you are ready." },
-  { title: "Reset often", body: "Take quick relief sessions and log a daily check-in. Insights build over time." },
+  { title: "Install", body: "Add ActiveAid to Chrome when the public listing is available." },
+  { title: "Choose your rhythm", body: "Review the privacy disclosure, then choose whether to enable reminders." },
+  { title: "Take a small reset", body: "Open a suggested relief session from a reminder or whenever you need one." },
 ] as const
 
-export function LandingHome() {
+export function LandingHome({ storeUrl }: { storeUrl?: string }) {
   const reducedMotion = useReducedMotion()
 
   return (
@@ -69,46 +60,41 @@ export function LandingHome() {
       <div className="mx-auto max-w-6xl px-6 pb-16 pt-6 md:pb-24 md:pt-8">
         <LandingNav />
 
-        <header className="mt-14 md:mt-20">
+        <header className="mt-10 md:mt-14">
           <Reveal className="mx-auto max-w-3xl text-center">
             <p className="inline-flex items-center rounded-full border border-[#d1d5db] bg-white/80 px-3 py-1 text-xs font-semibold text-[#4b5563] backdrop-blur-sm">
-              Wellness while you work · v0.2
+              A calm wellness companion for desk work
             </p>
-            <h1 className="mt-6 text-4xl font-semibold leading-[1.08] tracking-tight md:text-6xl md:leading-[1.05]">
+            <h1 className="mt-5 text-4xl font-semibold leading-[1.08] tracking-tight md:text-6xl md:leading-[1.05]">
               Gentle movement prompts.
               <span className="mt-2 block text-[#4b5563]">
                 Better workdays, one small reset at a time.
               </span>
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[#4b5563] md:text-lg">
-              ActiveAid helps desk workers reduce preventable discomfort with supportive
-              reminders, quick relief sessions, and a daily check-in. Lightweight, private,
-              and easy to use consistently.
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-[#4b5563] md:text-lg">
+              ActiveAid helps desk workers build small movement habits with gentle reminders,
+              guided relief sessions, and a simple daily check-in. It is lightweight, local-first,
+              and designed to stay out of your way.
             </p>
 
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <PrimaryButton href="/install">Get the extension</PrimaryButton>
+            <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <PrimaryButton href={storeUrl || "/install"} external={Boolean(storeUrl)}>
+                {storeUrl ? "Add to Chrome" : "Check availability"}
+              </PrimaryButton>
               <SecondaryButton sectionId="product">See the product</SecondaryButton>
             </div>
 
-            <InstallStrip />
+            <AvailabilityNote available={Boolean(storeUrl)} />
           </Reveal>
 
           <motion.div
             initial={reducedMotion ? false : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, ease: "easeOut", delay: 0.08 }}
-            className="relative mx-auto mt-14 flex justify-center md:mt-16"
+            className="relative mx-auto mt-10 flex justify-center md:mt-12"
           >
             <div className="absolute inset-x-8 top-8 -z-10 h-40 rounded-full bg-[#7bae7f]/15 blur-3xl" />
-            <Image
-              src="/hero-popup.png"
-              alt="ActiveAid extension popup on Today tab"
-              width={918}
-              height={1148}
-              className="h-auto w-full max-w-[380px] rounded-[28px] border border-[#e5e7eb] bg-white shadow-[0_24px_60px_rgba(31,41,55,0.16)] md:max-w-[420px]"
-              priority
-            />
+            <ProductPreview />
           </motion.div>
         </header>
 
@@ -116,17 +102,15 @@ export function LandingHome() {
           <Reveal>
             <SectionHeading
               eyebrow="Product"
-              title="Four tabs. One calm popup."
-              body="Everything lives in a lightweight extension popup designed for quick daily use."
+              title="From reminder to relief, without breaking your flow"
+              body="Each prompt gives you a clear next step. Open a short session, snooze, or carry on with your day."
               centered
             />
           </Reveal>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {PREVIEWS.map((preview, index) => (
-              <Reveal key={preview.label} delay={index * 0.05}>
-                <PreviewCard {...preview} />
-              </Reveal>
-            ))}
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            <JourneyCard icon={Bell} title="A gentle nudge" body="Reminders appear only after your chosen amount of active time." />
+            <JourneyCard icon={HeartPulse} title="One clear action" body="Go straight to a short, desk-friendly relief session when you want it." />
+            <JourneyCard icon={Activity} title="A useful pattern" body="Check-ins and completed sessions build simple, private insights over time." />
           </div>
         </section>
 
@@ -134,24 +118,18 @@ export function LandingHome() {
           <Reveal>
             <div className="rounded-3xl border border-[#d1d5db] bg-white/70 p-8 backdrop-blur-sm md:p-10">
               <p className="text-center text-xs font-semibold uppercase tracking-[0.14em] text-[#4b5563]">
-                Works in your browser
+                Release focus
               </p>
               <h2 className="mt-3 text-center text-2xl font-semibold tracking-tight md:text-3xl">
-                One extension. Chrome, Edge, and Firefox.
+                Built for a careful Chrome launch.
               </h2>
               <p className="mx-auto mt-3 max-w-xl text-center text-sm leading-relaxed text-[#4b5563]">
-                Same MV3 build across Chromium and Firefox. Install from your store of choice
-                or load unpacked while you test.
+                ActiveAid is being prepared for the Chrome Web Store. Other browser releases
+                will follow after their behavior has been fully verified.
               </p>
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                {BROWSERS.map((browser) => (
-                  <span
-                    key={browser}
-                    className="rounded-full border border-[#d1d5db] bg-[#f7f4ed] px-5 py-2 text-sm font-semibold text-[#1f2937]"
-                  >
-                    {browser}
-                  </span>
-                ))}
+              <div className="mx-auto mt-7 flex w-fit items-center gap-3 rounded-full border border-[#cfdccf] bg-[#edf4ed] px-4 py-2 text-sm font-semibold text-[#36583a]">
+                <span className="h-2 w-2 rounded-full bg-[#6a9d6e]" aria-hidden="true" />
+                Chrome Web Store release in progress
               </div>
             </div>
           </Reveal>
@@ -202,8 +180,8 @@ export function LandingHome() {
           <Reveal>
             <SectionHeading
               eyebrow="How it works"
-              title="Up and running in under a minute"
-              body="No account required for the core experience. Install, open the popup, and get started."
+              title="A simple start, with you in control"
+              body="No account is required for the core experience. Activity timing starts only after you review the disclosure and agree."
             />
           </Reveal>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
@@ -244,36 +222,23 @@ export function LandingHome() {
           <Reveal>
             <SectionHeading
               eyebrow="Install"
-              title="Two ways to roll it out"
-              body="For normal users, publish to the Chrome Web Store. For early testers, load unpacked in Developer mode."
+              title={storeUrl ? "Ready when you are" : "Public release is being prepared"}
+              body={storeUrl ? "Install ActiveAid from its verified Chrome Web Store listing." : "The Chrome listing is not live yet. The install page will link directly to the verified listing when it is available."}
             />
           </Reveal>
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
-            <Reveal delay={0.05}>
-              <InstallCard
-                title="Chrome Web Store (recommended)"
-                body="The standard install path. One click to install and automatic updates."
-                bullets={[
-                  "Publish publicly or unlisted",
-                  "Users install without Developer mode",
-                  "Automatic updates and trust signals",
-                ]}
-                cta={{ href: "/install", label: "View Web Store steps" }}
-              />
-            </Reveal>
-            <Reveal delay={0.1}>
-              <InstallCard
-                title="Private beta (load unpacked)"
-                body="Fast for testers. Requires Developer mode and manual updates."
-                bullets={[
-                  "Load unpacked from the extension folder",
-                  "Best for quick iteration",
-                  "Manual update process for testers",
-                ]}
-                cta={{ href: "/install", label: "View beta steps" }}
-              />
-            </Reveal>
-          </div>
+          <Reveal delay={0.05}>
+            <div className="mt-10 flex flex-col items-start justify-between gap-6 rounded-3xl border border-[#d1d5db] bg-white p-8 shadow-sm sm:flex-row sm:items-center">
+              <div>
+                <p className="text-base font-semibold text-[#1f2937]">Chrome extension</p>
+                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#4b5563]">
+                  {storeUrl ? "Install securely from the Chrome Web Store and receive automatic updates." : "Install from the Chrome Web Store for automatic updates and a familiar permission flow once the listing is live."}
+                </p>
+              </div>
+              <PrimaryButton href={storeUrl || "/install"} external={Boolean(storeUrl)}>
+                {storeUrl ? "Add to Chrome" : "View release status"}
+              </PrimaryButton>
+            </div>
+          </Reveal>
         </section>
 
         <footer className="mt-20 border-t border-[#e5e7eb] pt-10">
@@ -289,7 +254,6 @@ export function LandingHome() {
               <FooterLink href="/install">Install</FooterLink>
               <FooterLink href="/privacy">Privacy</FooterLink>
               <FooterLink href="#features">Features</FooterLink>
-              <FooterLink href="/api/health/supabase">Backend health</FooterLink>
             </div>
           </div>
         </footer>
@@ -298,32 +262,21 @@ export function LandingHome() {
   )
 }
 
-function InstallStrip() {
+function AvailabilityNote({ available }: { available: boolean }) {
   return (
-    <div className="mx-auto mt-8 max-w-xl overflow-hidden rounded-2xl border border-[#d1d5db] bg-[#1f2937] text-left shadow-sm">
-      <div className="flex items-center gap-2 border-b border-[#374151] px-4 py-2">
-        <span className="h-2.5 w-2.5 rounded-full bg-[#f87171]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#fbbf24]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#4ade80]" />
-        <span className="ml-2 text-[11px] font-medium text-[#9ca3af]">Install</span>
-      </div>
-      <div className="flex items-center justify-between gap-3 px-4 py-3 font-mono text-xs text-[#e5e7eb] md:text-sm">
-        <code className="truncate">npm run package:extension</code>
-        <Link
-          href="/install"
-          className="shrink-0 rounded-full bg-[#6a9d6e] px-3 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-[#5e8f62] md:text-xs"
-        >
-          Guide
-        </Link>
-      </div>
-    </div>
+    <p className="mx-auto mt-4 flex w-fit items-center gap-2 text-sm text-[#4b5563]">
+      <LockKeyhole className="h-4 w-4 text-[#527d57]" aria-hidden="true" />
+      {available ? "Secure install from the Chrome Web Store" : "Chrome Web Store release in progress"}
+    </p>
   )
 }
 
-function PrimaryButton({ href, children }: { href: string; children: React.ReactNode }) {
+function PrimaryButton({ href, children, external = false }: { href: string; children: React.ReactNode; external?: boolean }) {
   return (
     <Link
       href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
       className="inline-flex h-11 items-center justify-center rounded-full bg-[#6a9d6e] px-6 text-sm font-semibold text-white shadow-sm transition-[background-color,transform,box-shadow] duration-200 hover:bg-[#5e8f62] hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6a9d6e] active:scale-[0.98]"
     >
       {children}
@@ -372,30 +325,44 @@ function SectionHeading({
   )
 }
 
-function PreviewCard({
-  src,
-  alt,
-  label,
-}: {
-  src: string
-  alt: string
-  label: string
-}) {
+function ProductPreview() {
   return (
-    <div className="group overflow-hidden rounded-2xl border border-[#d1d5db] bg-white shadow-sm transition-[box-shadow,transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-[#c5d0c6] hover:shadow-md">
-      <div className="border-b border-[#e5e7eb] bg-[#f7f4ed] px-4 py-2">
-        <p className="text-xs font-semibold text-[#4b5563]">{label}</p>
+    <div aria-label="Illustration of the ActiveAid extension home view" className="w-full max-w-[410px] overflow-hidden rounded-[28px] border border-[#d1d5db] bg-[#f8faf8] text-left shadow-[0_24px_60px_rgba(31,41,55,0.16)]">
+      <div className="border-b border-[#e5e7eb] bg-white px-6 py-5">
+        <div className="flex items-center gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#dfeadf] text-[#36583a]"><Activity className="h-5 w-5" aria-hidden="true" /></span>
+          <div><p className="font-semibold">ActiveAid</p><p className="text-xs text-[#6b7280]">Wellness while you work.</p></div>
+        </div>
       </div>
-      <div className="flex justify-center bg-[#f3efe6] p-4">
-        <Image
-          src={src}
-          alt={alt}
-          width={400}
-          height={500}
-          className="h-auto w-full max-w-[180px] rounded-2xl border border-[#e5e7eb] bg-white shadow-sm transition-transform duration-200 group-hover:scale-[1.02]"
-        />
+      <div className="space-y-3 p-5">
+        <div className="rounded-2xl bg-[#e9f1e9] p-5">
+          <div className="flex items-start justify-between gap-4"><div><p className="text-xs text-[#4b5563]">You&apos;ve been active for</p><p className="mt-1 text-4xl font-semibold tracking-tight">0m</p></div><span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-[#36583a]">Reminders on</span></div>
+          <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white"><div className="h-full w-0 rounded-full bg-[#6a9d6e]" /></div>
+        </div>
+        <div className="flex items-center gap-3 rounded-2xl border border-[#e5e7eb] bg-white p-4">
+          <HeartPulse className="h-5 w-5 text-[#527d57]" aria-hidden="true" />
+          <div className="min-w-0 flex-1"><p className="text-sm font-semibold">Daily check-in</p><p className="truncate text-xs text-[#6b7280]">Log how your body feels today.</p></div>
+          <span className="flex items-center text-xs font-semibold text-[#36583a]">Check in <ChevronRight className="h-4 w-4" aria-hidden="true" /></span>
+        </div>
+        <div className="rounded-2xl border border-[#e5e7eb] bg-white p-4">
+          <div className="flex items-center justify-between"><p className="text-sm font-semibold">Quick Relief</p><span className="text-xs font-semibold text-[#527d57]">View all</span></div>
+          <p className="mt-1 text-xs text-[#6b7280]">Short guided resets you can do at your desk.</p>
+          <div className="mt-3 flex items-center gap-3 rounded-xl bg-[#f7f4ed] p-3"><Clock3 className="h-5 w-5 text-[#c97b63]" aria-hidden="true" /><div className="flex-1"><p className="text-xs font-semibold">Neck &amp; shoulder reset</p><p className="text-[11px] text-[#6b7280]">2 min · 4 gentle steps</p></div><ChevronRight className="h-4 w-4 text-[#6b7280]" aria-hidden="true" /></div>
+        </div>
       </div>
     </div>
+  )
+}
+
+function JourneyCard({ icon: Icon, title, body }: { icon: typeof Bell; title: string; body: string }) {
+  return (
+    <Reveal>
+      <div className="h-full rounded-2xl border border-[#d1d5db] bg-white p-6 shadow-sm">
+        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e8f0e9] text-[#3d6b42]"><Icon className="h-5 w-5" aria-hidden="true" /></span>
+        <h3 className="mt-5 text-base font-semibold">{title}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-[#4b5563]">{body}</p>
+      </div>
+    </Reveal>
   )
 }
 
@@ -446,39 +413,6 @@ function CheckLine({ children }: { children: React.ReactNode }) {
         ✓
       </span>
       <p className="text-sm leading-relaxed text-[#4b5563]">{children}</p>
-    </div>
-  )
-}
-
-function InstallCard({
-  title,
-  body,
-  bullets,
-  cta,
-}: {
-  title: string
-  body: string
-  bullets: string[]
-  cta: { href: string; label: string }
-}) {
-  return (
-    <div className="flex h-full flex-col rounded-3xl border border-[#d1d5db] bg-white p-8 shadow-sm transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-md">
-      <h3 className="text-lg font-semibold tracking-tight">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-[#4b5563]">{body}</p>
-      <ul className="mt-5 flex-1 space-y-2 text-sm text-[#4b5563]">
-        {bullets.map((bullet) => (
-          <li key={bullet} className="flex items-start gap-2">
-            <span className="mt-1 text-[#6a9d6e]">•</span>
-            <span>{bullet}</span>
-          </li>
-        ))}
-      </ul>
-      <Link
-        href={cta.href}
-        className="mt-6 inline-flex h-11 items-center justify-center rounded-full border border-[#d1d5db] bg-white px-6 text-sm font-semibold text-[#1f2937] transition-[background-color,transform] duration-200 hover:bg-[#f3efe6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6a9d6e] active:scale-[0.98]"
-      >
-        {cta.label}
-      </Link>
     </div>
   )
 }

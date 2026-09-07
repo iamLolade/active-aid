@@ -3,6 +3,7 @@ import assert from "node:assert/strict"
 import { readFile } from "node:fs/promises"
 
 const popupPath = new URL("../extension/popup/popup.html", import.meta.url)
+const popupStylesPath = new URL("../extension/popup/popup.css", import.meta.url)
 
 test("popup IDs are unique and navigation targets exist", async () => {
   const html = await readFile(popupPath, "utf8")
@@ -19,6 +20,12 @@ test("popup uses only packaged styles and scripts", async () => {
   assert.doesNotMatch(html, /https?:\/\//)
   assert.match(html, /href="\.\/popup\.css"/)
   assert.match(html, /src="\.\/popup\.js"/)
+})
+
+test("hidden banners stay out of the popup layout", async () => {
+  const css = await readFile(popupStylesPath, "utf8")
+
+  assert.match(css, /\.banner\[hidden\]\s*{[^}]*display:\s*none\s*!important;/s)
 })
 
 test("destructive actions use the accessible confirmation dialog", async () => {

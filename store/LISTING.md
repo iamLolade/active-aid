@@ -130,16 +130,18 @@ Use the closest labels shown in the current dashboard. Do not select browsing hi
 
 ## Screenshots (store upload)
 
-Use 1280×800 or 640×400 PNG/JPEG. Suggested sources in this repo:
+Capture screenshots from the packaged release candidate after final QA. Do not use old marketing mockups or captures from an earlier interface.
 
-| Screen | Suggested file |
-|--------|----------------|
-| Today tab | `public/screenshots/extension-today.png` or `public/hero-popup.png` |
-| Check-in | `public/check-in-tab.png` |
-| Quick relief / session player | `public/relief-ui.png` |
-| Insights (capture from extension after test data) | Capture manually after QA |
+Use 1280×800 or 640×400 PNG/JPEG and show these verified states:
 
-Tip: crop to the popup (~400px wide) centered on a neutral background if needed.
+| Screen | Capture requirement |
+|--------|---------------------|
+| Today | Fresh install with reminders enabled and no invented user history |
+| Check-in | Overall feeling and optional body-area controls visible |
+| Quick Relief | A real guided session with its step and time controls visible |
+| Insights | A clearly labeled test profile with representative data |
+
+Center the popup on a quiet neutral background. Keep all copy legible and avoid adding claims that are not present in the extension.
 
 ---
 

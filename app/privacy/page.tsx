@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import Link from "next/link"
+import { SiteHeader } from "@/components/site-header"
 
 export const metadata: Metadata = {
   title: "Privacy Policy | ActiveAid",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const SECTIONS = [
   {
     title: "Overview",
-    body: "ActiveAid is a workplace wellness browser extension. This policy describes how the extension handles data. The MVP is local-first: no account is required and wellness data stays in your browser by default. Activity timing begins only after you review the first-run disclosure and select Agree and get started.",
+    body: "ActiveAid is a workplace wellness browser extension. This policy describes how the extension handles data. ActiveAid is local-first: no account is required and wellness data stays in your browser by default. Activity timing begins only after you review the first-run disclosure and select Agree and get started.",
   },
   {
     title: "What we store (on your device)",
@@ -90,46 +90,31 @@ const SECTIONS = [
 export default function PrivacyPage() {
   return (
     <main className="min-h-screen bg-[#f7f4ed] text-[#1f2937]">
-      <div className="mx-auto flex max-w-3xl flex-col gap-10 px-6 py-16">
-        <header className="flex items-center gap-4">
-          <Link href="/">
-            <Image
-              src="/active-aid_logo.png"
-              alt="ActiveAid"
-              width={44}
-              height={44}
-              className="rounded-2xl"
-              priority
-            />
-          </Link>
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Privacy Policy</h1>
-            <p className="text-sm text-[#4b5563]">
-              Last updated: September 2026 · ActiveAid browser extension (MVP)
-            </p>
-          </div>
+      <div className="mx-auto max-w-5xl px-6 pb-16 pt-6 md:pb-24 md:pt-8">
+        <SiteHeader />
+        <header className="mx-auto mt-16 max-w-3xl md:mt-20">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#4b5563]">Your data</p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">Privacy Policy</h1>
+          <p className="mt-3 text-sm text-[#4b5563]">
+            Last updated: September 2026 · ActiveAid browser extension
+          </p>
         </header>
 
-        {SECTIONS.map((section) => (
-          <section
-            key={section.title}
-            className="rounded-2xl border border-[#d1d5db] bg-white p-8 shadow-sm"
-          >
-            <h2 className="text-lg font-semibold tracking-tight">{section.title}</h2>
-            {"body" in section && section.body ? (
-              <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">{section.body}</p>
-            ) : null}
-            {"bullets" in section && section.bullets ? (
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-[#4b5563]">
-                {section.bullets.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            ) : null}
-          </section>
-        ))}
+        <div className="mx-auto mt-10 grid max-w-3xl gap-4">
+          {SECTIONS.map((section) => (
+            <section key={section.title} className="rounded-2xl border border-[#d1d5db] bg-white p-7 shadow-sm md:p-8">
+              <h2 className="text-lg font-semibold tracking-tight">{section.title}</h2>
+              {"body" in section && section.body ? <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">{section.body}</p> : null}
+              {"bullets" in section && section.bullets ? (
+                <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-[#4b5563]">
+                  {section.bullets.map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              ) : null}
+            </section>
+          ))}
+        </div>
 
-        <footer className="flex flex-wrap gap-4 text-sm text-[#4b5563]">
+        <footer className="mx-auto mt-10 flex max-w-3xl flex-wrap gap-4 text-sm text-[#4b5563]">
           <Link href="/" className="font-semibold text-[#3d6b42] hover:underline">
             Home
           </Link>

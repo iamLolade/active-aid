@@ -33,7 +33,7 @@ This validates `extension/manifest.json` and creates store zips for Chrome, Edge
 | Asset | Status |
 |-------|--------|
 | Icons 16 / 32 / 48 / 128 | Included in zip (`extension/assets/`) |
-| Screenshots | See `store/LISTING.md` (use `public/hero-popup.png`, `public/check-in-tab.png`, etc.) |
+| Screenshots | Capture the packaged release candidate using the verified states in `store/LISTING.md` |
 | Listing copy | `store/LISTING.md` |
 
 Tip: use 1280×800 or 640×400 screenshots; keep text readable.

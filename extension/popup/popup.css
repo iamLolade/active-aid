@@ -243,6 +243,10 @@ body {
   line-height: 1.4;
 }
 
+.banner[hidden] {
+  display: none !important;
+}
+
 .bannerDismiss {
   flex: 0 0 auto;
   width: 24px;

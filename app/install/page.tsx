@@ -1,137 +1,88 @@
-import Image from "next/image"
+import type { Metadata } from "next"
 import Link from "next/link"
+import { Check, Download, LockKeyhole } from "lucide-react"
+import { SiteHeader } from "@/components/site-header"
+
+export const metadata: Metadata = {
+  title: "Install ActiveAid",
+  description: "Check ActiveAid's Chrome Web Store availability and learn what to expect after installation.",
+}
 
 const storeUrl = process.env.NEXT_PUBLIC_CHROME_STORE_URL?.trim()
+
+const EXPECTATIONS = [
+  "Review a clear privacy disclosure before activity timing begins.",
+  "Use reminders and the core wellness tools without creating an account.",
+  "Change reminder settings or clear local data whenever you want.",
+] as const
 
 export default function InstallPage() {
   return (
     <main className="min-h-screen bg-[#f7f4ed] text-[#1f2937]">
-      <div className="mx-auto flex max-w-3xl flex-col gap-10 px-6 py-16">
-        <header className="flex items-center gap-4">
-          <Link href="/">
-            <Image
-              src="/active-aid_logo.png"
-              alt="ActiveAid"
-              width={44}
-              height={44}
-              className="rounded-2xl"
-              priority
-            />
-          </Link>
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Install ActiveAid</h1>
-            <p className="text-sm text-[#4b5563]">
-              Wellness while you work. Pick the install path that fits your setup.
-            </p>
-          </div>
-        </header>
+      <div className="mx-auto max-w-5xl px-6 pb-16 pt-6 md:pb-24 md:pt-8">
+        <SiteHeader />
 
-        <section className="rounded-2xl border border-[#d1d5db] bg-white p-8 shadow-sm">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-[#4b5563]">
-            Option A, Chrome Web Store (recommended)
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">
-            This is how most users install browser extensions. It supports automatic updates
-            and does not require Developer mode.
+        <section className="mx-auto mt-20 max-w-3xl text-center md:mt-28">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#4b5563]">
+            Chrome extension
           </p>
+          <h1 className="mt-4 text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
+            {storeUrl ? "A gentler workday is one click away." : "ActiveAid is getting ready for Chrome."}
+          </h1>
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[#4b5563]">
+            {storeUrl
+              ? "Install ActiveAid from the verified Chrome Web Store listing. Updates will arrive automatically through Chrome."
+              : "The public listing is not live yet. We are completing release checks so the first public install is clear, reliable, and privacy-conscious."}
+          </p>
+
           {storeUrl ? (
             <a
               href={storeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-5 inline-flex h-11 items-center justify-center rounded-full bg-[#6a9d6e] px-6 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#5e8f62]"
+              className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#6a9d6e] px-7 text-sm font-semibold text-white shadow-sm transition-[background-color,transform,box-shadow] hover:bg-[#5e8f62] hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6a9d6e] active:scale-[0.98]"
             >
+              <Download className="h-4 w-4" aria-hidden="true" />
               Add to Chrome
             </a>
           ) : (
-            <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">
-              The store listing is not linked yet. After you publish, set{" "}
-              <code className="rounded bg-[#f3efe6] px-1">NEXT_PUBLIC_CHROME_STORE_URL</code>{" "}
-              in production and redeploy.
-            </p>
+            <div className="mx-auto mt-8 flex w-fit items-center gap-3 rounded-full border border-[#cfdccf] bg-[#edf4ed] px-5 py-3 text-sm font-semibold text-[#36583a]">
+              <span className="h-2 w-2 rounded-full bg-[#6a9d6e]" aria-hidden="true" />
+              Chrome Web Store release in progress
+            </div>
           )}
-          <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-[#4b5563]">
-            <li>Upload the packaged zip to the Chrome Web Store Developer Dashboard</li>
-            <li>
-              Use listing copy from{" "}
-              <code className="rounded bg-[#f3efe6] px-1">store/LISTING.md</code>
-            </li>
-            <li>
-              Set privacy policy URL to{" "}
-              <code className="rounded bg-[#f3efe6] px-1">/privacy</code> on your deployed site
-            </li>
-            <li>Submit for review, then publish (public or unlisted)</li>
-          </ul>
-          <p className="mt-4 text-xs text-[#4b5563]">
-            Publishing guide:{" "}
-            <code className="rounded bg-[#f3efe6] px-1">CHROME_WEB_STORE.md</code>
-          </p>
         </section>
 
-        <section className="rounded-2xl border border-[#d1d5db] bg-white p-8 shadow-sm">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-[#4b5563]">
-            Option A2, Microsoft Edge and Firefox
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">
-            The same MV3 build publishes to Edge Add-ons and Firefox Add-ons (AMO). One
-            package script produces store-ready zips for all three browsers.
-          </p>
-          <p className="mt-4 text-xs text-[#4b5563]">
-            Testing and publish steps:{" "}
-            <code className="rounded bg-[#f3efe6] px-1">FIREFOX_EDGE.md</code>
-          </p>
+        <section className="mx-auto mt-16 grid max-w-4xl gap-6 md:grid-cols-[1fr_0.8fr]">
+          <div className="rounded-3xl border border-[#d1d5db] bg-white p-8 shadow-sm md:p-10">
+            <h2 className="text-xl font-semibold tracking-tight">What to expect</h2>
+            <ul className="mt-6 space-y-5">
+              {EXPECTATIONS.map((item) => (
+                <li key={item} className="flex items-start gap-3 text-sm leading-relaxed text-[#4b5563]">
+                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e8f0e9] text-[#3d6b42]">
+                    <Check className="h-3.5 w-3.5" aria-hidden="true" />
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <aside className="rounded-3xl bg-[#1f2937] p-8 text-white md:p-10">
+            <LockKeyhole className="h-6 w-6 text-[#a9c8ac]" aria-hidden="true" />
+            <h2 className="mt-5 text-xl font-semibold tracking-tight">Private by default</h2>
+            <p className="mt-3 text-sm leading-relaxed text-[#d1d5db]">
+              Wellness data stays in your browser unless you separately sign in and enable optional cloud backup. Activity timing is never uploaded.
+            </p>
+            <Link href="/privacy" className="mt-6 inline-flex text-sm font-semibold text-[#c8ddca] hover:text-white">
+              Read the privacy policy →
+            </Link>
+          </aside>
         </section>
 
-        <section className="rounded-2xl border border-[#d1d5db] bg-white p-8 shadow-sm">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-[#4b5563]">
-            Option B, Private beta (load unpacked)
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">
-            This is best for early testers. It requires Developer mode and manual updates.
-          </p>
-          <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm text-[#4b5563]">
-            <li>
-              Open{" "}
-              <code className="rounded bg-[#f3efe6] px-1">chrome://extensions</code>
-            </li>
-            <li>Enable Developer mode</li>
-            <li>
-              Click Load unpacked and select the{" "}
-              <code className="rounded bg-[#f3efe6] px-1">extension/</code> folder
-            </li>
-          </ol>
-          <p className="mt-4 text-xs text-[#4b5563]">
-            For detailed testing steps, see{" "}
-            <code className="rounded bg-[#f3efe6] px-1">extension/README.md</code>.
-          </p>
-        </section>
-
-        <section className="rounded-2xl border border-[#d1d5db] bg-white p-8 shadow-sm">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-[#4b5563]">
-            Packaging
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">
-            Store-ready zips for Chrome, Edge, and Firefox. The script validates the manifest
-            before zipping.
-          </p>
-          <pre className="mt-4 overflow-x-auto rounded-xl bg-[#1f2937] p-4 text-xs text-white">
-            <code>npm run package:extension</code>
-          </pre>
-          <p className="mt-3 text-xs text-[#4b5563]">
-            Output:{" "}
-            <code className="rounded bg-[#f3efe6] px-1">dist/activeaid-extension.zip</code>,{" "}
-            <code className="rounded bg-[#f3efe6] px-1">dist/activeaid-extension-edge.zip</code>,{" "}
-            <code className="rounded bg-[#f3efe6] px-1">dist/activeaid-extension-firefox.zip</code>
-          </p>
-        </section>
-
-        <footer className="flex flex-wrap gap-4 text-xs text-[#4b5563]">
-          <Link href="/privacy" className="font-semibold text-[#3d6b42] hover:underline">
-            Privacy policy
-          </Link>
-          <Link href="/" className="font-semibold text-[#3d6b42] hover:underline">
-            Back to home
-          </Link>
+        <footer className="mx-auto mt-16 flex max-w-4xl flex-wrap items-center justify-between gap-4 border-t border-[#d1d5db] pt-8 text-sm text-[#4b5563]">
+          <p>ActiveAid supports wellness habits. It is not medical advice.</p>
+          <Link href="/" className="font-semibold text-[#3d6b42] hover:text-[#2f5835]">Back to home</Link>
         </footer>
       </div>
     </main>

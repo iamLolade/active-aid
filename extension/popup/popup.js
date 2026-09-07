@@ -60,7 +60,6 @@ const NAV_TAB_ICONS = {
   settings: iconSettings,
 }
 
-/** Featured on Today tab per hero-popup.png */
 const HOME_QUICK_RELIEF_IDS = ["neck", "wrist", "lower-back"]
 
 let showAllQuickRelief = false
