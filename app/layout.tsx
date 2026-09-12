@@ -13,9 +13,29 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ActiveAid | Wellness while you work",
+  applicationName: "ActiveAid",
+  title: {
+    default: "ActiveAid | Wellness while you work",
+    template: "%s | ActiveAid",
+  },
   description:
     "Gentle movement reminders, desk-friendly relief sessions, and daily check-ins for modern desk workers. Local-first and private by default.",
+  icons: {
+    icon: [{ url: "/activeaid-mark.svg", type: "image/svg+xml" }],
+  },
+  openGraph: {
+    type: "website",
+    siteName: "ActiveAid",
+    title: "ActiveAid | Wellness while you work",
+    description:
+      "Gentle movement reminders, desk-friendly relief sessions, and daily check-ins for modern desk workers.",
+  },
+  twitter: {
+    card: "summary",
+    title: "ActiveAid | Wellness while you work",
+    description:
+      "Gentle movement reminders, desk-friendly relief sessions, and daily check-ins for modern desk workers.",
+  },
 };
 
 export default function RootLayout({

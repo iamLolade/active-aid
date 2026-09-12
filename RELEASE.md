@@ -22,6 +22,7 @@ Use this before sharing the extension or deploying the web app.
 - [ ] `npm run build` succeeds
 - [ ] `npm run start` serves the landing page
 - [ ] Logo and copy render correctly
+- [ ] `/support` renders and its email link opens the configured support address
 
 ## 4. Extension (Chrome)
 - [ ] Load unpacked from `extension/` (or install packaged zip)
@@ -79,7 +80,7 @@ Run with Supabase configured and an existing test account.
 | 7 | Confirm **Delete cloud backup data** | Backup turns off; cloud rows are deleted; local wellness data remains |
 | 8 | Sign out | Local sign-in session is cleared; local and existing cloud wellness data remain |
 
-**Code-verified (2026-09-06):** automated tests, lint, production build, and extension packaging pass. Installed-extension and live-sync sign-off remain manual.
+**Code-verified (2026-09-12):** 23 automated tests, lint, production build, and browser-targeted extension packaging pass. Installed-extension, cross-browser, and live-sync sign-off remain manual.
 
 **Manual sign-off:** _________________ Date: _________
 
@@ -100,6 +101,7 @@ Output: `dist/activeaid-extension.zip` (manifest validated before zip)
 ### 6b. Chrome Web Store listing (Phase 6.2)
 
 - [ ] Deploy web app with `/privacy` reachable
+- [ ] Set `NEXT_PUBLIC_SUPPORT_EMAIL` and verify `/support`
 - [ ] Run `npm run package:extension`
 - [ ] Upload zip in [Developer Dashboard](https://chrome.google.com/webstore/devconsole)
 - [ ] Paste listing fields from `store/LISTING.md`
@@ -122,6 +124,7 @@ Notes:
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `NEXT_PUBLIC_APP_URL` (your production URL)
+   - `NEXT_PUBLIC_SUPPORT_EMAIL` (public support inbox)
 4. Deploy
 5. Verify `https://<your-domain>/api/health/supabase`
 
@@ -135,8 +138,9 @@ See `CHROME_WEB_STORE.md` for the full walkthrough.
 
 ### 8b. Firefox and Edge (Phase 7.2)
 
-- [ ] `npm run package:extension` (produces Chrome, Edge, and Firefox zips)
-- [ ] Test load unpacked in Edge (`edge://extensions`) and Firefox (`about:debugging`)
+- [ ] `npm run package:extension` (produces validated, browser-targeted zips)
+- [ ] Load `extension/` unpacked in Edge and load `dist/activeaid-extension-firefox.zip` temporarily in Firefox
+- [ ] Verify the Edge and Firefox packages use their expected background manifest entries
 - [ ] Run cross-browser QA checklist in `FIREFOX_EDGE.md`
 - [ ] Submit `dist/activeaid-extension-edge.zip` to Microsoft Edge Add-ons (unlisted for beta)
 - [ ] Submit `dist/activeaid-extension-firefox.zip` to Firefox Add-ons / AMO (unlisted for beta)

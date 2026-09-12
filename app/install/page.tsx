@@ -4,7 +4,7 @@ import { Check, Download, LockKeyhole } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
 
 export const metadata: Metadata = {
-  title: "Install ActiveAid",
+  title: "Install",
   description: "Check ActiveAid's Chrome Web Store availability and learn what to expect after installation.",
 }
 
@@ -82,7 +82,10 @@ export default function InstallPage() {
 
         <footer className="mx-auto mt-16 flex max-w-4xl flex-wrap items-center justify-between gap-4 border-t border-[#d1d5db] pt-8 text-sm text-[#4b5563]">
           <p>ActiveAid supports wellness habits. It is not medical advice.</p>
-          <Link href="/" className="font-semibold text-[#3d6b42] hover:text-[#2f5835]">Back to home</Link>
+          <div className="flex gap-5 font-semibold text-[#3d6b42]">
+            <Link href="/support" className="hover:text-[#2f5835]">Support</Link>
+            <Link href="/" className="hover:text-[#2f5835]">Back to home</Link>
+          </div>
         </footer>
       </div>
     </main>

@@ -39,11 +39,13 @@ git push -u origin main
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | your Supabase anon key |
    | `SUPABASE_SERVICE_ROLE_KEY` | your Supabase service role key |
    | `NEXT_PUBLIC_APP_URL` | `https://activeaid.vercel.app` (or whatever Vercel assigns) |
+   | `NEXT_PUBLIC_SUPPORT_EMAIL` | your public support inbox |
 
 3. Click **Deploy**
 4. Verify:
    - `https://activeaid.vercel.app/api/health/supabase` → `{ "ok": true, ... }`
    - `https://activeaid.vercel.app/privacy` → privacy policy renders
+   - `https://activeaid.vercel.app/support` → support guidance and contact link render
 
 ---
 
@@ -74,7 +76,7 @@ Paste from [`store/LISTING.md`](./store/LISTING.md):
 | **Short description** | `Gentle wellness reminders, desk relief sessions, and daily check-ins. Local-first. No account required.` |
 | **Detailed description** | *(paste full description from `store/LISTING.md`)* |
 | **Homepage URL** | `https://activeaid.vercel.app` |
-| **Support URL** | `https://activeaid.vercel.app/install` |
+| **Support URL** | `https://activeaid.vercel.app/support` |
 | **Privacy policy URL** | `https://activeaid.vercel.app/privacy` |
 
 ### Screenshots
@@ -106,7 +108,7 @@ Choose **Unlisted** (not searchable, shareable link only).
 
 ### Submit
 
-Click **Submit for review**. Unlisted reviews are typically faster (hours, not days).
+Click **Submit for review**. Review timing is controlled by the Chrome Web Store.
 
 ---
 

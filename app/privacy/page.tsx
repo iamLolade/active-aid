@@ -3,7 +3,7 @@ import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | ActiveAid",
+  title: "Privacy Policy",
   description:
     "How ActiveAid handles data in the browser extension and website. Local-first, no typed content or screenshots.",
 }
@@ -120,6 +120,9 @@ export default function PrivacyPage() {
           </Link>
           <Link href="/install" className="font-semibold text-[#3d6b42] hover:underline">
             Install
+          </Link>
+          <Link href="/support" className="font-semibold text-[#3d6b42] hover:underline">
+            Support
           </Link>
         </footer>
       </div>

@@ -253,6 +253,7 @@ export function LandingHome({ storeUrl }: { storeUrl?: string }) {
             <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-[#4b5563]">
               <FooterLink href="/install">Install</FooterLink>
               <FooterLink href="/privacy">Privacy</FooterLink>
+              <FooterLink href="/support">Support</FooterLink>
               <FooterLink href="#features">Features</FooterLink>
             </div>
           </div>

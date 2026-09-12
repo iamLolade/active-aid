@@ -24,7 +24,7 @@ Apply the migrations through `supabase/migrations/0003_cloud_data_delete_policie
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) and verify [http://localhost:3000/api/health/supabase](http://localhost:3000/api/health/supabase).
+Open [http://localhost:3000](http://localhost:3000), verify the [support page](http://localhost:3000/support), and check [backend health](http://localhost:3000/api/health/supabase).
 
 ### 5. Load extension
 See `extension/README.md` for Chrome load-unpacked steps.
@@ -38,7 +38,7 @@ See `extension/README.md` for Chrome load-unpacked steps.
 | `npm run lint` | ESLint |
 | `npm test` | Run deterministic extension logic tests |
 | `npm run validate` | Run tests, lint, and the production build |
-| `npm run package:extension` | Zip extension to `dist/` (Chrome, Edge, Firefox) |
+| `npm run package:extension` | Create validated, browser-targeted zips in `dist/` |
 | `npm run sync:config` | Write extension Supabase config from `.env` |
 
 ## Release

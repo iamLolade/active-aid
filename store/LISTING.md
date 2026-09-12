@@ -3,6 +3,7 @@
 Copy fields into the [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole) when uploading `dist/activeaid-extension.zip`.
 
 Replace `{APP_URL}` with your deployed site (e.g. `https://activeaid.app` from `NEXT_PUBLIC_APP_URL`).
+Set `NEXT_PUBLIC_SUPPORT_EMAIL` on the deployed site before submission so the support page offers a direct contact method.
 
 ---
 
@@ -25,7 +26,7 @@ Current version: see `extension/manifest.json` (`version` field)
 | **Category** | Productivity |
 | **Language** | English |
 | **Homepage URL** | `{APP_URL}` |
-| **Support URL** | `{APP_URL}/install` |
+| **Support URL** | `{APP_URL}/support` |
 | **Privacy policy URL** | `{APP_URL}/privacy` |
 
 ### Short description (max 132 characters)

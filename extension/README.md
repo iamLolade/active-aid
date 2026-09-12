@@ -1,6 +1,6 @@
 # ActiveAid Extension (MVP)
 
-Cross-browser MV3 extension for **Chrome**, **Edge**, and **Firefox**.
+Cross-browser MV3 extension for **Chrome**, **Edge**, and **Firefox**, packaged with a compatible manifest for each browser.
 
 ## Load unpacked
 
@@ -14,9 +14,11 @@ Cross-browser MV3 extension for **Chrome**, **Edge**, and **Firefox**.
 2. Enable **Developer mode**
 3. **Load unpacked** → select the `extension/` folder
 
-### Firefox (109+)
+### Firefox (112+)
+Run `npm run package:extension` from the project root first.
+
 1. Open `about:debugging#/runtime/this-firefox`
-2. **Load Temporary Add-on…** → pick `extension/manifest.json`
+2. **Load Temporary Add-on…** → pick `dist/activeaid-extension-firefox.zip`
 3. Re-load after browser restart (temporary add-ons do not persist)
 
 ## Quick test
@@ -59,7 +61,7 @@ The tests cover reminder decisions and inactivity boundaries, wellness-summary d
 ```bash
 npm run package:extension
 ```
-Produces zips for Chrome, Edge, and Firefox. See [FIREFOX_EDGE.md](../FIREFOX_EDGE.md) and [CHROME_WEB_STORE.md](../CHROME_WEB_STORE.md).
+Produces targeted zips for Chrome, Edge, and Firefox from the shared source. The packaging script generates browser-specific manifests without modifying `extension/manifest.json` or its development sync configuration. See [FIREFOX_EDGE.md](../FIREFOX_EDGE.md) and [CHROME_WEB_STORE.md](../CHROME_WEB_STORE.md).
 
 ## Privacy
 This MVP tracks **timing of activity signals only** (e.g., that *some* activity occurred), and does not log typed content, page content, screenshots, or camera data. Activity timing never leaves the device. Optional cloud backup uploads only check-ins, completed sessions, and reminder settings after explicit opt-in.

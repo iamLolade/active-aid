@@ -1,9 +1,14 @@
 import { readFileSync, writeFileSync, existsSync } from "node:fs"
-import { join } from "node:path"
+import { isAbsolute, join, resolve } from "node:path"
 
 const root = process.cwd()
 const envPath = join(root, ".env")
-const outPath = join(root, "extension/shared/sync-config.js")
+const outputArgument = process.argv[2]
+const outPath = outputArgument
+  ? isAbsolute(outputArgument)
+    ? outputArgument
+    : resolve(root, outputArgument)
+  : join(root, "extension/shared/sync-config.js")
 
 function readEnvValue(key) {
   if (!existsSync(envPath)) return ""
@@ -37,8 +42,9 @@ export function isSyncConfigured() {
 
 writeFileSync(outPath, contents, "utf8")
 
-if (url && anonKey) {
-  console.log("Wrote extension/shared/sync-config.js from .env")
-} else {
-  console.log("Wrote extension/shared/sync-config.js (empty — set Supabase vars in .env)")
-}
+const outputLabel = outputArgument ?? "extension/shared/sync-config.js"
+console.log(
+  url && anonKey
+    ? `Wrote ${outputLabel} from .env`
+    : `Wrote ${outputLabel} (empty — set Supabase vars in .env)`,
+)

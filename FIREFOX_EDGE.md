@@ -1,8 +1,8 @@
 # Firefox and Edge — testing and publishing
 
-ActiveAid uses one MV3 codebase for Chrome, Edge, and Firefox. The same zip from `npm run package:extension` uploads to all three stores.
+ActiveAid uses one MV3 codebase for Chrome, Edge, and Firefox. `npm run package:extension` produces a targeted package for each store because Firefox and Chromium browsers use different MV3 background declarations.
 
-Cross-browser APIs live in `extension/shared/browser-api.js`. Chrome and Edge ignore `browser_specific_settings.gecko` in `manifest.json`.
+Cross-browser APIs live in `extension/shared/browser-api.js`. The source manifest remains Chrome-first for load-unpacked development; packaging removes Firefox-only settings from Chromium builds and converts the Firefox background entry to `background.scripts`.
 
 ---
 
@@ -12,7 +12,7 @@ Cross-browser APIs live in `extension/shared/browser-api.js`. Chrome and Edge ig
 npm run package:extension
 ```
 
-Outputs (identical builds):
+Outputs (shared code, browser-specific manifests):
 
 | File | Store |
 |------|-------|
@@ -33,11 +33,11 @@ Outputs (identical builds):
 2. Same QA as Chrome (Chromium-based; same MV3 behavior)
 
 ### Firefox
-Requires Firefox **109+** (MV3 service workers).
+Requires Firefox **112+** because the shared background script uses ES modules.
 
 1. Open `about:debugging#/runtime/this-firefox`
 2. Click **Load Temporary Add-on…**
-3. Select any file inside `extension/` (e.g. `manifest.json`)
+3. Select `dist/activeaid-extension-firefox.zip`
 4. Run the same journey QA:
    - Onboarding → Today → Quick Relief session → Check-in → Insights
    - Reminders, snooze, reset timer
@@ -56,7 +56,7 @@ Requires Firefox **109+** (MV3 service workers).
 4. Privacy policy URL: `{APP_URL}/privacy`
 5. Distribution: **Unlisted** for beta, public when ready
 
-Edge accepts the same MV3 package as Chrome in most cases.
+Edge uses the same MV3 service-worker model as Chrome, but receives its own validated archive.
 
 ### Firefox Add-ons (AMO)
 1. [Firefox Developer Hub](https://addons.mozilla.org/developers/)
@@ -76,6 +76,7 @@ Firefox review may ask about `host_permissions`: explain activity timing only, n
 Run on each browser before publishing:
 
 - [ ] Onboarding shows once; **Agree and get started** lands on Today
+- [ ] Background alarm is present after install and again after restarting the browser
 - [ ] No activity timing begins before onboarding consent
 - [ ] Activity timer updates after mouse/keyboard on a web page
 - [ ] Reminder notification fires after interval (or use debug tick if needed)
@@ -96,6 +97,8 @@ Run on each browser before publishing:
 1. Increment `version` in `extension/manifest.json`
 2. `npm run package:extension`
 3. Upload new zip to each store dashboard you use
+
+Do not copy or rename one browser's zip for another store. The package command creates the required manifest for each target.
 
 See also:
 - [CHROME_WEB_STORE.md](./CHROME_WEB_STORE.md)

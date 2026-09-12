@@ -19,6 +19,7 @@ Deploying the website does **not** publish the extension.
 - Google account + Chrome Web Store Developer registration (one-time fee)
 - Production-ready MV3 package (see below)
 - Deployed web app with `/privacy` live (required for privacy policy URL)
+- Deployed `/support` page with `NEXT_PUBLIC_SUPPORT_EMAIL` configured
 
 ## 2. Package the extension
 
@@ -26,7 +27,7 @@ Deploying the website does **not** publish the extension.
 npm run package:extension
 ```
 
-This validates `extension/manifest.json` and creates store zips for Chrome, Edge, and Firefox (same cross-browser build). See [FIREFOX_EDGE.md](./FIREFOX_EDGE.md).
+This validates `extension/manifest.json` and creates targeted store zips from the shared codebase. Chrome and Edge receive service-worker manifests; Firefox receives its compatible background-script manifest. See [FIREFOX_EDGE.md](./FIREFOX_EDGE.md).
 
 ## 3. Prepare store assets
 
@@ -44,7 +45,7 @@ Tip: use 1280×800 or 640×400 screenshots; keep text readable.
 2. Upload `dist/activeaid-extension.zip`
 3. Copy fields from `store/LISTING.md`:
    - Name, descriptions, category
-   - Homepage, support, and **privacy policy** URLs
+   - Homepage, `/support`, and **privacy policy** URLs
    - Single purpose + permission justifications
    - Privacy practices certification
 4. Upload screenshots
