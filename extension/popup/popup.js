@@ -17,6 +17,7 @@ import {
 import {
   isSyncConfigured,
   getSyncState,
+  signUp,
   signIn,
   signOut,
   setSyncEnabled,
@@ -89,6 +90,8 @@ const els = {
   checkInCtaText: document.getElementById("checkInCtaText"),
   goCheckIn: document.getElementById("goCheckIn"),
   notificationsEnabled: document.getElementById("notificationsEnabled"),
+  reminderTimingSummary: document.getElementById("reminderTimingSummary"),
+  reminderStatus: document.getElementById("reminderStatus"),
   reminderIntervalMinutes: document.getElementById("reminderIntervalMinutes"),
   snooze10: document.getElementById("snooze10"),
   snooze30: document.getElementById("snooze30"),
@@ -103,7 +106,15 @@ const els = {
   syncSignedIn: document.getElementById("syncSignedIn"),
   syncEmail: document.getElementById("syncEmail"),
   syncPassword: document.getElementById("syncPassword"),
-  syncSignIn: document.getElementById("syncSignIn"),
+  syncPasswordHint: document.getElementById("syncPasswordHint"),
+  syncPasswordToggle: document.getElementById("syncPasswordToggle"),
+  syncConfirmField: document.getElementById("syncConfirmField"),
+  syncConfirmPassword: document.getElementById("syncConfirmPassword"),
+  syncConfirmPasswordToggle: document.getElementById("syncConfirmPasswordToggle"),
+  syncAuthHint: document.getElementById("syncAuthHint"),
+  syncAuthSubmit: document.getElementById("syncAuthSubmit"),
+  syncModeCreate: document.getElementById("syncModeCreate"),
+  syncModeSignIn: document.getElementById("syncModeSignIn"),
   syncEnabled: document.getElementById("syncEnabled"),
   syncNow: document.getElementById("syncNow"),
   syncDeleteCloudData: document.getElementById("syncDeleteCloudData"),
@@ -155,6 +166,11 @@ let activeTab = "home"
 let previousActiveTab = "home"
 let pollIntervalId = null
 let uiErrorMessage = ""
+let syncAuthMode = "create"
+
+const isWindowSurface =
+  new URLSearchParams(window.location.search).get("surface") === "window"
+document.documentElement.classList.toggle("windowSurface", isWindowSurface)
 
 await init()
 
@@ -212,7 +228,7 @@ function showUiError(message) {
 async function runButtonAction(button, pendingLabel, action) {
   if (!button || button.disabled) return undefined
 
-  const originalLabel = button.textContent.trim()
+  const originalHtml = button.innerHTML
   button.disabled = true
   button.setAttribute("aria-busy", "true")
   button.textContent = pendingLabel
@@ -220,7 +236,7 @@ async function runButtonAction(button, pendingLabel, action) {
   try {
     return await action()
   } finally {
-    button.textContent = originalLabel
+    button.innerHTML = originalHtml
     button.disabled = false
     button.removeAttribute("aria-busy")
   }
@@ -231,6 +247,13 @@ function setDataStatus(message, tone = "ok") {
   els.dataStatus.hidden = !message
   els.dataStatus.textContent = message
   els.dataStatus.classList.toggle("dataStatus--error", tone === "error")
+}
+
+function setReminderStatus(message, tone = "ok") {
+  if (!els.reminderStatus) return
+  els.reminderStatus.hidden = !message
+  els.reminderStatus.textContent = message
+  els.reminderStatus.classList.toggle("reminderStatus--error", tone === "error")
 }
 
 function renderOnboardingChrome() {
@@ -433,7 +456,10 @@ function bindSettings() {
 }
 
 function bindNav() {
-  els.goCheckIn.addEventListener("click", () => setActiveTab("checkin"))
+  els.goCheckIn.addEventListener("click", () => {
+    exitQuickReliefLaunchMode()
+    setActiveTab("checkin")
+  })
   document.getElementById("scrollQuickRelief")?.addEventListener("click", () => {
     showAllQuickRelief = !showAllQuickRelief
     renderSessionList()
@@ -443,8 +469,15 @@ function bindNav() {
     }
   })
   els.navBtns.forEach((btn) => {
-    btn.addEventListener("click", () => setActiveTab(btn.dataset.view))
+    btn.addEventListener("click", () => {
+      exitQuickReliefLaunchMode()
+      setActiveTab(btn.dataset.view)
+    })
   })
+}
+
+function exitQuickReliefLaunchMode() {
+  els.viewHome?.classList.remove("view--quick-relief-launch")
 }
 
 function setActiveTab(tab) {
@@ -807,9 +840,16 @@ function formatShortDate(dateKey) {
 
 function bindReminders() {
   els.notificationsEnabled.addEventListener("change", async () => {
-    await setSettings({ notificationsEnabled: els.notificationsEnabled.checked })
-    await hydrate()
-    scheduleSyncIfEnabled()
+    const enabled = els.notificationsEnabled.checked
+    try {
+      await setSettings({ notificationsEnabled: enabled })
+      await hydrate()
+      setReminderStatus(enabled ? "Reminders are on." : "Reminders are off.")
+      scheduleSyncIfEnabled()
+    } catch {
+      await hydrate()
+      setReminderStatus("Could not update reminders. Try again.", "error")
+    }
   })
 
   els.reminderIntervalMinutes.addEventListener("input", () => {
@@ -818,29 +858,45 @@ function bindReminders() {
 
   els.reminderIntervalMinutes.addEventListener("change", async () => {
     if (!els.reminderIntervalMinutes.checkValidity()) {
-      await hydrate()
+      setReminderStatus("Choose an interval between 1 and 240 minutes.", "error")
       return
     }
-    await setSettings({ reminderIntervalMinutes: els.reminderIntervalMinutes.valueAsNumber })
-    await hydrate()
-    scheduleSyncIfEnabled()
+    const minutes = els.reminderIntervalMinutes.valueAsNumber
+    try {
+      await setSettings({ reminderIntervalMinutes: minutes })
+      await hydrate()
+      setReminderStatus(`Saved: every ${minutes} minutes of activity.`)
+      scheduleSyncIfEnabled()
+    } catch {
+      setReminderStatus("Could not save the reminder interval. Try again.", "error")
+    }
   })
 
   els.presets.forEach((btn) => {
     btn.addEventListener("click", async () => {
       const minutes = Number(btn.dataset.minutes)
       els.reminderIntervalMinutes.value = String(minutes)
-      await setSettings({ reminderIntervalMinutes: minutes })
-      await hydrate()
-      scheduleSyncIfEnabled()
+      try {
+        await setSettings({ reminderIntervalMinutes: minutes })
+        await hydrate()
+        setReminderStatus(`Saved: every ${minutes} minutes of activity.`)
+        scheduleSyncIfEnabled()
+      } catch {
+        setReminderStatus("Could not save the reminder interval. Try again.", "error")
+      }
     })
   })
 
   els.snooze10.addEventListener("click", () => snoozeForMinutes(10))
   els.snooze30.addEventListener("click", () => snoozeForMinutes(30))
   els.resetTimer.addEventListener("click", async () => {
-    await runtimeSendMessage({ type: "activeaid:reset" }).catch(() => undefined)
-    await hydrate()
+    try {
+      await runtimeSendMessage({ type: "activeaid:reset" })
+      await hydrate()
+      setReminderStatus("Activity timer restarted.")
+    } catch {
+      setReminderStatus("Could not restart the activity timer. Try again.", "error")
+    }
   })
 }
 
@@ -858,10 +914,10 @@ function resetLocalUiState() {
 
 async function handleClear() {
   const confirmed = await confirmAction({
-    title: "Clear local data?",
+    title: "Erase data on this device?",
     description:
       "This removes activity totals, check-ins, completed sessions, settings, and sign-in from this device. Cloud backup data is not deleted.",
-    confirmLabel: "Clear local data",
+    confirmLabel: "Erase local data",
   })
   if (!confirmed) return
 
@@ -886,12 +942,89 @@ function bindExport() {
 function bindSync() {
   els.syncSignedOut?.addEventListener("submit", (event) => {
     event.preventDefault()
-    void handleSyncSignIn()
+    void handleSyncAuthSubmit()
   })
+  els.syncModeCreate?.addEventListener("click", () => setSyncAuthMode("create"))
+  els.syncModeSignIn?.addEventListener("click", () => setSyncAuthMode("signin"))
+  els.syncConfirmPassword?.addEventListener("input", () => {
+    els.syncConfirmPassword.setCustomValidity("")
+  })
+  bindPasswordToggle(els.syncPasswordToggle, els.syncPassword, "password")
+  bindPasswordToggle(
+    els.syncConfirmPasswordToggle,
+    els.syncConfirmPassword,
+    "confirmed password"
+  )
   els.syncSignOut?.addEventListener("click", () => void handleSyncSignOut())
   els.syncNow?.addEventListener("click", () => void handleSyncNow())
   els.syncDeleteCloudData?.addEventListener("click", () => void handleDeleteCloudData())
   els.syncEnabled?.addEventListener("change", () => void handleSyncEnabledChange())
+  setSyncAuthMode("create", { clearStatus: false })
+}
+
+function bindPasswordToggle(button, input, label) {
+  button?.addEventListener("click", () => {
+    setPasswordVisibility(input, button, input?.type === "password", label)
+  })
+}
+
+function setPasswordVisibility(input, button, visible, label = "password") {
+  if (!input || !button) return
+  input.type = visible ? "text" : "password"
+  button.textContent = visible ? "Hide" : "Show"
+  button.setAttribute("aria-label", `${visible ? "Hide" : "Show"} ${label}`)
+  button.setAttribute("aria-pressed", String(visible))
+}
+
+function clearSyncPasswords() {
+  if (els.syncPassword) els.syncPassword.value = ""
+  if (els.syncConfirmPassword) {
+    els.syncConfirmPassword.value = ""
+    els.syncConfirmPassword.setCustomValidity("")
+  }
+  setPasswordVisibility(els.syncPassword, els.syncPasswordToggle, false, "password")
+  setPasswordVisibility(
+    els.syncConfirmPassword,
+    els.syncConfirmPasswordToggle,
+    false,
+    "confirmed password"
+  )
+}
+
+function setSyncAuthMode(mode, { clearStatus = true } = {}) {
+  syncAuthMode = mode === "signin" ? "signin" : "create"
+  const isCreate = syncAuthMode === "create"
+
+  els.syncModeCreate?.classList.toggle("authModeButton--active", isCreate)
+  els.syncModeCreate?.setAttribute("aria-pressed", String(isCreate))
+  els.syncModeSignIn?.classList.toggle("authModeButton--active", !isCreate)
+  els.syncModeSignIn?.setAttribute("aria-pressed", String(!isCreate))
+
+  if (els.syncConfirmField) els.syncConfirmField.hidden = !isCreate
+  if (els.syncConfirmPassword) els.syncConfirmPassword.required = isCreate
+  if (els.syncPassword) {
+    els.syncPassword.autocomplete = isCreate ? "new-password" : "current-password"
+    els.syncPassword.minLength = isCreate ? 8 : 1
+  }
+  if (els.syncPasswordHint) {
+    els.syncPasswordHint.textContent = isCreate
+      ? "Use at least 8 characters."
+      : "Enter the password for this account."
+  }
+  if (els.syncAuthHint) {
+    els.syncAuthHint.textContent = isCreate
+      ? "New to ActiveAid? Create an account. Your wellness data stays on this device until you turn backup on."
+      : "Already have an ActiveAid account? Sign in to choose whether to restore or back up your wellness data."
+  }
+  if (els.syncAuthSubmit) {
+    els.syncAuthSubmit.textContent = isCreate ? "Create account" : "Sign in"
+  }
+
+  clearSyncPasswords()
+  if (clearStatus) {
+    setSyncStatus("")
+    void setSyncError("")
+  }
 }
 
 function setSyncStatus(message, tone = "muted") {
@@ -945,25 +1078,58 @@ async function updateSyncUI() {
       setSyncStatus("Cloud backup is on.", "ok")
     }
   } else {
-    setSyncStatus(state.lastError || "", state.lastError ? "error" : "muted")
+    if (state.lastError) setSyncStatus(state.lastError, "error")
   }
 }
 
-async function handleSyncSignIn() {
-  await runButtonAction(els.syncSignIn, "Signing in...", async () => {
-    try {
-      setSyncStatus("Signing in...")
-      await signIn(els.syncEmail?.value ?? "", els.syncPassword?.value ?? "")
-      await hydrate()
-      setSyncStatus("Signed in. Cloud backup is still off.", "ok")
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Sign in failed"
-      setSyncStatus(message, "error")
-      await setSyncError(message)
-    } finally {
-      if (els.syncPassword) els.syncPassword.value = ""
+async function handleSyncAuthSubmit() {
+  const isCreate = syncAuthMode === "create"
+
+  if (isCreate && els.syncPassword?.value !== els.syncConfirmPassword?.value) {
+    els.syncConfirmPassword?.setCustomValidity("Passwords do not match")
+    els.syncConfirmPassword?.reportValidity()
+    return
+  }
+
+  try {
+    const result = await runButtonAction(
+      els.syncAuthSubmit,
+      isCreate ? "Creating account..." : "Signing in...",
+      async () => {
+        setSyncStatus(isCreate ? "Creating your account..." : "Signing in...")
+        if (isCreate) {
+          return signUp(els.syncEmail?.value ?? "", els.syncPassword?.value ?? "")
+        }
+        await signIn(els.syncEmail?.value ?? "", els.syncPassword?.value ?? "")
+        return { status: "signed-in" }
+      }
+    )
+
+    clearSyncPasswords()
+    await setSyncError("")
+
+    if (result?.status === "confirmation-required") {
+      setSyncAuthMode("signin", { clearStatus: false })
+      setSyncStatus(
+        "Check your email to confirm your account, then return here and sign in.",
+        "ok"
+      )
+      return
     }
-  })
+
+    await hydrate()
+    setSyncStatus(
+      isCreate
+        ? "Account created. Cloud backup is still off."
+        : "Signed in. Cloud backup is still off.",
+      "ok"
+    )
+  } catch (err) {
+    clearSyncPasswords()
+    const message = err instanceof Error ? err.message : "Could not access your account"
+    setSyncStatus(message, "error")
+    await setSyncError(message)
+  }
 }
 
 async function handleSyncSignOut() {
@@ -971,7 +1137,7 @@ async function handleSyncSignOut() {
     try {
       await signOut()
       if (els.syncEnabled) els.syncEnabled.checked = false
-      if (els.syncPassword) els.syncPassword.value = ""
+      setSyncAuthMode("signin", { clearStatus: false })
       setSyncStatus("")
       await hydrate()
     } catch {
@@ -1059,7 +1225,7 @@ async function handleExport() {
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-      setDataStatus("Your local data export is ready.")
+      setDataStatus("Downloaded a copy of your local ActiveAid data.")
     } catch {
       setDataStatus("Could not export data. Try again.", "error")
     }
@@ -1175,9 +1341,9 @@ async function handleQuickReliefIntent() {
   activeTab = "home"
   showAllQuickRelief = true
   setActiveTab("home")
+  els.viewHome?.classList.add("view--quick-relief-launch")
   renderSessionList()
   updateQuickReliefToggleLabel()
-  els.quickReliefSection?.scrollIntoView({ block: "start" })
   els.sessionList?.querySelector("button")?.focus({ preventScroll: true })
 }
 
@@ -1314,8 +1480,13 @@ function updateCountdownUI() {
 }
 
 async function snoozeForMinutes(minutes) {
-  await setRuntimeState({ snoozedUntilMs: nowMs() + minutesToMs(minutes) })
-  await hydrate()
+  try {
+    await setRuntimeState({ snoozedUntilMs: nowMs() + minutesToMs(minutes) })
+    await hydrate()
+    setReminderStatus(`Reminders paused for ${minutes} minutes.`)
+  } catch {
+    setReminderStatus("Could not pause reminders. Try again.", "error")
+  }
 }
 
 async function hydrate() {
@@ -1327,9 +1498,7 @@ async function hydrate() {
 
   if (player.session) return
 
-  els.notificationsEnabled.checked = settings.notificationsEnabled
-  els.reminderIntervalMinutes.value = String(settings.reminderIntervalMinutes)
-  updatePresetHighlight()
+  renderReminderSettings(settings)
 
   const currentMs = nowMs()
   const activeMinutes =
@@ -1354,8 +1523,21 @@ async function hydrate() {
 function updatePresetHighlight() {
   const current = Number(els.reminderIntervalMinutes.value)
   els.presets.forEach((btn) => {
-    btn.classList.toggle("preset--active", Number(btn.dataset.minutes) === current)
+    const selected = Number(btn.dataset.minutes) === current
+    btn.classList.toggle("preset--active", selected)
+    btn.setAttribute("aria-pressed", String(selected))
   })
+}
+
+function renderReminderSettings(settings) {
+  if (els.notificationsEnabled) els.notificationsEnabled.checked = settings.notificationsEnabled
+  if (els.reminderIntervalMinutes) {
+    els.reminderIntervalMinutes.value = String(settings.reminderIntervalMinutes)
+  }
+  if (els.reminderTimingSummary) {
+    els.reminderTimingSummary.textContent = `Every ${settings.reminderIntervalMinutes} minutes of activity.`
+  }
+  updatePresetHighlight()
 }
 
 function startPolling() {

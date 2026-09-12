@@ -67,7 +67,7 @@ async function authRequest(path, body) {
   })
   const data = await res.json().catch(() => ({}))
   if (!res.ok) {
-    throw new Error(data.error_description || data.msg || data.message || "Sign in failed")
+    throw new Error(data.error_description || data.msg || data.message || "Account request failed")
   }
   return data
 }
@@ -125,6 +125,27 @@ export async function signIn(email, password) {
     lastSyncedAt: 0,
   })
   return getSyncState()
+}
+
+export async function signUp(email, password) {
+  const trimmedEmail = email.trim()
+  if (!trimmedEmail || !password) throw new Error("Email and password are required")
+  if (password.length < 8) throw new Error("Use at least 8 characters for your password")
+
+  const data = await authRequest("/auth/v1/signup", {
+    email: trimmedEmail,
+    password,
+  })
+
+  if (!data.access_token || !data.refresh_token) {
+    return { status: "confirmation-required", email: trimmedEmail }
+  }
+
+  const state = await applyAuthResponse(data, trimmedEmail, {
+    enabled: false,
+    lastSyncedAt: 0,
+  })
+  return { status: "signed-in", state }
 }
 
 export async function signOut() {

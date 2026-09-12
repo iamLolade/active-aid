@@ -96,7 +96,7 @@ Answer consistently with `{APP_URL}/privacy` and extension behavior:
 | Is data sold to third parties? | **No** |
 | Is data used for purposes unrelated to the extension? | **No** |
 | Is data encrypted in transit? | **Yes** when the user enables optional cloud backup; otherwise data stays local. |
-| Can users request data deletion? | **Yes** (Clear local data and Delete cloud backup data in Settings) |
+| Can users request data deletion? | **Yes** (Erase data on this device and Delete cloud backup in Settings) |
 
 **Data handled locally by the extension:**
 - Activity timing signals (not content)

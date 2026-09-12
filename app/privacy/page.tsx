@@ -40,12 +40,12 @@ const SECTIONS = [
   {
     title: "Optional cloud backup",
     bullets: [
-      "Disabled by default. Signing in sends account and authentication data to Supabase but does not upload wellness data.",
+      "Disabled by default. Creating an account or signing in sends account and authentication data to Supabase but does not upload wellness data.",
       "Backup starts only after you separately turn on Back up my wellness data in Settings.",
       "Uploads only wellness check-ins, completed session logs, and reminder settings.",
       "Does not upload typed content, page content, activity timing samples, or screenshots.",
       "Turning backup off or signing out stops future sync but does not delete existing cloud records.",
-      "Delete cloud backup data removes your backed-up wellness records and reminder settings while leaving local data on your device.",
+      "Delete cloud backup removes your backed-up wellness records and reminder settings while leaving local data on your device.",
     ],
   },
   {
@@ -54,14 +54,14 @@ const SECTIONS = [
   },
   {
     title: "Retention",
-    body: "Local data remains in browser extension storage until you clear it or remove the extension. Optional cloud-backup records remain until you use Delete cloud backup data. Signing out does not delete local or cloud wellness records.",
+    body: "Local data remains in browser extension storage until you erase it or remove the extension. Optional cloud-backup records remain until you use Delete cloud backup. Signing out does not delete local or cloud wellness records.",
   },
   {
     title: "Your controls",
     bullets: [
-      "Export: download a JSON file of your local data from Settings in the extension popup.",
-      "Clear local data: remove all data stored by the extension on this device, including the local sign-in session.",
-      "Delete cloud backup data: remove backed-up check-ins, completed sessions, and reminder settings without deleting local data.",
+      "Download my data: save a JSON file of your local data from Settings in the extension popup.",
+      "Erase data on this device: remove all data stored by the extension on this device, including the local sign-in session.",
+      "Delete cloud backup: remove backed-up check-ins, completed sessions, and reminder settings without deleting local data.",
       "Reminders: turn notifications off anytime in Settings or during first-run onboarding.",
     ],
   },

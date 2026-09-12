@@ -25,7 +25,7 @@ Run `npm run package:extension` from the project root first.
 - Open any `https://` webpage and interact (mouse/keyboard).
 - Open the popup, enable reminders, and pick an interval (30 / 60 / 90 presets).
 - After your chosen interval of continuous activity, you should receive a gentle notification.
-- Select **Choose a quick reset** (or the notification body) to open ActiveAid at the expanded Quick Relief list. **Snooze 10m** delays the next nudge.
+- Select **Choose a quick reset** (or the notification body) to open a focused, compact ActiveAid window at the expanded Quick Relief list. **Snooze 10m** delays the next nudge.
 - Stop interacting for five minutes and confirm stale activity does not produce a reminder.
 
 ## Wellness sessions
@@ -41,10 +41,10 @@ Run `npm run package:extension` from the project root first.
 ## Trust & control
 - First run shows onboarding once (privacy + optional reminders).
 - Activity timing begins only after the user reviews onboarding and selects **Agree and get started**.
-- **Settings** in bottom navigation: reminders, privacy copy, **Export data**, and **Clear my data**.
+- **Settings** in bottom navigation: reminder timing, privacy copy, **Download my data**, and **Erase data on this device**.
 - Destructive local and cloud actions use an in-product confirmation dialog with keyboard cancellation and focus return.
-- **Optional cloud backup** (when Supabase is configured): signing in does not upload data. Turn on **Back up my wellness data** separately to sync check-ins, completed sessions, and reminder settings.
-- **Delete cloud backup data** removes backed-up records without deleting local wellness data.
+- **Optional cloud backup** (when Supabase is configured): create an account or sign in, then separately turn on **Back up my wellness data** to sync check-ins, completed sessions, and reminder settings.
+- Creating an account or signing in does not upload wellness data. **Delete cloud backup** removes backed-up records without deleting local wellness data.
 - See `RELEASE.md` section **4b** for the full individual user journey QA checklist.
 
 Configure sync: `npm run sync:config` (see `supabase/README.md`).

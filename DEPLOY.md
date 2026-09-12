@@ -1,6 +1,6 @@
 # ActiveAid — Chrome Web Store Deployment Guide
 
-Use this when you're ready to publish the extension on the Chrome Web Store as **Unlisted** (private link, not searchable). Your team installs with one click and gets automatic updates.
+Use this when you're ready to publish the extension on the Chrome Web Store. Choose **Public** for a searchable end-user release or **Unlisted** for a link-only beta. Both receive automatic updates.
 
 ---
 
@@ -10,6 +10,7 @@ Use this when you're ready to publish the extension on the Chrome Web Store as *
 - [ ] Vercel account (free)
 - [ ] Google account + one-time \$5 [Chrome Web Store Developer registration](https://chrome.google.com/webstore/devconsole)
 - [ ] Supabase project already set up (credentials in `.env`)
+- [ ] Public support inbox ready for account and data requests
 
 ---
 
@@ -46,6 +47,15 @@ git push -u origin main
    - `https://activeaid.vercel.app/api/health/supabase` → `{ "ok": true, ... }`
    - `https://activeaid.vercel.app/privacy` → privacy policy renders
    - `https://activeaid.vercel.app/support` → support guidance and contact link render
+
+### Finish Supabase authentication for production
+
+Before packaging the extension:
+
+1. In **Authentication → Providers → Email**, allow new user sign-ups and keep email confirmation enabled.
+2. In **Authentication → URL Configuration**, set the Site URL to the deployed ActiveAid website.
+3. Configure a production SMTP provider; the default Supabase sender is only suitable for limited testing.
+4. Create an account from the extension, confirm the email, sign in, and verify that cloud backup remains off until explicitly enabled.
 
 ---
 
@@ -100,11 +110,12 @@ Answer consistently with `app/privacy/page.tsx`:
 | Is data sold to third parties? | **No** |
 | Is data used for unrelated purposes? | **No** |
 | Is data encrypted in transit? | **Yes** when optional cloud backup is enabled; otherwise data stays local. |
-| Can users request data deletion? | **Yes** (Clear local data and Delete cloud backup data in Settings) |
+| Can users request data deletion? | **Yes** (Erase data on this device and Delete cloud backup in Settings) |
 
 ### Distribution
 
-Choose **Unlisted** (not searchable, shareable link only).
+- Choose **Public** when the listing, support path, privacy policy, and release checklist are ready for end users.
+- Choose **Unlisted** for a link-only beta before the public launch.
 
 ### Submit
 
@@ -112,7 +123,7 @@ Click **Submit for review**. Review timing is controlled by the Chrome Web Store
 
 ---
 
-## Step 5: Share with your team
+## Step 5: Share the release
 
 After approval, share the Chrome Web Store URL:
 
@@ -120,7 +131,7 @@ After approval, share the Chrome Web Store URL:
 https://chromewebstore.google.com/detail/activeaid/XXXXXXXXXX
 ```
 
-Your teammate clicks **Add to Chrome** — no Developer mode, no manual updates.
+The user clicks **Add to Chrome** — no Developer mode and no manual updates.
 
 ---
 
@@ -135,7 +146,7 @@ npm run package:extension
 
 ---
 
-## What your team member needs
+## What users need
 
 Just the store link. They install in 2 clicks:
 1. Click **Add to Chrome**

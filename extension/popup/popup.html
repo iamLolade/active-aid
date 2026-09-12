@@ -281,28 +281,38 @@
               <span class="toggleTrack" aria-hidden="true"></span>
               <span class="toggleLabel">Enable gentle reminders</span>
             </label>
-            <div class="field">
-              <label class="fieldLabel" for="reminderIntervalMinutes">
-                Remind me after (minutes)
-              </label>
-              <div class="presets" role="group" aria-label="Quick intervals">
-                <button class="preset" type="button" data-minutes="30">30</button>
-                <button class="preset" type="button" data-minutes="60">60</button>
-                <button class="preset" type="button" data-minutes="90">90</button>
+            <div class="reminderControls">
+              <div class="field reminderTimingField">
+                <p class="fieldLabel">Remind me after</p>
+                <p class="reminderTimingSummary" id="reminderTimingSummary"></p>
+                <div class="presets" role="group" aria-label="Reminder interval">
+                  <button class="preset" type="button" data-minutes="30" aria-pressed="false">30 min</button>
+                  <button class="preset" type="button" data-minutes="60" aria-pressed="false">60 min</button>
+                  <button class="preset" type="button" data-minutes="90" aria-pressed="false">90 min</button>
+                </div>
+                <label class="fieldLabel" for="reminderIntervalMinutes">Custom interval</label>
+                <div class="numberField">
+                  <input
+                    type="number"
+                    id="reminderIntervalMinutes"
+                    min="1"
+                    max="240"
+                    step="1"
+                    inputmode="numeric"
+                    aria-describedby="reminderIntervalHint"
+                  />
+                  <span class="numberFieldSuffix" aria-hidden="true">minutes</span>
+                </div>
+                <p class="fieldHint" id="reminderIntervalHint">Choose between 1 and 240 minutes of activity.</p>
               </div>
-              <input
-                type="number"
-                id="reminderIntervalMinutes"
-                min="1"
-                max="240"
-                step="1"
-              />
+              <p class="controlLabel">Pause upcoming reminders</p>
+              <div class="actions actions--snooze">
+                <button class="btn btn--secondary" id="snooze10" type="button">10 minutes</button>
+                <button class="btn btn--secondary" id="snooze30" type="button">30 minutes</button>
+              </div>
+              <button class="btn--link" id="resetTimer" type="button">Restart activity timer</button>
             </div>
-            <div class="actions actions--snooze">
-              <button class="btn btn--secondary" id="snooze10" type="button">Snooze 10m</button>
-              <button class="btn btn--secondary" id="snooze30" type="button">Snooze 30m</button>
-            </div>
-            <button class="btn--link" id="resetTimer" type="button">Reset activity timer</button>
+            <p class="reminderStatus" id="reminderStatus" role="status" hidden></p>
           </section>
 
           <section class="card settingsCard">
@@ -327,21 +337,64 @@
           <section class="card settingsCard" id="syncSection">
             <h3 class="settingsSectionTitle">Optional cloud backup</h3>
             <p class="settingsSectionHint" id="syncHint">
-              Signing in sends your account details securely to Supabase. No wellness data is
-              uploaded until you turn cloud backup on.
+              Create an account or sign in to use backup on another device. Backup stays off until
+              you choose to enable it.
             </p>
             <p class="syncStatus" id="syncStatus" hidden role="status"></p>
 
-            <form id="syncSignedOut">
+            <form id="syncSignedOut" aria-describedby="syncAuthHint">
+              <fieldset class="authModeFieldset">
+                <legend class="srOnly">Choose an account action</legend>
+                <div class="authMode" role="group" aria-label="Account action">
+                  <button class="authModeButton authModeButton--active" id="syncModeCreate" type="button" aria-pressed="true">
+                    Create account
+                  </button>
+                  <button class="authModeButton" id="syncModeSignIn" type="button" aria-pressed="false">
+                    Sign in
+                  </button>
+                </div>
+              </fieldset>
+              <p class="authModeHint" id="syncAuthHint">
+                New to ActiveAid? Create an account. Your wellness data will remain on this device
+                until you turn backup on.
+              </p>
               <div class="field">
                 <label class="fieldLabel" for="syncEmail">Email</label>
-                <input type="email" id="syncEmail" autocomplete="username" required />
+                <input type="email" id="syncEmail" autocomplete="email" required />
               </div>
               <div class="field">
                 <label class="fieldLabel" for="syncPassword">Password</label>
-                <input type="password" id="syncPassword" autocomplete="current-password" required />
+                <div class="passwordField">
+                  <input
+                    type="password"
+                    id="syncPassword"
+                    autocomplete="new-password"
+                    minlength="8"
+                    aria-describedby="syncPasswordHint"
+                    required
+                  />
+                  <button class="passwordToggle" id="syncPasswordToggle" type="button" aria-label="Show password" aria-pressed="false">
+                    Show
+                  </button>
+                </div>
+                <p class="fieldHint" id="syncPasswordHint">Use at least 8 characters.</p>
               </div>
-              <button class="btn--actionRow" id="syncSignIn" type="submit">Sign in</button>
+              <div class="field" id="syncConfirmField">
+                <label class="fieldLabel" for="syncConfirmPassword">Confirm password</label>
+                <div class="passwordField">
+                  <input
+                    type="password"
+                    id="syncConfirmPassword"
+                    autocomplete="new-password"
+                    minlength="8"
+                    required
+                  />
+                  <button class="passwordToggle" id="syncConfirmPasswordToggle" type="button" aria-label="Show confirmed password" aria-pressed="false">
+                    Show
+                  </button>
+                </div>
+              </div>
+              <button class="btn--actionRow btn--actionRowPrimary" id="syncAuthSubmit" type="submit">Create account</button>
             </form>
 
             <div id="syncSignedIn" hidden>
@@ -355,22 +408,34 @@
                 <span class="toggleTrack" aria-hidden="true"></span>
                 <span class="toggleLabel">Back up my wellness data</span>
               </label>
-              <button class="btn--actionRow" id="syncNow" type="button" hidden>Sync now</button>
-              <button class="btn--actionRow btn--actionRowDanger" id="syncDeleteCloudData" type="button">
-                Delete cloud backup data
+              <button class="btn--actionRow" id="syncNow" type="button" hidden>
+                <span class="actionRowLabel">Sync now</span>
+                <span class="actionRowHint">Back up changes from this device.</span>
               </button>
-              <button class="btn--actionRow" id="syncSignOut" type="button">Sign out</button>
+              <button class="btn--actionRow btn--actionRowDanger" id="syncDeleteCloudData" type="button">
+                <span class="actionRowLabel">Delete cloud backup</span>
+                <span class="actionRowHint">Permanently removes backed-up wellness data only.</span>
+              </button>
+              <button class="btn--actionRow" id="syncSignOut" type="button">
+                <span class="actionRowLabel">Sign out on this device</span>
+                <span class="actionRowHint">Local wellness data stays here.</span>
+              </button>
             </div>
           </section>
 
           <section class="card settingsCard">
-            <h3 class="settingsSectionTitle">Your data</h3>
-            <p class="settingsSectionHint">Export or manage your local data anytime.</p>
+            <h3 class="settingsSectionTitle">Data on this device</h3>
+            <p class="settingsSectionHint">
+              Activity totals, check-ins, completed sessions, and settings are stored locally by
+              default.
+            </p>
             <button class="btn--actionRow" id="exportData" type="button">
-              Export data
+              <span class="actionRowLabel">Download my data</span>
+              <span class="actionRowHint">Save a readable JSON copy to your computer.</span>
             </button>
             <button class="btn--actionRow btn--actionRowDanger" id="clearData" type="button">
-              Clear my data
+              <span class="actionRowLabel">Erase data on this device</span>
+              <span class="actionRowHint">Removes local history, settings, and sign-in. Cloud backup stays.</span>
             </button>
             <p class="dataStatus" id="dataStatus" role="status" hidden></p>
           </section>

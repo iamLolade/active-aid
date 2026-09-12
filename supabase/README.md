@@ -17,9 +17,11 @@ In the Supabase dashboard **SQL Editor**, run in order:
 ## Auth for extension sync (optional)
 Cloud sync uses Supabase email + password auth from the extension popup.
 
-1. In Supabase **Authentication → Providers**, enable Email.
-2. For local testing, you may disable **Confirm email** (or confirm users manually in the dashboard).
-3. Create a test user (**Authentication → Users → Add user**) or sign up via the Auth API.
+1. In Supabase **Authentication → Providers**, enable Email and allow new user sign-ups.
+2. Keep **Confirm email** enabled for production. A new extension user creates an account, confirms the email, then returns to ActiveAid to sign in.
+3. In **Authentication → URL Configuration**, set **Site URL** to the deployed ActiveAid website rather than the localhost default.
+4. Configure custom SMTP before a public release. Supabase's default sender is intended for testing and is heavily rate-limited.
+5. Create and confirm a test account from the extension before packaging the release.
 
 ## Wire the extension
 From the repo root (with `.env` filled in):
@@ -33,12 +35,12 @@ This writes `extension/shared/sync-config.js` from `NEXT_PUBLIC_SUPABASE_URL` an
 Reload the extension. Settings → **Optional cloud backup** appears when configured.
 
 ### Sync behavior
-- **Off by default.** Signing in authenticates only and does not upload wellness data.
+- **Off by default.** Creating an account or signing in authenticates only and does not upload wellness data.
 - User must separately turn on **Back up my wellness data** before the first sync.
 - Backs up check-ins, completed sessions, and reminder settings (not activity timing or page content).
 - **Sync now** and auto-sync (debounced) when backup is enabled.
 - First enabled sync merges remote data into local storage, then pushes local changes.
-- **Delete cloud backup data** turns backup off and deletes the user's backed-up rows. Local data remains on the device.
+- **Delete cloud backup** turns backup off and deletes the user's backed-up rows. Local data remains on the device.
 
 ## Verify from the app
 With `npm run dev` running, open:

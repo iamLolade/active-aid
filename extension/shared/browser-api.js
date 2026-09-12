@@ -105,14 +105,13 @@ export function notificationsCreate(notificationId, options) {
   })
 }
 
-export function openActionPopup() {
-  const action = ns.action ?? ns.browserAction
-  if (!action?.openPopup) return Promise.reject(new Error("Opening the extension popup is unsupported"))
-  return action.openPopup()
-}
-
 export function tabsCreate(createProperties) {
   return promisify((cb) => ns.tabs.create(createProperties, cb))
+}
+
+export function windowsCreate(createData) {
+  if (isFirefox) return ns.windows.create(createData)
+  return promisify((cb) => ns.windows.create(createData, cb))
 }
 
 // --- Alarms ---

@@ -3,8 +3,8 @@ import {
   alarmsGet,
   getURL,
   notificationsCreate,
-  openActionPopup,
   tabsCreate,
+  windowsCreate,
   onAlarm,
   onInstalled,
   onMessage,
@@ -81,8 +81,10 @@ onMessage((message, _sender, sendResponse) => {
   }
 
   if (message.type === "activeaid:reset") {
-    void resetActiveSession()
-    sendResponse({ ok: true })
+    void (async () => {
+      await resetActiveSession()
+      sendResponse({ ok: true })
+    })()
     return true
   }
 
@@ -148,12 +150,19 @@ async function resetActiveSession() {
 
 async function openQuickRelief() {
   await setQuickReliefIntent()
+  const url = `${getURL("popup/popup.html")}?surface=window`
 
   try {
-    await openActionPopup()
+    await windowsCreate({
+      url,
+      type: "popup",
+      focused: true,
+      width: 432,
+      height: 720,
+    })
   } catch {
     try {
-      await tabsCreate({ url: getURL("popup/popup.html") })
+      await tabsCreate({ url })
     } catch {
       // The intent remains available when the user next opens ActiveAid.
     }

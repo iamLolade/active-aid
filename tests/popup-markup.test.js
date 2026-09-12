@@ -36,3 +36,27 @@ test("destructive actions use the accessible confirmation dialog", async () => {
   assert.match(html, /id="confirmDialogCancel"[^>]+value="cancel"/)
   assert.match(html, /id="confirmDialogSubmit"[^>]+value="confirm"/)
 })
+
+test("cloud backup starts with account creation and accessible password controls", async () => {
+  const html = await readFile(popupPath, "utf8")
+
+  assert.match(html, /id="syncModeCreate"[^>]+aria-pressed="true"/)
+  assert.match(html, /id="syncModeSignIn"[^>]+aria-pressed="false"/)
+  assert.match(html, /id="syncPasswordToggle"[^>]+aria-label="Show password"/)
+  assert.match(
+    html,
+    /id="syncConfirmPasswordToggle"[^>]+aria-label="Show confirmed password"/,
+  )
+  assert.match(html, /id="syncConfirmPassword"[^>]+required/s)
+  assert.match(html, /id="syncAuthSubmit"[^>]*>Create account</)
+})
+
+test("reminder presets expose selected state and local data actions explain their scope", async () => {
+  const html = await readFile(popupPath, "utf8")
+
+  assert.equal((html.match(/class="preset"[^>]+aria-pressed="false"/g) ?? []).length, 3)
+  assert.match(html, />Data on this device</)
+  assert.match(html, />Download my data</)
+  assert.match(html, />Erase data on this device</)
+  assert.match(html, /Cloud backup stays\./)
+})

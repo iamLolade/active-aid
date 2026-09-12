@@ -12,6 +12,7 @@ Use this before sharing the extension or deploying the web app.
 - [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY` set
 - [ ] `SUPABASE_SERVICE_ROLE_KEY` set (server only)
 - [ ] Supabase migrations applied through `supabase/migrations/0003_cloud_data_delete_policies.sql`
+- [ ] Supabase email sign-ups, production Site URL, email confirmation, and production SMTP configured
 
 ## 2. Backend health
 - [ ] `npm run dev` running
@@ -37,7 +38,7 @@ Use this before sharing the extension or deploying the web app.
 
 ### 4b. Individual user journey (Phase 4.5)
 
-Run this end-to-end on a fresh install (or after **Clear my data** in Settings).
+Run this end-to-end on a fresh install (or after **Erase data on this device** in Settings).
 
 | Step | Action | Expected result |
 |------|--------|-----------------|
@@ -49,11 +50,11 @@ Run this end-to-end on a fresh install (or after **Clear my data** in Settings).
 | 6 | Start a Quick Relief session, complete it | Returns to Today; session nudge hides; hero shows completion message |
 | 7 | Check-in tab: pick severity, optional areas, **Save check-in** | Saved note appears; Today row updates |
 | 8 | Insights tab | Stats, 7-day trend, and areas reflect steps 6–7 |
-| 9 | Settings → **Export data** | JSON downloads; check-ins/sessions match Insights |
-| 10 | Notification → **Choose a quick reset** | Popup opens at the expanded Quick Relief list with the first session focused |
-| 11 | Notification → **Snooze 10m** / Settings → **Reset activity timer** | Hero status updates (Snoozed / timer reset) |
+| 9 | Settings → **Download my data** | JSON downloads; check-ins/sessions match Insights |
+| 10 | Notification → **Choose a quick reset** | A focused, compact ActiveAid window opens at the expanded Quick Relief list with the first session focused |
+| 11 | Notification → **Snooze 10m** / Settings → **Restart activity timer** | Hero status updates (Snoozed / timer restarted) |
 | 12 | Stop activity for five minutes before a reminder is due | No stale reminder appears; new activity starts a fresh timer |
-| 13 | Settings → **Clear my data** → confirm | Onboarding shows again; Insights empty after re-onboarding |
+| 13 | Settings → **Erase data on this device** → confirm | Onboarding shows again; Insights empty after re-onboarding |
 | 14 | Block notifications (Chrome site settings) with reminders on | Banner on Today explains how to re-enable |
 
 ### 4c. Keyboard and interaction states
@@ -62,25 +63,28 @@ Run this end-to-end on a fresh install (or after **Clear my data** in Settings).
 - [ ] Arrow keys move and select options in the Overall feeling radio group
 - [ ] Session steps move focus to the new instruction; Escape exits and returns focus
 - [ ] Local and cloud deletion dialogs focus Cancel, close with Escape, and return focus to their trigger
-- [ ] Sign-in submits with Enter and pending actions cannot be submitted twice
+- [ ] Create-account and sign-in modes are distinct; both password reveal controls work; mismatched confirmation cannot submit
+- [ ] Account forms submit with Enter and pending actions cannot be submitted twice
 - [ ] Failed check-in and session saves remain recoverable without reopening the popup
 
 ### 4d. Optional cloud backup consent
 
-Run with Supabase configured and an existing test account.
+Run with Supabase configured, email confirmation enabled, and production SMTP available.
 
 | Step | Action | Expected result |
 |------|--------|-----------------|
-| 1 | Sign in from Settings | Account appears; backup remains off; no wellness-data request is sent |
-| 2 | Turn on **Back up my wellness data** | First sync begins and completes over encrypted transport |
-| 3 | Change a check-in or complete a session | Enabled backup syncs the change |
-| 4 | Turn backup off | Future local changes are not uploaded |
-| 5 | Force a first-sync failure | Toggle returns to off and stored backup state remains off |
-| 6 | Select **Delete cloud backup data**, then cancel | No local or cloud data changes |
-| 7 | Confirm **Delete cloud backup data** | Backup turns off; cloud rows are deleted; local wellness data remains |
-| 8 | Sign out | Local sign-in session is cleared; local and existing cloud wellness data remain |
+| 1 | Create an account with mismatched passwords | Form stays open and identifies the mismatch |
+| 2 | Create an account with valid details | Confirmation guidance appears; user is not shown as signed in prematurely |
+| 3 | Confirm the email, then sign in from Settings | Account appears; backup remains off; no wellness-data request is sent |
+| 4 | Turn on **Back up my wellness data** | First sync begins and completes over encrypted transport |
+| 5 | Change a check-in or complete a session | Enabled backup syncs the change |
+| 6 | Turn backup off | Future local changes are not uploaded |
+| 7 | Force a first-sync failure | Toggle returns to off and stored backup state remains off |
+| 8 | Select **Delete cloud backup**, then cancel | No local or cloud data changes |
+| 9 | Confirm **Delete cloud backup** | Backup turns off; cloud rows are deleted; local wellness data remains |
+| 10 | Sign out | Local sign-in session is cleared; local and existing cloud wellness data remain |
 
-**Code-verified (2026-09-12):** 23 automated tests, lint, production build, and browser-targeted extension packaging pass. Installed-extension, cross-browser, and live-sync sign-off remain manual.
+**Code-verified (2026-09-12):** 30 automated tests, lint, production build, and browser-targeted extension packaging pass. Installed-extension, cross-browser, email-delivery, and live-sync sign-off remain manual.
 
 **Manual sign-off:** _________________ Date: _________
 
