@@ -6,6 +6,15 @@ const workerPath = new URL("../extension/background/sw.js", import.meta.url)
 const popupScriptPath = new URL("../extension/popup/popup.js", import.meta.url)
 const popupStylesPath = new URL("../extension/popup/popup.css", import.meta.url)
 
+test("toolbar popup bounds its content so long views can scroll", async () => {
+  const styles = await readFile(popupStylesPath, "utf8")
+
+  assert.match(styles, /body \{[\s\S]*height: 600px;[\s\S]*overflow: hidden;/)
+  assert.match(styles, /\.app \{[\s\S]*height: 100%;[\s\S]*overflow: hidden;/)
+  assert.match(styles, /\.main \{[\s\S]*min-height: 0;[\s\S]*overflow-y: auto;/)
+  assert.match(styles, /\.nav \{[\s\S]*flex: 0 0 auto;/)
+})
+
 test("quick-reset notification actions open a compact window with a durable tab fallback", async () => {
   const source = await readFile(workerPath, "utf8")
   const handler = source.slice(

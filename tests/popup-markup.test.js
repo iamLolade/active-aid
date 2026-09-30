@@ -56,7 +56,18 @@ test("reminder presets expose selected state and local data actions explain thei
 
   assert.equal((html.match(/class="preset"[^>]+aria-pressed="false"/g) ?? []).length, 3)
   assert.match(html, />Data on this device</)
-  assert.match(html, />Download my data</)
+  assert.match(html, /No account is required\./)
+  assert.match(html, />Download a data copy</)
+  assert.match(html, /It cannot be restored in ActiveAid yet\./)
   assert.match(html, />Erase data on this device</)
   assert.match(html, /Cloud backup stays\./)
+  assert.ok(html.indexOf("Data on this device") < html.indexOf("Cloud backup \(optional\)"))
+})
+
+test("relief player explains automatic step progression", async () => {
+  const html = await readFile(popupPath, "utf8")
+
+  assert.match(html, /id="stepAutoAdvanceNote"/)
+  assert.match(html, /The next step starts automatically when the timer ends\./)
+  assert.match(html, /class="stepCardBody" aria-live="polite" aria-atomic="true"/)
 })

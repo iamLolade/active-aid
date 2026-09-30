@@ -153,3 +153,8 @@ export function getSessionById(id) {
 export function getTotalDurationSeconds(session) {
   return session.steps.reduce((sum, step) => sum + step.durationSeconds, 0)
 }
+
+export function getSessionTimerAction(stepRemainingSeconds, stepIndex, stepCount) {
+  if (stepRemainingSeconds > 0) return "wait"
+  return stepIndex >= stepCount - 1 ? "complete" : "next"
+}

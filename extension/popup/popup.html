@@ -241,7 +241,7 @@
           <article class="stepCard" id="stepCard">
             <div class="stepCardInner">
               <div class="stepIllustration" id="stepIllustration" aria-hidden="true"></div>
-              <div class="stepCardBody">
+              <div class="stepCardBody" aria-live="polite" aria-atomic="true">
                 <h3 class="stepTitle" id="stepTitle" tabindex="-1"></h3>
                 <p class="stepInstruction" id="stepInstruction"></p>
                 <p class="stepDisclaimer">Move gently. Stop if it hurts.</p>
@@ -263,6 +263,9 @@
               <span class="btnIcon" id="stepCompleteIcon" aria-hidden="true"></span>
             </button>
           </div>
+          <p class="stepAutoAdvanceNote" id="stepAutoAdvanceNote">
+            The next step starts automatically when the timer ends.
+          </p>
         </div>
         <div id="viewSettings" class="view view--settings" hidden>
           <header class="settingsViewHeader">
@@ -334,11 +337,28 @@
             </ul>
           </section>
 
+          <section class="card settingsCard">
+            <h3 class="settingsSectionTitle">Data on this device</h3>
+            <p class="settingsSectionHint">
+              No account is required. ActiveAid stores activity totals, check-ins, completed
+              sessions, and settings locally by default.
+            </p>
+            <button class="btn--actionRow" id="exportData" type="button">
+              <span class="actionRowLabel">Download a data copy</span>
+              <span class="actionRowHint">Exports a readable JSON file for your records. It cannot be restored in ActiveAid yet.</span>
+            </button>
+            <button class="btn--actionRow btn--actionRowDanger" id="clearData" type="button">
+              <span class="actionRowLabel">Erase data on this device</span>
+              <span class="actionRowHint">Removes local history, settings, and sign-in. Cloud backup stays.</span>
+            </button>
+            <p class="dataStatus" id="dataStatus" role="status" hidden></p>
+          </section>
+
           <section class="card settingsCard" id="syncSection">
-            <h3 class="settingsSectionTitle">Optional cloud backup</h3>
+            <h3 class="settingsSectionTitle">Cloud backup (optional)</h3>
             <p class="settingsSectionHint" id="syncHint">
-              Create an account or sign in to use backup on another device. Backup stays off until
-              you choose to enable it.
+              ActiveAid works without an account. Create one only if you want your wellness history
+              backed up for use on another device. Creating an account or signing in does not turn backup on.
             </p>
             <p class="syncStatus" id="syncStatus" hidden role="status"></p>
 
@@ -355,8 +375,8 @@
                 </div>
               </fieldset>
               <p class="authModeHint" id="syncAuthHint">
-                New to ActiveAid? Create an account. Your wellness data will remain on this device
-                until you turn backup on.
+                Create an account only if you want optional cloud backup. After confirming your
+                email, return here to sign in and enable backup.
               </p>
               <div class="field">
                 <label class="fieldLabel" for="syncEmail">Email</label>
@@ -421,23 +441,6 @@
                 <span class="actionRowHint">Local wellness data stays here.</span>
               </button>
             </div>
-          </section>
-
-          <section class="card settingsCard">
-            <h3 class="settingsSectionTitle">Data on this device</h3>
-            <p class="settingsSectionHint">
-              Activity totals, check-ins, completed sessions, and settings are stored locally by
-              default.
-            </p>
-            <button class="btn--actionRow" id="exportData" type="button">
-              <span class="actionRowLabel">Download my data</span>
-              <span class="actionRowHint">Save a readable JSON copy to your computer.</span>
-            </button>
-            <button class="btn--actionRow btn--actionRowDanger" id="clearData" type="button">
-              <span class="actionRowLabel">Erase data on this device</span>
-              <span class="actionRowHint">Removes local history, settings, and sign-in. Cloud backup stays.</span>
-            </button>
-            <p class="dataStatus" id="dataStatus" role="status" hidden></p>
           </section>
 
           <p class="settingsDisclaimer">ActiveAid supports wellness habits. It is not a medical or diagnostic tool.</p>

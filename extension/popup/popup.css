@@ -135,6 +135,7 @@ body {
   margin: 0;
   padding: 0;
   width: 400px;
+  height: 600px;
   min-height: 480px;
   background: #f1ede4;
   color: var(--slate);
@@ -148,6 +149,7 @@ body {
 .app {
   display: flex;
   flex-direction: column;
+  height: 100%;
   min-height: 480px;
   background:
     radial-gradient(ellipse 180% 220px at 50% -40px, rgba(123, 174, 127, 0.10) 0%, transparent 70%),
@@ -2371,6 +2373,14 @@ input[type="text"]:focus {
 .actions--session {
   margin-top: 4px;
   gap: 10px;
+}
+
+.stepAutoAdvanceNote {
+  margin: -6px 0 0;
+  color: var(--slate-subtle);
+  font-size: 11px;
+  line-height: 1.45;
+  text-align: center;
 }
 
 .actions--session .btn {

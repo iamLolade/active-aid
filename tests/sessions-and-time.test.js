@@ -1,7 +1,12 @@
 import test from "node:test"
 import assert from "node:assert/strict"
 
-import { SESSIONS, getSessionById, getTotalDurationSeconds } from "../extension/shared/sessions.js"
+import {
+  SESSIONS,
+  getSessionById,
+  getSessionTimerAction,
+  getTotalDurationSeconds,
+} from "../extension/shared/sessions.js"
 import { formatCountdown, minutesToMs, msToRoundedMinutes } from "../extension/shared/time.js"
 
 test("the relief-session catalog has unique, usable entries", () => {
@@ -23,4 +28,10 @@ test("time helpers clamp and format values consistently", () => {
   assert.equal(msToRoundedMinutes(89_000), 1)
   assert.equal(formatCountdown(125.9), "02:05")
   assert.equal(formatCountdown(-1), "00:00")
+})
+
+test("relief session timers advance and complete automatically", () => {
+  assert.equal(getSessionTimerAction(1, 0, 4), "wait")
+  assert.equal(getSessionTimerAction(0, 0, 4), "next")
+  assert.equal(getSessionTimerAction(0, 3, 4), "complete")
 })

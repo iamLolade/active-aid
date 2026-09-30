@@ -29,7 +29,12 @@ import {
 import { formatCountdown, minutesToMs, msToRoundedMinutes, nowMs } from "../shared/time.js"
 import { isActivityRecent } from "../shared/activity.js"
 import { runtimeSendMessage } from "../shared/browser-api.js"
-import { SESSIONS, getSessionById, getTotalDurationSeconds } from "../shared/sessions.js"
+import {
+  SESSIONS,
+  getSessionById,
+  getSessionTimerAction,
+  getTotalDurationSeconds,
+} from "../shared/sessions.js"
 import {
   SEVERITIES,
   BODY_AREAS,
@@ -145,6 +150,7 @@ const els = {
   sessionPlayerIcon: document.getElementById("sessionPlayerIcon"),
   stepTitle: document.getElementById("stepTitle"),
   stepInstruction: document.getElementById("stepInstruction"),
+  stepAutoAdvanceNote: document.getElementById("stepAutoAdvanceNote"),
   stepPrev: document.getElementById("stepPrev"),
   stepNext: document.getElementById("stepNext"),
   stepComplete: document.getElementById("stepComplete"),
@@ -159,6 +165,7 @@ const player = {
   startedAt: null,
   stepStartedAt: null,
   tickId: null,
+  isCompleting: false,
   returnFocus: null,
 }
 const checkInForm = { severity: null, bodyAreas: new Set() }
@@ -1013,8 +1020,8 @@ function setSyncAuthMode(mode, { clearStatus = true } = {}) {
   }
   if (els.syncAuthHint) {
     els.syncAuthHint.textContent = isCreate
-      ? "New to ActiveAid? Create an account. Your wellness data stays on this device until you turn backup on."
-      : "Already have an ActiveAid account? Sign in to choose whether to restore or back up your wellness data."
+      ? "Create an account only if you want optional cloud backup. After confirming your email, return here to sign in and enable backup."
+      : "Sign in to manage optional cloud backup. Signing in does not turn backup on."
   }
   if (els.syncAuthSubmit) {
     els.syncAuthSubmit.textContent = isCreate ? "Create account" : "Sign in"
@@ -1320,6 +1327,7 @@ function openSession(sessionId) {
   player.stepIndex = 0
   player.startedAt = nowMs()
   player.stepStartedAt = nowMs()
+  player.isCompleting = false
   player.returnFocus = document.activeElement
   els.sessionTitle.textContent = session.title
   els.sessionTagline.textContent = session.tagline
@@ -1354,17 +1362,19 @@ function closeSession() {
   player.stepIndex = 0
   player.startedAt = null
   player.stepStartedAt = null
+  player.isCompleting = false
   player.returnFocus = null
   setActiveTab(activeTab)
   if (returnFocus instanceof HTMLElement && returnFocus.isConnected) returnFocus.focus()
 }
 
-function goToStep(index) {
+function goToStep(index, { focusTitle = true } = {}) {
   if (!player.session) return
   player.stepIndex = Math.min(player.session.steps.length - 1, Math.max(0, index))
   player.stepStartedAt = nowMs()
   renderStep()
-  els.stepTitle.focus()
+  if (player.tickId == null) startSessionTicker()
+  if (focusTitle) els.stepTitle.focus()
 }
 
 function renderStep() {
@@ -1382,6 +1392,11 @@ function renderStep() {
   els.stepComplete.hidden = !isLast
   els.stepComplete.disabled = false
   if (els.stepCompleteLabel) els.stepCompleteLabel.textContent = "Complete"
+  if (els.stepAutoAdvanceNote) {
+    els.stepAutoAdvanceNote.textContent = isLast
+      ? "The session completes automatically when the timer ends."
+      : "The next step starts automatically when the timer ends."
+  }
   els.stepNext.classList.remove("btn--pulse")
   els.stepComplete.classList.remove("btn--pulse", "btn--complete")
 
@@ -1394,8 +1409,12 @@ function renderStep() {
 
 async function completeSession() {
   const session = player.session
-  if (!session || player.startedAt == null) return
+  if (!session || player.startedAt == null || player.isCompleting) return
 
+  player.isCompleting = true
+  stopSessionTicker()
+
+  els.stepPrev.disabled = true
   els.stepComplete.disabled = true
   els.stepComplete.setAttribute("aria-busy", "true")
   if (els.stepCompleteLabel) els.stepCompleteLabel.textContent = "Saving..."
@@ -1408,6 +1427,8 @@ async function completeSession() {
         Math.round((nowMs() - player.startedAt) / 1000) || getTotalDurationSeconds(session),
     })
   } catch {
+    player.isCompleting = false
+    els.stepPrev.disabled = player.stepIndex === 0
     els.stepComplete.disabled = false
     els.stepComplete.removeAttribute("aria-busy")
     if (els.stepCompleteLabel) els.stepCompleteLabel.textContent = "Try again"
@@ -1463,20 +1484,24 @@ function updateCountdownUI() {
 
   const stepElapsed = (nowMs() - stepStart) / 1000
   const stepRemaining = Math.max(0, step.durationSeconds - stepElapsed)
-  els.stepCountdown.textContent = formatCountdown(stepRemaining)
+  els.stepCountdown.textContent = formatCountdown(Math.ceil(stepRemaining))
 
   const remainingStepsSeconds = session.steps
     .slice(player.stepIndex + 1)
     .reduce((sum, s) => sum + s.durationSeconds, 0)
   const totalRemaining = stepRemaining + remainingStepsSeconds
-  els.totalCountdown.textContent = formatCountdown(totalRemaining)
+  els.totalCountdown.textContent = formatCountdown(Math.ceil(totalRemaining))
 
-  const isStepDone = stepRemaining <= 0.25
-  if (!isStepDone) return
-
-  const isLast = player.stepIndex === session.steps.length - 1
-  if (isLast) els.stepComplete.classList.add("btn--pulse")
-  else els.stepNext.classList.add("btn--pulse")
+  const timerAction = getSessionTimerAction(
+    stepRemaining,
+    player.stepIndex,
+    session.steps.length
+  )
+  if (timerAction === "next") {
+    goToStep(player.stepIndex + 1, { focusTitle: false })
+  } else if (timerAction === "complete") {
+    void completeSession()
+  }
 }
 
 async function snoozeForMinutes(minutes) {
