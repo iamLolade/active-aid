@@ -88,6 +88,7 @@ const els = {
   settingsViewHeaderIcon: document.getElementById("settingsViewHeaderIcon"),
   activeValue: document.getElementById("activeValue"),
   heroMeta: document.getElementById("heroMeta"),
+  heroSessionMeta: document.getElementById("heroSessionMeta"),
   statusPill: document.getElementById("statusPill"),
   statusPillText: document.getElementById("statusPillText"),
   reminderProgress: document.getElementById("reminderProgress"),
@@ -105,6 +106,7 @@ const els = {
   clearData: document.getElementById("clearData"),
   dataStatus: document.getElementById("dataStatus"),
   syncSection: document.getElementById("syncSection"),
+  syncSummaryHint: document.getElementById("syncSummaryHint"),
   syncHint: document.getElementById("syncHint"),
   syncStatus: document.getElementById("syncStatus"),
   syncSignedOut: document.getElementById("syncSignedOut"),
@@ -132,6 +134,7 @@ const els = {
   severityGroup: document.getElementById("severityGroup"),
   bodyAreaGroup: document.getElementById("bodyAreaGroup"),
   saveCheckIn: document.getElementById("saveCheckIn"),
+  checkInFooter: document.getElementById("checkInFooter"),
   checkInSavedNote: document.getElementById("checkInSavedNote"),
   statGrid: document.getElementById("statGrid"),
   trendList: document.getElementById("trendList"),
@@ -166,6 +169,7 @@ const player = {
   stepStartedAt: null,
   tickId: null,
   isCompleting: false,
+  isCompleted: false,
   returnFocus: null,
 }
 const checkInForm = { severity: null, bodyAreas: new Set() }
@@ -283,6 +287,7 @@ function showOnboarding() {
   els.viewDashboard.hidden = true
   els.viewSession.hidden = true
   els.viewSettings.hidden = true
+  els.checkInFooter.hidden = true
   els.nav.hidden = true
   uiErrorMessage = ""
   renderErrorBanner("")
@@ -409,7 +414,7 @@ async function updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed })
     els.statusPill?.classList.add("statusPill--muted")
     if (els.statusPillText) els.statusPillText.textContent = "Reminders off"
     if (els.heroMeta) {
-      els.heroMeta.textContent = "Turn them on when you're ready for a gentle nudge."
+      els.heroMeta.textContent = "Turn reminders on whenever you're ready."
     }
   } else if (isSnoozed) {
     els.statusPill?.classList.add("statusPill--warm")
@@ -418,11 +423,11 @@ async function updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed })
       hour: "numeric",
       minute: "2-digit",
     })
-    if (els.heroMeta) els.heroMeta.textContent = `We'll check back around ${until}.`
+    if (els.heroMeta) els.heroMeta.textContent = `Paused until ${until}`
   } else if (activeMinutes == null) {
     if (els.statusPillText) els.statusPillText.textContent = "Reminders on"
     if (els.heroMeta) {
-      els.heroMeta.textContent = `Next gentle reminder after ${settings.reminderIntervalMinutes} min of activity.`
+      els.heroMeta.textContent = `Next reminder after ${settings.reminderIntervalMinutes} min of activity`
     }
   } else {
     if (els.statusPillText) els.statusPillText.textContent = "Reminders on"
@@ -434,8 +439,8 @@ async function updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed })
     if (els.heroMeta) {
       els.heroMeta.textContent =
         remaining > 0
-          ? `Next gentle reminder in ${remaining} min`
-          : "A reminder may appear soon."
+          ? `Next reminder in ${remaining} min`
+          : "A reminder may appear soon"
     }
   }
 
@@ -443,18 +448,13 @@ async function updateHeroStatus({ settings, runtime, activeMinutes, isSnoozed })
     els.reminderProgress.style.width = `${Math.round(progressRatio * 100)}%`
   }
 
-  // Show today's session count in hero if any sessions have been done
   const stats = await getSessionStats()
-  if (stats.todayCount > 0) {
-    let heroMeta = els.heroMeta
-    if (heroMeta) {
-      const baseText = heroMeta.textContent || ""
-      const sessionText =
-        stats.todayCount === 1
-          ? `${stats.todayCount} session today`
-          : `${stats.todayCount} sessions today`
-      heroMeta.textContent = `${sessionText} · ${baseText}`
-    }
+  if (els.heroSessionMeta) {
+    els.heroSessionMeta.hidden = stats.todayCount === 0
+    els.heroSessionMeta.textContent =
+      stats.todayCount === 1
+        ? "1 relief session"
+        : `${stats.todayCount} relief sessions`
   }
 }
 
@@ -509,6 +509,7 @@ function showMainView(tab) {
   els.viewDashboard.hidden = tab !== "insights"
   els.viewSession.hidden = true
   els.viewSettings.hidden = tab !== "settings"
+  els.checkInFooter.hidden = tab !== "checkin"
   els.nav.hidden = false
 }
 
@@ -534,7 +535,8 @@ function renderCheckInForm() {
 
     const label = document.createElement("span")
     label.className = "severityOptionLabel"
-    label.textContent = s.label
+    label.textContent = getSeverityShortLabel(s.id)
+    btn.setAttribute("aria-label", s.label)
 
     btn.append(iconWrap, label)
     btn.addEventListener("click", () => selectSeverity(s.id))
@@ -758,27 +760,27 @@ async function renderDashboard() {
   els.statGrid.replaceChildren()
   appendStatCard({
     value: String(summary.breaksToday),
-    label: "Breaks taken today",
+    label: "Breaks today",
     iconHtml: iconPlay(20),
   })
   appendStatCard({
-    value: `${summary.breakMinutesToday}m`,
-    label: "Relief minutes today",
+    value: `${summary.breakMinutesToday} min`,
+    label: "Relief today",
     iconHtml: iconClock(20),
   })
   appendStatCard({
     value: String(summary.sessionsLast7Days),
-    label: "Relief sessions (7 days)",
+    label: "Sessions in 7 days",
     iconHtml: iconBarChart(20),
   })
   appendStatCard({
-    value: `${summary.activeMinutesToday}m`,
-    label: "Estimated active time",
+    value: `${summary.activeMinutesToday} min`,
+    label: "Active today",
     iconHtml: iconActivity(20),
   })
   appendStatCard({
     value: String(summary.checkInStreak),
-    label: "Check-in streak (days)",
+    label: "Check-in streak",
     iconHtml: iconCalendar(20),
   })
   appendStatCard({
@@ -1064,6 +1066,10 @@ async function updateSyncUI() {
   if (els.syncSignedIn) els.syncSignedIn.hidden = !signedIn
 
   if (signedIn) {
+    if (els.syncSummaryHint) {
+      const accountLabel = state.email ? `Signed in as ${state.email}` : "Signed in"
+      els.syncSummaryHint.textContent = `${state.enabled ? "On" : "Off"} · ${accountLabel}`
+    }
     if (els.syncAccount) {
       els.syncAccount.textContent = state.email ? `Signed in as ${state.email}` : "Signed in"
     }
@@ -1085,6 +1091,7 @@ async function updateSyncUI() {
       setSyncStatus("Cloud backup is on.", "ok")
     }
   } else {
+    if (els.syncSummaryHint) els.syncSummaryHint.textContent = "Off · No account required"
     if (state.lastError) setSyncStatus(state.lastError, "error")
   }
 }
@@ -1240,12 +1247,20 @@ async function handleExport() {
 }
 
 function bindSessionPlayer() {
-  els.sessionBack.addEventListener("click", () => closeSession())
+  els.sessionBack.addEventListener("click", () => {
+    if (player.isCompleted) void finishCompletedSession()
+    else closeSession()
+  })
   els.stepPrev.addEventListener("click", () => goToStep(player.stepIndex - 1))
   els.stepNext.addEventListener("click", () => goToStep(player.stepIndex + 1))
-  els.stepComplete.addEventListener("click", () => void completeSession())
+  els.stepComplete.addEventListener("click", () => {
+    if (player.isCompleted) void finishCompletedSession()
+    else void completeSession()
+  })
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && player.session && !els.confirmDialog.open) closeSession()
+    if (event.key !== "Escape" || !player.session || els.confirmDialog.open) return
+    if (player.isCompleted) void finishCompletedSession()
+    else closeSession()
   })
 }
 
@@ -1263,7 +1278,7 @@ function renderSessionList() {
     left.className = "sessionRowLeft"
 
     const icon = document.createElement("span")
-    icon.className = "sessionIcon"
+    icon.className = `sessionIcon sessionIcon--${session.id}`
     icon.setAttribute("aria-hidden", "true")
     icon.innerHTML = sessionIcon(session.id, 22)
 
@@ -1328,6 +1343,7 @@ function openSession(sessionId) {
   player.startedAt = nowMs()
   player.stepStartedAt = nowMs()
   player.isCompleting = false
+  player.isCompleted = false
   player.returnFocus = document.activeElement
   els.sessionTitle.textContent = session.title
   els.sessionTagline.textContent = session.tagline
@@ -1336,6 +1352,7 @@ function openSession(sessionId) {
   els.viewCheckIn.hidden = true
   els.viewDashboard.hidden = true
   els.viewSettings.hidden = true
+  els.checkInFooter.hidden = true
   els.viewSession.hidden = false
   els.nav.hidden = true
   renderStep()
@@ -1363,7 +1380,9 @@ function closeSession() {
   player.startedAt = null
   player.stepStartedAt = null
   player.isCompleting = false
+  player.isCompleted = false
   player.returnFocus = null
+  els.stepPrev.hidden = false
   setActiveTab(activeTab)
   if (returnFocus instanceof HTMLElement && returnFocus.isConnected) returnFocus.focus()
 }
@@ -1388,13 +1407,14 @@ function renderStep() {
   if (els.stepIllustration) els.stepIllustration.innerHTML = sessionIcon(session.id, 24)
   renderStepSegments()
   els.stepPrev.disabled = player.stepIndex === 0
+  els.stepPrev.hidden = false
   els.stepNext.hidden = isLast
   els.stepComplete.hidden = !isLast
   els.stepComplete.disabled = false
   if (els.stepCompleteLabel) els.stepCompleteLabel.textContent = "Complete"
   if (els.stepAutoAdvanceNote) {
     els.stepAutoAdvanceNote.textContent = isLast
-      ? "The session completes automatically when the timer ends."
+      ? "Your session saves when the timer ends. You choose when to finish."
       : "The next step starts automatically when the timer ends."
   }
   els.stepNext.classList.remove("btn--pulse")
@@ -1438,23 +1458,38 @@ async function completeSession() {
 
   uiErrorMessage = ""
   renderErrorBanner("")
+  player.isCompleting = false
+  player.isCompleted = true
   els.stepComplete.removeAttribute("aria-busy")
-  if (els.stepCompleteLabel) els.stepCompleteLabel.textContent = "Done ✓"
+  els.stepComplete.disabled = false
+  els.stepPrev.hidden = true
+  els.stepNext.hidden = true
+  els.stepComplete.hidden = false
+  if (els.stepCompleteLabel) els.stepCompleteLabel.textContent = "Done"
   els.stepComplete.classList.add("btn--complete")
+  els.stepProgress.textContent = "Session complete"
+  els.stepCountdown.textContent = "00:00"
+  els.totalCountdown.textContent = "00:00"
   els.stepTitle.textContent = `${session.title} complete!`
   els.stepInstruction.textContent = "Small resets add up. Taking a moment to breathe helps."
+  if (els.stepAutoAdvanceNote) {
+    els.stepAutoAdvanceNote.textContent = "Session saved. Choose Done when you're ready."
+  }
   els.stepCard.classList.remove("stepCard--enter")
   void els.stepCard.offsetWidth
   els.stepCard.classList.add("stepCard--enter")
+  els.stepComplete.focus()
+  scheduleSyncIfEnabled()
+}
 
-  // Brief pause so user sees the completion state
-  await new Promise((r) => setTimeout(r, 1200))
+async function finishCompletedSession() {
+  const session = player.session
+  if (!session || !player.isCompleted) return
 
   closeSession()
   activeTab = previousActiveTab || "home"
   setActiveTab(activeTab)
   await hydrate()
-  scheduleSyncIfEnabled()
   els.statusPill?.classList.remove("statusPill--muted", "statusPill--warm")
   if (els.statusPillText) els.statusPillText.textContent = "Session done"
   if (els.heroMeta) {

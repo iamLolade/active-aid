@@ -47,7 +47,7 @@ Run this end-to-end on a fresh install (or after **Erase data on this device** i
 | 3 | Leave reminders on, tap **Agree and get started** | Today tab appears and activity timing can begin |
 | 4 | Today tab (no data yet) | Check-in hint + Quick Relief empty nudge visible |
 | 5 | Open **Settings** from bottom navigation | Settings view opens |
-| 6 | Start a Quick Relief session and let each timer expire | Steps advance automatically; the final step saves and returns to Today; manual Previous/Next controls still work |
+| 6 | Start a Quick Relief session and let each timer expire | Steps advance automatically; the final step saves and shows a completion state; **Done** returns to Today |
 | 7 | Check-in tab: pick severity, optional areas, **Save check-in** | Saved note appears; Today row updates |
 | 8 | Insights tab | Stats, 7-day trend, and areas reflect steps 6–7 |
 | 9 | Settings → **Download a data copy** | JSON downloads; check-ins/sessions match Insights; UI states that the file cannot yet be restored |
@@ -84,7 +84,7 @@ Run with Supabase configured, email confirmation enabled, and production SMTP av
 | 9 | Confirm **Delete cloud backup** | Backup turns off; cloud rows are deleted; local wellness data remains |
 | 10 | Sign out | Local sign-in session is cleared; local and existing cloud wellness data remain |
 
-**Code-verified (2026-09-30):** 33 automated tests, lint, production build, and browser-targeted extension packaging pass. Installed-extension, cross-browser, email-delivery, and live-sync sign-off remain manual.
+**Code-verified (2026-09-30):** 39 automated tests, lint, production build, and browser-targeted extension packaging pass. Installed-extension, cross-browser, email-delivery, and live-sync sign-off remain manual.
 
 **Manual sign-off:** _________________ Date: _________
 

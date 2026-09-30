@@ -70,9 +70,9 @@
             <div class="headerLeft">
               <img
                 class="logo"
-                src="../assets/icon-48.png"
-                width="40"
-                height="40"
+                src="../assets/icon.svg"
+                width="36"
+                height="36"
                 alt=""
               />
               <div class="headerText">
@@ -83,17 +83,23 @@
           </header>
 
           <section class="heroCard" id="heroCard" aria-label="Activity status">
-            <div class="heroTop">
-              <div class="heroIcon" id="heroIcon" aria-hidden="true"></div>
-              <div class="heroText">
-                <p class="heroEyebrow">You've been active for</p>
-                <p class="heroValue" id="activeValue">0m</p>
-                <p class="heroMeta" id="heroMeta">Checking in...</p>
-              </div>
+            <div class="heroHeader">
+              <p class="heroEyebrow">Activity today</p>
               <span class="statusPill" id="statusPill">
                 <span class="statusPillIcon" id="statusPillIcon" aria-hidden="true"></span>
                 <span id="statusPillText">Reminders on</span>
               </span>
+            </div>
+            <div class="heroMetric">
+              <div class="heroIcon" id="heroIcon" aria-hidden="true"></div>
+              <div class="heroText">
+                <p class="heroValue" id="activeValue">0m</p>
+                <p class="heroValueLabel">Active time</p>
+              </div>
+            </div>
+            <div class="heroDetails">
+              <p class="heroSessionMeta" id="heroSessionMeta" hidden></p>
+              <p class="heroMeta" id="heroMeta">Checking in...</p>
             </div>
             <div class="progressTrack" aria-hidden="true">
               <div class="progressFill" id="reminderProgress"></div>
@@ -139,7 +145,7 @@
 
           <section class="card checkInCard">
             <h3 class="checkInCardTitle">Overall feeling</h3>
-            <p class="checkInCardHint">How is your body feeling overall?</p>
+            <p class="checkInCardHint">Choose one.</p>
             <div
               class="severityGrid"
               id="severityGroup"
@@ -149,19 +155,13 @@
           </section>
 
           <section class="card checkInCard">
-            <h3 class="checkInCardTitle">Any areas to note? (optional)</h3>
-            <p class="checkInCardHint">Select all that apply.</p>
+            <div class="checkInCardHeading">
+              <h3 class="checkInCardTitle">Areas to note</h3>
+              <span class="optionalBadge">Optional</span>
+            </div>
+            <p class="checkInCardHint">Select any that apply.</p>
             <div class="bodyAreaGroup" id="bodyAreaGroup"></div>
           </section>
-
-          <div class="checkInFooter">
-            <button class="btn btn--primary btn--save" id="saveCheckIn" type="button">
-              Save check-in
-            </button>
-            <p class="formNote" id="checkInSavedNote" role="status" hidden>
-              Saved for today. You can update anytime.
-            </p>
-          </div>
         </div>
 
         <div id="viewDashboard" class="view view--insights" hidden>
@@ -318,10 +318,16 @@
             <p class="reminderStatus" id="reminderStatus" role="status" hidden></p>
           </section>
 
-          <section class="card settingsCard">
-            <h3 class="settingsSectionTitle">Privacy</h3>
-            <p class="settingsSectionHint">Everything stays on this device unless you opt in to cloud backup below.</p>
-            <ul class="settingsPrivacyList">
+          <details class="card settingsCard settingsDisclosure">
+            <summary class="settingsSummary">
+              <span>
+                <span class="settingsSectionTitle">Privacy</span>
+                <span class="settingsSummaryHint">What ActiveAid tracks and stores</span>
+              </span>
+            </summary>
+            <div class="settingsDisclosureContent">
+              <p class="settingsSectionHint">Everything stays on this device unless you opt in to cloud backup.</p>
+              <ul class="settingsPrivacyList">
               <li>
                 <span class="settingsPrivacyLabel">We track</span>
                 Activity timing (keyboard, mouse, and tab focus) to schedule breaks.
@@ -334,33 +340,47 @@
                 <span class="settingsPrivacyLabel">We never log</span>
                 What you type, page content, screenshots, or camera data.
               </li>
-            </ul>
-          </section>
+              </ul>
+            </div>
+          </details>
 
-          <section class="card settingsCard">
-            <h3 class="settingsSectionTitle">Data on this device</h3>
-            <p class="settingsSectionHint">
-              No account is required. ActiveAid stores activity totals, check-ins, completed
-              sessions, and settings locally by default.
-            </p>
-            <button class="btn--actionRow" id="exportData" type="button">
-              <span class="actionRowLabel">Download a data copy</span>
-              <span class="actionRowHint">Exports a readable JSON file for your records. It cannot be restored in ActiveAid yet.</span>
-            </button>
-            <button class="btn--actionRow btn--actionRowDanger" id="clearData" type="button">
-              <span class="actionRowLabel">Erase data on this device</span>
-              <span class="actionRowHint">Removes local history, settings, and sign-in. Cloud backup stays.</span>
-            </button>
-            <p class="dataStatus" id="dataStatus" role="status" hidden></p>
-          </section>
+          <details class="card settingsCard settingsDisclosure">
+            <summary class="settingsSummary">
+              <span>
+                <span class="settingsSectionTitle">Data on this device</span>
+                <span class="settingsSummaryHint">Download or erase local data</span>
+              </span>
+            </summary>
+            <div class="settingsDisclosureContent">
+              <p class="settingsSectionHint">
+                No account is required. ActiveAid stores activity totals, check-ins, completed
+                sessions, and settings locally by default.
+              </p>
+              <button class="btn--actionRow" id="exportData" type="button">
+                <span class="actionRowLabel">Download a data copy</span>
+                <span class="actionRowHint">Exports a readable JSON file for your records. It cannot be restored in ActiveAid yet.</span>
+              </button>
+              <button class="btn--actionRow btn--actionRowDanger" id="clearData" type="button">
+                <span class="actionRowLabel">Erase data on this device</span>
+                <span class="actionRowHint">Removes local history, settings, and sign-in. Cloud backup stays.</span>
+              </button>
+              <p class="dataStatus" id="dataStatus" role="status" hidden></p>
+            </div>
+          </details>
 
-          <section class="card settingsCard" id="syncSection">
-            <h3 class="settingsSectionTitle">Cloud backup (optional)</h3>
-            <p class="settingsSectionHint" id="syncHint">
-              ActiveAid works without an account. Create one only if you want your wellness history
-              backed up for use on another device. Creating an account or signing in does not turn backup on.
-            </p>
-            <p class="syncStatus" id="syncStatus" hidden role="status"></p>
+          <details class="card settingsCard settingsDisclosure" id="syncSection">
+            <summary class="settingsSummary">
+              <span>
+                <span class="settingsSectionTitle">Cloud backup</span>
+                <span class="settingsSummaryHint" id="syncSummaryHint">Off · No account required</span>
+              </span>
+            </summary>
+            <div class="settingsDisclosureContent">
+              <p class="settingsSectionHint" id="syncHint">
+                Optional. Create an account only if you want your wellness history backed up for use
+                on another device. Signing in does not turn backup on.
+              </p>
+              <p class="syncStatus" id="syncStatus" hidden role="status"></p>
 
             <form id="syncSignedOut" aria-describedby="syncAuthHint">
               <fieldset class="authModeFieldset">
@@ -417,7 +437,7 @@
               <button class="btn--actionRow btn--actionRowPrimary" id="syncAuthSubmit" type="submit">Create account</button>
             </form>
 
-            <div id="syncSignedIn" hidden>
+              <div id="syncSignedIn" hidden>
               <p class="syncAccount" id="syncAccount"></p>
               <p class="syncConsentText" id="syncConsentText">
                 When enabled, ActiveAid syncs your check-ins, completed sessions, and reminder
@@ -440,12 +460,22 @@
                 <span class="actionRowLabel">Sign out on this device</span>
                 <span class="actionRowHint">Local wellness data stays here.</span>
               </button>
+              </div>
             </div>
-          </section>
+          </details>
 
           <p class="settingsDisclaimer">ActiveAid supports wellness habits. It is not a medical or diagnostic tool.</p>
         </div>
       </main>
+
+      <div class="checkInFooter" id="checkInFooter" hidden>
+        <button class="btn btn--primary btn--save" id="saveCheckIn" type="button">
+          Save check-in
+        </button>
+        <p class="formNote" id="checkInSavedNote" role="status" hidden>
+          Saved for today. You can update anytime.
+        </p>
+      </div>
 
       <nav class="nav" id="nav" aria-label="Primary navigation">
         <button class="navBtn navBtn--active" type="button" data-view="home" aria-controls="viewHome" aria-current="page">

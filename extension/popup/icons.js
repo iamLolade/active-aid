@@ -119,21 +119,17 @@ export function iconActivity(size = 24) {
 
 // --- Check-in: severity faces ---
 
+const FACE_OUTLINE = "M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10Z"
+const FACE_EYES = "M9 9h.01M15 9h.01"
+
 const SEVERITY_ICONS = {
-  great: (size) => iconSvg(size, strokePaths("M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10Z", "M8 14s1.5 2 4 2 4-2 4-2")),
+  great: (size) => iconSvg(size, strokePaths(FACE_OUTLINE, FACE_EYES, "M8 14s1.5 2 4 2 4-2 4-2")),
   slight: (size) =>
-    iconSvg(size, strokePaths("M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10Z", "M8 15h8")),
+    iconSvg(size, strokePaths(FACE_OUTLINE, FACE_EYES, "M8 15h8")),
   moderate: (size) =>
-    iconSvg(size, strokePaths("M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10Z", "M8 16s1.5-2 4-2 4 2 4 2")),
+    iconSvg(size, strokePaths(FACE_OUTLINE, FACE_EYES, "M8 16s1.5-2 4-2 4 2 4 2")),
   severe: (size) =>
-    iconSvg(
-      size,
-      strokePaths(
-        "M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10Z",
-        "M8 17s1.5-3 4-3 4 3 4 3",
-        "M9 9h.01M15 9h.01"
-      )
-    ),
+    iconSvg(size, strokePaths(FACE_OUTLINE, FACE_EYES, "M8 17s1.5-3 4-3 4 3 4 3")),
 }
 
 /**
@@ -147,38 +143,11 @@ export function severityIcon(severityId, size = 22) {
 // --- Check-in: body areas ---
 
 const BODY_AREA_ICONS = {
-  neck: (size) =>
-    iconSvg(
-      size,
-      strokePaths(
-        "M12 4v2M8 6c0 2 1.5 3.5 4 4v4",
-        "M16 6c0 2-1.5 3.5-4 4v4",
-        "M10 18h4"
-      )
-    ),
-  shoulders: (size) =>
-    iconSvg(size, strokePaths("M6 19c0-3 2.5-5.5 6-5.5s6 2.5 6 5.5", "M8 11c.5-2 2-3.5 4-3.5s3.5 1.5 4 3.5")),
-  "lower-back": (size) =>
-    iconSvg(
-      size,
-      strokePaths("M7 4h10M8 5v6c0 2 1.8 3.5 4 3.5s4-1.5 4-3.5V5", "M9 15v5M15 15v5")
-    ),
-  wrists: (size) =>
-    iconSvg(
-      size,
-      strokePaths(
-        "M7 12c0 2.5 2 4.5 5 4.5s5-2 5-4.5V9c0-2-1.5-3.5-4-3.5H9.5C8 5.5 7 7 7 9v3Z",
-        "M9 19h6"
-      )
-    ),
-  eyes: (size) =>
-    iconSvg(
-      size,
-      strokePaths(
-        "M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z",
-        "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-      )
-    ),
+  neck: (size) => MOVEMENT_ICONS.neck(size),
+  shoulders: (size) => MOVEMENT_ICONS.shoulder(size),
+  "lower-back": (size) => MOVEMENT_ICONS["lower-back"](size),
+  wrists: (size) => MOVEMENT_ICONS.wrist(size),
+  eyes: (size) => MOVEMENT_ICONS.eyes(size),
 }
 
 /**
@@ -191,12 +160,48 @@ export function bodyAreaIcon(areaId, size = 22) {
 
 // --- Today: quick relief sessions (ids from sessions.js) ---
 
-const SESSION_ICONS = {
-  neck: BODY_AREA_ICONS.neck,
-  wrist: BODY_AREA_ICONS.wrists,
-  "lower-back": BODY_AREA_ICONS["lower-back"],
-  shoulder: BODY_AREA_ICONS.shoulders,
-  eyes: BODY_AREA_ICONS.eyes,
+const MOVEMENT_ICONS = {
+  neck: (size) =>
+    iconSvg(
+      size,
+      '<circle cx="12" cy="5" r="2.75" stroke="currentColor" stroke-width="1.75"/>' +
+        strokePaths(
+          "M10 8.2v3.3h4V8.2",
+          "M5 20c.6-4 3-6 7-6s6.4 2 7 6",
+          "M10 10.5h4"
+        )
+    ),
+  wrist: (size) =>
+    iconSvg(
+      size,
+      strokePaths(
+        "M8 12V8.5a1.5 1.5 0 0 1 3 0V11",
+        "M11 11V6.5a1.5 1.5 0 0 1 3 0V11",
+        "M14 11V8a1.5 1.5 0 0 1 3 0v5",
+        "M8 12 6.8 10.8a1.5 1.5 0 0 0-2.1 2.1l3.7 5A5 5 0 0 0 12.4 20H14a5 5 0 0 0 5-5v-3"
+      )
+    ),
+  "lower-back": (size) =>
+    iconSvg(
+      size,
+      '<circle cx="8" cy="5" r="2.25" stroke="currentColor" stroke-width="1.75"/>' +
+        strokePaths("M8 7.5v6l4 2.5h6", "M5 12h3M5 12v8", "M12 16v4M18 16v4", "M10 9.5c2.8.2 4.5 1.8 4.5 4.5")
+    ),
+  shoulder: (size) =>
+    iconSvg(
+      size,
+      '<circle cx="10" cy="5" r="2.75" stroke="currentColor" stroke-width="1.75"/>' +
+        '<circle cx="17" cy="15.5" r="2.25" stroke="currentColor" stroke-width="1.75"/>' +
+        strokePaths("M10 8v4", "M4 20c.5-4 2.8-6 7-6 1.5 0 2.8.3 3.9.9")
+    ),
+  eyes: (size) =>
+    iconSvg(
+      size,
+      strokePaths(
+        "M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z",
+        "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+      )
+    ),
 }
 
 /**
@@ -204,5 +209,5 @@ const SESSION_ICONS = {
  * @param {number} [size]
  */
 export function sessionIcon(sessionId, size = 22) {
-  return SESSION_ICONS[sessionId]?.(size) ?? iconSvg(size, strokePath("M12 12h.01"))
+  return MOVEMENT_ICONS[sessionId]?.(size) ?? iconSvg(size, strokePath("M12 12h.01"))
 }

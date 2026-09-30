@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises"
 
 const popupPath = new URL("../extension/popup/popup.html", import.meta.url)
 const popupStylesPath = new URL("../extension/popup/popup.css", import.meta.url)
+const popupScriptPath = new URL("../extension/popup/popup.js", import.meta.url)
 
 test("popup IDs are unique and navigation targets exist", async () => {
   const html = await readFile(popupPath, "utf8")
@@ -61,13 +62,68 @@ test("reminder presets expose selected state and local data actions explain thei
   assert.match(html, /It cannot be restored in ActiveAid yet\./)
   assert.match(html, />Erase data on this device</)
   assert.match(html, /Cloud backup stays\./)
-  assert.ok(html.indexOf("Data on this device") < html.indexOf("Cloud backup \(optional\)"))
+  assert.ok(html.indexOf("Data on this device") < html.indexOf("Cloud backup"))
+  assert.equal((html.match(/class="card settingsCard settingsDisclosure"/g) ?? []).length, 3)
+  assert.match(html, /id="syncSummaryHint">Off · No account required</)
 })
 
 test("relief player explains automatic step progression", async () => {
-  const html = await readFile(popupPath, "utf8")
+  const [html, script] = await Promise.all([
+    readFile(popupPath, "utf8"),
+    readFile(popupScriptPath, "utf8"),
+  ])
 
   assert.match(html, /id="stepAutoAdvanceNote"/)
   assert.match(html, /The next step starts automatically when the timer ends\./)
   assert.match(html, /class="stepCardBody" aria-live="polite" aria-atomic="true"/)
+  assert.match(script, /player\.isCompleted = true/)
+  assert.match(script, /Session saved\. Choose Done when you're ready\./)
+  assert.match(script, /async function finishCompletedSession\(\)/)
+  assert.doesNotMatch(script, /Brief pause so user sees the completion state/)
+})
+
+test("insight labels stay concise in the compact metric grid", async () => {
+  const script = await readFile(popupScriptPath, "utf8")
+
+  for (const label of [
+    "Breaks today",
+    "Relief today",
+    "Sessions in 7 days",
+    "Active today",
+    "Check-in streak",
+    "Today’s check-in",
+  ]) {
+    assert.match(script, new RegExp(`label: "${label}"`))
+  }
+})
+
+test("Today hero separates activity, sessions, and reminder status", async () => {
+  const [html, script] = await Promise.all([
+    readFile(popupPath, "utf8"),
+    readFile(popupScriptPath, "utf8"),
+  ])
+
+  assert.match(html, /src="\.\.\/assets\/icon\.svg"/)
+  assert.match(html, />Activity today</)
+  assert.match(html, /id="heroSessionMeta" hidden/)
+  assert.match(html, /id="heroMeta">Checking in/)
+  assert.match(script, /"1 relief session"/)
+  assert.doesNotMatch(script, /heroMeta\.textContent = `\$\{sessionText\} ·/)
+})
+
+test("check-in keeps its save action visible and uses compact labels", async () => {
+  const [html, script, styles] = await Promise.all([
+    readFile(popupPath, "utf8"),
+    readFile(popupScriptPath, "utf8"),
+    readFile(popupStylesPath, "utf8"),
+  ])
+  const footerIndex = html.indexOf('id="checkInFooter"')
+
+  assert.ok(footerIndex > html.indexOf("</main>"))
+  assert.ok(footerIndex < html.indexOf('<nav class="nav"'))
+  assert.match(html, /id="checkInFooter" hidden/)
+  assert.match(html, /<span class="optionalBadge">Optional<\/span>/)
+  assert.match(script, /label\.textContent = getSeverityShortLabel\(s\.id\)/)
+  assert.match(script, /btn\.setAttribute\("aria-label", s\.label\)/)
+  assert.match(styles, /\.checkInFooter \{[\s\S]*flex: 0 0 auto;[\s\S]*border-top:/)
 })
