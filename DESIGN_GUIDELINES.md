@@ -7,7 +7,7 @@ When in doubt, follow `brand_identity.md`.
 
 ## Product tone and positioning
 - **Supportive, not pushy**: suggestions over commands; gentle language.
-- **Preventative wellness, not medical**: never imply diagnosis, treatment, or cures.
+- **Workplace wellness support, not healthcare**: ActiveAid supports workplace wellness habits. It is not a medical, diagnostic, or therapeutic tool; never imply prevention, diagnosis, treatment, or cures.
 - **Non-intrusive**: respect focus; reminders should be easy to snooze/dismiss.
 - **Privacy-first**: avoid anything that feels like surveillance.
 
@@ -103,4 +103,3 @@ When in doubt, follow `brand_identity.md`.
 - Do not take screenshots or use webcam access.
 - Do not use fear-based or medical messaging.
 - Do not overwhelm users with dashboards, alerts, or dense settings.
-

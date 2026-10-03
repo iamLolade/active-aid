@@ -72,9 +72,9 @@ export function LandingHome({ storeUrl }: { storeUrl?: string }) {
               </span>
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-[#4b5563] md:text-lg">
-              ActiveAid helps desk workers build small movement habits with gentle reminders,
-              guided relief sessions, and a simple daily check-in. It is lightweight, local-first,
-              and designed to stay out of your way.
+              ActiveAid supports workplace wellness habits with gentle reminders, guided relief
+              sessions, and a simple daily check-in. It is lightweight, local-first, and designed
+              to stay out of your way.
             </p>
 
             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -247,7 +247,8 @@ export function LandingHome({ storeUrl }: { storeUrl?: string }) {
               <p className="text-sm font-semibold text-[#1f2937]">ActiveAid</p>
               <p className="mt-1 text-sm text-[#4b5563]">Wellness while you work.</p>
               <p className="mt-3 max-w-sm text-xs leading-relaxed text-[#4b5563]">
-                Not a medical tool. If something hurts, stop and follow your own medical guidance.
+                ActiveAid supports workplace wellness habits. It is not a medical, diagnostic, or
+                therapeutic tool. If something hurts, stop and follow your own medical guidance.
               </p>
             </div>
             <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-[#4b5563]">

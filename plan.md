@@ -3,7 +3,7 @@
 ````md
 # ActiveAid
 
-ActiveAid is a lightweight workplace wellness extension designed to help desk workers reduce physical strain caused by prolonged sitting, repetitive work, and poor movement habits.
+ActiveAid is a lightweight workplace wellness extension designed to support workplace wellness habits for desk workers.
 
 The goal is simple:
 
@@ -25,24 +25,23 @@ The product is intentionally designed to feel:
 
 # Vision
 
-Modern work culture has increased:
-- neck pain,
+Modern desk work can involve:
+- neck discomfort,
 - lower back discomfort,
-- wrist strain,
+- wrist discomfort,
 - eye fatigue,
-- and posture-related issues.
+- and long periods without movement.
 
-Most people ignore these problems until they become serious.
+Many people go long stretches without pausing or noticing how their bodies feel.
 
-ActiveAid aims to become a preventative wellness companion for desk workers by encouraging healthy movement habits during work sessions.
+ActiveAid supports workplace wellness habits by encouraging gentle movement awareness during work sessions.
 
-This is NOT a medical platform.
-This is NOT a diagnostic tool.
+It is not a medical, diagnostic, or therapeutic tool.
 
 ActiveAid is focused on:
-- preventative wellness,
+- workplace wellness habits,
 - movement awareness,
-- and workplace recovery support.
+- and desk-friendly reset support.
 
 ---
 
@@ -50,7 +49,7 @@ ActiveAid is focused on:
 
 The MVP exists to validate one core idea:
 
-> Will people consistently engage with lightweight wellness interventions while working?
+> Will people consistently engage with lightweight wellness prompts and movement sessions while working?
 
 We are NOT optimizing for:
 - enterprise scale,

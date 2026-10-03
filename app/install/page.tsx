@@ -81,7 +81,7 @@ export default function InstallPage() {
         </section>
 
         <footer className="mx-auto mt-16 flex max-w-4xl flex-wrap items-center justify-between gap-4 border-t border-[#d1d5db] pt-8 text-sm text-[#4b5563]">
-          <p>ActiveAid supports wellness habits. It is not medical advice.</p>
+          <p>ActiveAid supports workplace wellness habits. It is not a medical, diagnostic, or therapeutic tool.</p>
           <div className="flex gap-5 font-semibold text-[#3d6b42]">
             <Link href="/support" className="hover:text-[#2f5835]">Support</Link>
             <Link href="/" className="hover:text-[#2f5835]">Back to home</Link>

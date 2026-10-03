@@ -84,7 +84,7 @@ Run with Supabase configured, email confirmation enabled, and production SMTP av
 | 9 | Confirm **Delete cloud backup** | Backup turns off; cloud rows are deleted; local wellness data remains |
 | 10 | Sign out | Local sign-in session is cleared; local and existing cloud wellness data remain |
 
-**Code-verified (2026-09-30):** 39 automated tests, lint, production build, and browser-targeted extension packaging pass. Installed-extension, cross-browser, email-delivery, and live-sync sign-off remain manual.
+**Code-verified (2026-10-03):** 41 automated tests, lint, production build, and browser-targeted extension packaging pass. Installed-extension, cross-browser, email-delivery, and live-sync sign-off remain manual.
 
 **Manual sign-off:** _________________ Date: _________
 

@@ -164,12 +164,9 @@ const MOVEMENT_ICONS = {
   neck: (size) =>
     iconSvg(
       size,
-      '<circle cx="12" cy="5" r="2.75" stroke="currentColor" stroke-width="1.75"/>' +
-        strokePaths(
-          "M10 8.2v3.3h4V8.2",
-          "M5 20c.6-4 3-6 7-6s6.4 2 7 6",
-          "M10 10.5h4"
-        )
+      strokePath(
+        "M13.5 3a6 6 0 0 0-6 6v2a6 6 0 0 0 3 5.2V21M10.5 17h4v-3h3v-2h2l-2-3a6 6 0 0 0-4-6M15 8h.01"
+      )
     ),
   wrist: (size) =>
     iconSvg(
@@ -190,9 +187,9 @@ const MOVEMENT_ICONS = {
   shoulder: (size) =>
     iconSvg(
       size,
-      '<circle cx="10" cy="5" r="2.75" stroke="currentColor" stroke-width="1.75"/>' +
-        '<circle cx="17" cy="15.5" r="2.25" stroke="currentColor" stroke-width="1.75"/>' +
-        strokePaths("M10 8v4", "M4 20c.5-4 2.8-6 7-6 1.5 0 2.8.3 3.9.9")
+      '<circle cx="12" cy="5" r="2.7" stroke="currentColor" stroke-width="1.75"/>' +
+        strokePaths("M12 7.7v5.8", "M4.5 20c.6-4 3.2-6.1 7.5-6.1s6.9 2.1 7.5 6.1") +
+        '<path d="M5.8 17c.5-1.3 1.4-2.2 2.7-2.7M18.2 17c-.5-1.3-1.4-2.2-2.7-2.7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>'
     ),
   eyes: (size) =>
     iconSvg(

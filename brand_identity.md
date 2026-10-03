@@ -36,7 +36,7 @@ It helps users:
 
 * stay aware of their bodies,
 * build healthier work habits,
-* and reduce preventable discomfort during work.
+* and make room for gentle movement during work.
 
 ---
 
@@ -45,7 +45,7 @@ It helps users:
 ActiveAid is not:
 
 * a hospital platform,
-* a medical diagnosis tool,
+* a medical, diagnostic, or therapeutic tool,
 * a hardcore fitness app,
 * or a productivity hustle platform.
 
@@ -404,7 +404,7 @@ Not:
 
 Core identity keywords:
 
-* preventative,
+* supportive,
 * calm,
 * movement,
 * wellness,
@@ -445,7 +445,7 @@ The identity should be flexible enough to eventually support:
 
 The cleanest MVP positioning is:
 
-> ActiveAid is a workplace wellness companion that helps desk workers reduce physical strain through lightweight movement support and healthier daily work habits.
+> ActiveAid supports workplace wellness habits through lightweight movement reminders, desk-friendly sessions, and daily check-ins.
 
 That positioning is:
 

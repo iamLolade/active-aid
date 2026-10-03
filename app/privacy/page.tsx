@@ -83,7 +83,7 @@ const SECTIONS = [
   },
   {
     title: "Not medical advice",
-    body: "ActiveAid supports wellness habits. It is not a medical or diagnostic tool. Stop any movement if it hurts and follow your own medical guidance.",
+    body: "ActiveAid supports workplace wellness habits. It is not a medical, diagnostic, or therapeutic tool. Stop any movement if it hurts and follow your own medical guidance.",
   },
 ] as const
 
