@@ -64,8 +64,9 @@ Must match extension behavior and [`app/privacy/page.tsx`](./app/privacy/page.ts
 ## 6. After approval
 
 1. Copy the store listing URL
-2. Set `NEXT_PUBLIC_CHROME_STORE_URL` in production env
-3. Redeploy the web app so `/install` shows the **Add to Chrome** link
+2. Set `NEXT_PUBLIC_CHROME_STORE_URL` in the production environment
+3. Change `NEXT_PUBLIC_CHROME_STORE_STATUS` from `review` to `live`
+4. Redeploy the web app so `/install` shows the **Add to Chrome** link
 
 ## 7. Updates
 

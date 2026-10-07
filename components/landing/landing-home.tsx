@@ -2,52 +2,116 @@
 
 import Link from "next/link"
 import { motion, useReducedMotion } from "framer-motion"
-import { Activity, Bell, ChevronRight, Clock3, HeartPulse, LockKeyhole } from "lucide-react"
+import {
+  Activity,
+  BarChart3,
+  Bell,
+  ChevronRight,
+  Clock3,
+  HeartPulse,
+  LockKeyhole,
+} from "lucide-react"
 import { LandingNav } from "@/components/landing/landing-nav"
 import { Reveal } from "@/components/landing/reveal"
 import { SmoothAnchor } from "@/components/landing/smooth-anchor"
+import type { ChromeStoreRelease } from "@/lib/chrome-store"
 
 const FEATURES = [
   {
     num: "01",
-    title: "Gentle reminders",
-    body: "A calm nudge after sustained activity, with snooze and reset built in.",
+    title: "Your timing, your choice",
+    body: "Choose your reminder interval, snooze a nudge, pause reminders, or restart the timer whenever you need to.",
   },
   {
     num: "02",
-    title: "Quick relief sessions",
-    body: "Short desk-friendly resets with step-by-step guidance and a supportive countdown.",
+    title: "Useful without an account",
+    body: "Reminders, relief sessions, check-ins, and local insights all work without signing in.",
   },
   {
     num: "03",
-    title: "Daily check-ins",
-    body: "Log how you feel in seconds. Build awareness without a heavy workflow.",
-  },
-  {
-    num: "04",
-    title: "Simple insights",
-    body: "Breaks taken, estimated active time, check-in streak, and a small 7-day trend.",
-  },
-  {
-    num: "05",
-    title: "Built for focus",
-    body: "No nag loops. No guilt. Small resets you can keep doing.",
-  },
-  {
-    num: "06",
-    title: "Local first",
-    body: "Your data stays in the browser by default. Optional cloud backup when you want it.",
+    title: "Private by default",
+    body: "Wellness data stays in your browser unless you sign in and separately enable optional cloud backup.",
   },
 ] as const
 
-const STEPS = [
-  { title: "Install", body: "Add ActiveAid to Chrome when the public listing is available." },
-  { title: "Choose your rhythm", body: "Review the privacy disclosure, then choose whether to enable reminders." },
-  { title: "Take a small reset", body: "Open a suggested relief session from a reminder or whenever you need one." },
+const PRODUCT_FLOW = [
+  {
+    icon: Bell,
+    title: "Get a gentle reminder",
+    body: "ActiveAid nudges you only after your chosen amount of sustained activity.",
+  },
+  {
+    icon: HeartPulse,
+    title: "Take a quick reset",
+    body: "Open a short, desk-friendly session with timed steps that move forward automatically.",
+  },
+  {
+    icon: Activity,
+    title: "Check in with yourself",
+    body: "Log how your body feels and note any areas you want to pay attention to.",
+  },
+  {
+    icon: BarChart3,
+    title: "Notice simple patterns",
+    body: "See breaks, relief time, check-in streaks, and a small seven-day view from local data.",
+  },
 ] as const
 
-export function LandingHome({ storeUrl }: { storeUrl?: string }) {
+const FAQS = [
+  {
+    question: "What activity does ActiveAid track?",
+    answer:
+      "ActiveAid detects that keyboard, mouse, scroll, or tab-focus activity occurred so it can estimate active time. It does not record typed text, page content, URLs, screenshots, or camera data.",
+  },
+  {
+    question: "Do I need an account?",
+    answer:
+      "No. Reminders, relief sessions, daily check-ins, and local insights work without an account.",
+  },
+  {
+    question: "When does cloud backup start?",
+    answer:
+      "Signing in does not turn backup on. Backup starts only after you separately enable it in Settings. Check-ins, completed sessions, and reminder settings can then sync, while activity timing stays on your device.",
+  },
+  {
+    question: "Why does ActiveAid need access to webpages?",
+    answer:
+      "A lightweight content script detects activity timing across the webpages where you work. ActiveAid does not read, store, or transmit page content.",
+  },
+  {
+    question: "Is ActiveAid a medical tool?",
+    answer:
+      "No. ActiveAid supports workplace wellness habits. It is not a medical, diagnostic, or therapeutic tool. Stop any movement if it hurts and follow your own medical guidance.",
+  },
+] as const
+
+export function LandingHome({ release }: { release: ChromeStoreRelease }) {
   const reducedMotion = useReducedMotion()
+  const liveStoreUrl = release.status === "live" ? release.storeUrl : undefined
+  const isLive = Boolean(liveStoreUrl)
+  const primaryHref = liveStoreUrl ?? "/install"
+  const primaryLabel = isLive
+    ? "Add to Chrome"
+    : release.status === "review"
+      ? "View review status"
+      : "Check availability"
+  const installCopy = isLive
+    ? {
+        title: "Ready when you are",
+        body: "Install ActiveAid from its verified Chrome Web Store listing.",
+        detail: "Install securely from the Chrome Web Store and receive automatic updates.",
+      }
+    : release.status === "review"
+      ? {
+          title: "Chrome Web Store review is underway",
+          body: "ActiveAid has been submitted to Google. Installation will open as soon as the listing is approved.",
+          detail: "Review is in progress. No manual installation or Developer mode is required.",
+        }
+      : {
+          title: "Chrome availability is coming soon",
+          body: "The install page will show the verified Chrome Web Store listing when it is available.",
+          detail: "Installation will be handled securely through the Chrome Web Store.",
+        }
 
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-[#f7f4ed] text-[#1f2937]">
@@ -63,28 +127,28 @@ export function LandingHome({ storeUrl }: { storeUrl?: string }) {
         <header className="mt-10 md:mt-14">
           <Reveal className="mx-auto max-w-3xl text-center">
             <p className="inline-flex items-center rounded-full border border-[#d1d5db] bg-white/80 px-3 py-1 text-xs font-semibold text-[#4b5563] backdrop-blur-sm">
-              A calm wellness companion for desk work
+              Workplace wellness, without the extra noise
             </p>
             <h1 className="mt-5 text-4xl font-semibold leading-[1.08] tracking-tight md:text-6xl md:leading-[1.05]">
-              Gentle movement prompts.
+              Small movement breaks
               <span className="mt-2 block text-[#4b5563]">
-                Better workdays, one small reset at a time.
+                that fit your workday.
               </span>
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-[#4b5563] md:text-lg">
-              ActiveAid supports workplace wellness habits with gentle reminders, guided relief
-              sessions, and a simple daily check-in. It is lightweight, local-first, and designed
-              to stay out of your way.
+              ActiveAid supports workplace wellness habits with gentle reminders, short guided
+              relief sessions, daily check-ins, and simple local insights. No account is required
+              for the core experience.
             </p>
 
             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <PrimaryButton href={storeUrl || "/install"} external={Boolean(storeUrl)}>
-                {storeUrl ? "Add to Chrome" : "Check availability"}
+              <PrimaryButton href={primaryHref} external={isLive}>
+                {primaryLabel}
               </PrimaryButton>
-              <SecondaryButton sectionId="product">See the product</SecondaryButton>
+              <SecondaryButton sectionId="product">See how it works</SecondaryButton>
             </div>
 
-            <AvailabilityNote available={Boolean(storeUrl)} />
+            <AvailabilityNote status={release.status} />
           </Reveal>
 
           <motion.div
@@ -101,38 +165,17 @@ export function LandingHome({ storeUrl }: { storeUrl?: string }) {
         <section id="product" className="scroll-mt-28 mt-20 md:mt-28">
           <Reveal>
             <SectionHeading
-              eyebrow="Product"
-              title="From reminder to relief, without breaking your flow"
-              body="Each prompt gives you a clear next step. Open a short session, snooze, or carry on with your day."
+              eyebrow="How it fits into your day"
+              title="From a gentle reminder to a useful pattern"
+              body="ActiveAid keeps each step short and clear, so looking after your workplace wellness habits does not become another task to manage."
               centered
             />
           </Reveal>
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            <JourneyCard icon={Bell} title="A gentle nudge" body="Reminders appear only after your chosen amount of active time." />
-            <JourneyCard icon={HeartPulse} title="One clear action" body="Go straight to a short, desk-friendly relief session when you want it." />
-            <JourneyCard icon={Activity} title="A useful pattern" body="Check-ins and completed sessions build simple, private insights over time." />
+          <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {PRODUCT_FLOW.map((item) => (
+              <JourneyCard key={item.title} {...item} />
+            ))}
           </div>
-        </section>
-
-        <section className="mt-20 md:mt-28">
-          <Reveal>
-            <div className="rounded-3xl border border-[#d1d5db] bg-white/70 p-8 backdrop-blur-sm md:p-10">
-              <p className="text-center text-xs font-semibold uppercase tracking-[0.14em] text-[#4b5563]">
-                Release focus
-              </p>
-              <h2 className="mt-3 text-center text-2xl font-semibold tracking-tight md:text-3xl">
-                Built for a careful Chrome launch.
-              </h2>
-              <p className="mx-auto mt-3 max-w-xl text-center text-sm leading-relaxed text-[#4b5563]">
-                ActiveAid is being prepared for the Chrome Web Store. Other browser releases
-                will follow after their behavior has been fully verified.
-              </p>
-              <div className="mx-auto mt-7 flex w-fit items-center gap-3 rounded-full border border-[#cfdccf] bg-[#edf4ed] px-4 py-2 text-sm font-semibold text-[#36583a]">
-                <span className="h-2 w-2 rounded-full bg-[#6a9d6e]" aria-hidden="true" />
-                Chrome Web Store release in progress
-              </div>
-            </div>
-          </Reveal>
         </section>
 
         <section className="mt-20 md:mt-28">
@@ -162,32 +205,15 @@ export function LandingHome({ storeUrl }: { storeUrl?: string }) {
         <section id="features" className="scroll-mt-28 mt-20 md:mt-28">
           <Reveal>
             <SectionHeading
-              eyebrow="Features"
-              title="Everything you need for gentle, consistent support"
-              body="A small set of capabilities that fit naturally into a workday. Nothing noisy. Nothing overwhelming."
-            />
-          </Reveal>
-          <div className="mt-10 grid gap-4 md:grid-cols-2">
-            {FEATURES.map((feature, index) => (
-              <Reveal key={feature.num} delay={index * 0.04}>
-                <FeatureCard {...feature} />
-              </Reveal>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-20 md:mt-28">
-          <Reveal>
-            <SectionHeading
-              eyebrow="How it works"
-              title="A simple start, with you in control"
-              body="No account is required for the core experience. Activity timing starts only after you review the disclosure and agree."
+              eyebrow="Designed for real workdays"
+              title="Useful support, with you in control"
+              body="The core experience stays simple, private, and easy to adjust as your workday changes."
             />
           </Reveal>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {STEPS.map((step, index) => (
-              <Reveal key={step.title} delay={index * 0.05}>
-                <StepCard index={index + 1} {...step} />
+            {FEATURES.map((feature, index) => (
+              <Reveal key={feature.num} delay={index * 0.04}>
+                <FeatureCard {...feature} />
               </Reveal>
             ))}
           </div>
@@ -204,9 +230,11 @@ export function LandingHome({ storeUrl }: { storeUrl?: string }) {
               />
               <div className="mt-8 grid gap-4 md:grid-cols-2">
                 <CheckLine>We never record what you type.</CheckLine>
-                <CheckLine>No page content is collected.</CheckLine>
+                <CheckLine>No page content or browsing history is collected.</CheckLine>
                 <CheckLine>No screenshots or webcam access.</CheckLine>
-                <CheckLine>Insights stay local unless you opt in to cloud backup.</CheckLine>
+                <CheckLine>Activity timing stays on your device.</CheckLine>
+                <CheckLine>Cloud backup is optional and separately enabled.</CheckLine>
+                <CheckLine>You can export or clear local data whenever you want.</CheckLine>
               </div>
               <Link
                 href="/privacy"
@@ -218,12 +246,40 @@ export function LandingHome({ storeUrl }: { storeUrl?: string }) {
           </Reveal>
         </section>
 
+        <section id="faq" className="scroll-mt-28 mt-20 md:mt-28">
+          <Reveal>
+            <SectionHeading
+              eyebrow="Questions, answered"
+              title="Clear before you install"
+              body="The important details about activity timing, accounts, backup, and privacy."
+            />
+          </Reveal>
+          <div className="mt-10 divide-y divide-[#e5e7eb] rounded-3xl border border-[#d1d5db] bg-white px-6 shadow-sm md:px-8">
+            {FAQS.map((item) => (
+              <details key={item.question} className="group py-5">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-[#1f2937] marker:hidden">
+                  <span>{item.question}</span>
+                  <span
+                    aria-hidden="true"
+                    className="text-xl font-normal text-[#527d57] transition-transform group-open:rotate-45"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#4b5563]">
+                  {item.answer}
+                </p>
+              </details>
+            ))}
+          </div>
+        </section>
+
         <section id="install" className="scroll-mt-28 mt-20 md:mt-28">
           <Reveal>
             <SectionHeading
               eyebrow="Install"
-              title={storeUrl ? "Ready when you are" : "Public release is being prepared"}
-              body={storeUrl ? "Install ActiveAid from its verified Chrome Web Store listing." : "The Chrome listing is not live yet. The install page will link directly to the verified listing when it is available."}
+              title={installCopy.title}
+              body={installCopy.body}
             />
           </Reveal>
           <Reveal delay={0.05}>
@@ -231,11 +287,11 @@ export function LandingHome({ storeUrl }: { storeUrl?: string }) {
               <div>
                 <p className="text-base font-semibold text-[#1f2937]">Chrome extension</p>
                 <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#4b5563]">
-                  {storeUrl ? "Install securely from the Chrome Web Store and receive automatic updates." : "Install from the Chrome Web Store for automatic updates and a familiar permission flow once the listing is live."}
+                  {installCopy.detail}
                 </p>
               </div>
-              <PrimaryButton href={storeUrl || "/install"} external={Boolean(storeUrl)}>
-                {storeUrl ? "Add to Chrome" : "View release status"}
+              <PrimaryButton href={primaryHref} external={isLive}>
+                {primaryLabel}
               </PrimaryButton>
             </div>
           </Reveal>
@@ -256,6 +312,7 @@ export function LandingHome({ storeUrl }: { storeUrl?: string }) {
               <FooterLink href="/privacy">Privacy</FooterLink>
               <FooterLink href="/support">Support</FooterLink>
               <FooterLink href="#features">Features</FooterLink>
+              <FooterLink href="#faq">FAQ</FooterLink>
             </div>
           </div>
         </footer>
@@ -264,11 +321,18 @@ export function LandingHome({ storeUrl }: { storeUrl?: string }) {
   )
 }
 
-function AvailabilityNote({ available }: { available: boolean }) {
+function AvailabilityNote({ status }: { status: ChromeStoreRelease["status"] }) {
+  const message =
+    status === "live"
+      ? "Secure install from the Chrome Web Store"
+      : status === "review"
+        ? "Submitted to the Chrome Web Store for review"
+        : "Chrome release details will appear here"
+
   return (
     <p className="mx-auto mt-4 flex w-fit items-center gap-2 text-sm text-[#4b5563]">
       <LockKeyhole className="h-4 w-4 text-[#527d57]" aria-hidden="true" />
-      {available ? "Secure install from the Chrome Web Store" : "Chrome Web Store release in progress"}
+      {message}
     </p>
   )
 }
@@ -384,26 +448,6 @@ function FeatureCard({ num, title, body }: { num: string; title: string; body: s
         <h3 className="text-[15px] font-semibold text-[#1f2937]">{title}</h3>
         <p className="mt-2 text-sm leading-relaxed text-[#4b5563]">{body}</p>
       </div>
-    </div>
-  )
-}
-
-function StepCard({
-  index,
-  title,
-  body,
-}: {
-  index: number
-  title: string
-  body: string
-}) {
-  return (
-    <div className="h-full rounded-2xl border border-[#d1d5db] bg-white/80 p-6 backdrop-blur-sm">
-      <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#e8f0e9] text-sm font-semibold text-[#3d6b42]">
-        {index}
-      </span>
-      <h3 className="mt-4 text-base font-semibold text-[#1f2937]">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-[#4b5563]">{body}</p>
     </div>
   )
 }

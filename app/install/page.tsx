@@ -2,13 +2,12 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Check, Download, LockKeyhole } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
+import { getChromeStoreRelease } from "@/lib/chrome-store"
 
 export const metadata: Metadata = {
   title: "Install",
   description: "Check ActiveAid's Chrome Web Store availability and learn what to expect after installation.",
 }
-
-const storeUrl = process.env.NEXT_PUBLIC_CHROME_STORE_URL?.trim()
 
 const EXPECTATIONS = [
   "Review a clear privacy disclosure before activity timing begins.",
@@ -17,6 +16,27 @@ const EXPECTATIONS = [
 ] as const
 
 export default function InstallPage() {
+  const release = getChromeStoreRelease()
+  const liveStoreUrl = release.status === "live" ? release.storeUrl : undefined
+  const isLive = Boolean(liveStoreUrl)
+  const releaseCopy = isLive
+    ? {
+        title: "A gentler workday is one click away.",
+        body: "Install ActiveAid from the verified Chrome Web Store listing. Updates will arrive automatically through Chrome.",
+        status: "Available on the Chrome Web Store",
+      }
+    : release.status === "review"
+      ? {
+          title: "ActiveAid is under Chrome Web Store review.",
+          body: "The extension has been submitted to Google. The verified install link will become available here after approval.",
+          status: "Chrome Web Store review in progress",
+        }
+      : {
+          title: "ActiveAid is coming to Chrome.",
+          body: "The verified install link will become available here when the Chrome Web Store listing is ready.",
+          status: "Chrome release details coming soon",
+        }
+
   return (
     <main className="min-h-screen bg-[#f7f4ed] text-[#1f2937]">
       <div className="mx-auto max-w-5xl px-6 pb-16 pt-6 md:pb-24 md:pt-8">
@@ -27,17 +47,15 @@ export default function InstallPage() {
             Chrome extension
           </p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
-            {storeUrl ? "A gentler workday is one click away." : "ActiveAid is getting ready for Chrome."}
+            {releaseCopy.title}
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[#4b5563]">
-            {storeUrl
-              ? "Install ActiveAid from the verified Chrome Web Store listing. Updates will arrive automatically through Chrome."
-              : "The public listing is not live yet. We are completing release checks so the first public install is clear, reliable, and privacy-conscious."}
+            {releaseCopy.body}
           </p>
 
-          {storeUrl ? (
+          {isLive ? (
             <a
-              href={storeUrl}
+              href={liveStoreUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#6a9d6e] px-7 text-sm font-semibold text-white shadow-sm transition-[background-color,transform,box-shadow] hover:bg-[#5e8f62] hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6a9d6e] active:scale-[0.98]"
@@ -48,7 +66,7 @@ export default function InstallPage() {
           ) : (
             <div className="mx-auto mt-8 flex w-fit items-center gap-3 rounded-full border border-[#cfdccf] bg-[#edf4ed] px-5 py-3 text-sm font-semibold text-[#36583a]">
               <span className="h-2 w-2 rounded-full bg-[#6a9d6e]" aria-hidden="true" />
-              Chrome Web Store release in progress
+              {releaseCopy.status}
             </div>
           )}
         </section>

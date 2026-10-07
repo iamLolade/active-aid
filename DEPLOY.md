@@ -40,6 +40,8 @@ git push -u origin main
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | your Supabase anon key |
    | `SUPABASE_SERVICE_ROLE_KEY` | your Supabase service role key |
    | `NEXT_PUBLIC_APP_URL` | `https://activeaid.vercel.app` (or whatever Vercel assigns) |
+   | `NEXT_PUBLIC_CHROME_STORE_STATUS` | `review` while submitted; change to `live` after approval |
+   | `NEXT_PUBLIC_CHROME_STORE_URL` | the Chrome Web Store listing URL when available |
    | `NEXT_PUBLIC_SUPPORT_EMAIL` | your public support inbox |
 
 3. Click **Deploy**

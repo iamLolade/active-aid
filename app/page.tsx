@@ -1,5 +1,6 @@
 import { LandingHome } from "@/components/landing/landing-home"
+import { getChromeStoreRelease } from "@/lib/chrome-store"
 
 export default function Home() {
-  return <LandingHome storeUrl={process.env.NEXT_PUBLIC_CHROME_STORE_URL?.trim()} />
+  return <LandingHome release={getChromeStoreRelease()} />
 }
