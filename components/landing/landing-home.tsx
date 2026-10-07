@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { useState } from "react"
 import { motion, useReducedMotion } from "framer-motion"
 import {
   Clock3,
@@ -34,18 +35,31 @@ const FEATURES = [
 const PRODUCT_STORIES = [
   {
     number: "1",
-    title: "Work normally",
-    body: "Choose your reminder interval and keep going. ActiveAid stays quiet until it is time for a gentle nudge.",
+    title: "Set your rhythm",
+    body: "Choose a reminder interval that fits your day, then pause, snooze, or restart it whenever work changes.",
+    image: "/screenshots/settings.png",
+    alt: "ActiveAid Settings view showing adjustable reminder timing and pause controls",
   },
   {
     number: "2",
-    title: "Take a quick reset",
-    body: "Follow short guided steps that advance automatically, then check in whenever it suits you.",
+    title: "Work until a gentle nudge",
+    body: "ActiveAid stays quiet while you work, then offers a clear route to a short guided reset.",
+    image: "/screenshots/today.png",
+    alt: "ActiveAid Today view showing activity timing, daily check-in, and quick relief",
   },
   {
     number: "3",
+    title: "Check in when it suits you",
+    body: "Log how your body feels in a few taps, without turning wellness into another task to manage.",
+    image: "/screenshots/check-in.png",
+    alt: "ActiveAid daily check-in for recording an overall feeling and areas to note",
+  },
+  {
+    number: "4",
     title: "Notice simple patterns",
     body: "Your local history turns breaks, relief sessions, and check-ins into a useful seven-day view.",
+    image: "/screenshots/insight.png",
+    alt: "ActiveAid Insights view showing a concise summary of local wellness activity",
   },
 ] as const
 
@@ -162,26 +176,9 @@ export function LandingHome({ release }: { release: ChromeStoreRelease }) {
               body="ActiveAid stays quiet while you work, then gives you a clear next step."
             />
           </Reveal>
-          <div className="mt-12 grid items-center gap-12 md:mt-16 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
-            <Reveal className="relative mx-auto w-full max-w-[430px]">
-              <div aria-hidden="true" className="absolute -inset-5 translate-x-5 translate-y-5 border border-[#cbd5c8] bg-[#e8eee6]" />
-              <div className="relative aspect-[2/3] overflow-hidden rounded-[1.8rem] border border-white bg-white shadow-[0_24px_60px_rgba(31,41,55,0.16)]">
-                <Image
-                  src="/screenshots/today.png"
-                  alt="ActiveAid Today view showing reminders, daily check-in, and quick relief"
-                  fill
-                  sizes="(min-width: 1024px) 430px, 80vw"
-                  className="object-cover object-top"
-                />
-              </div>
-            </Reveal>
-
-            <div className="relative border-l border-[#cbd5c8] pl-8 sm:pl-10">
-              {PRODUCT_STORIES.map((story, index) => (
-                <ProductStory key={story.number} {...story} delay={index * 0.05} />
-              ))}
-            </div>
-          </div>
+          <Reveal delay={0.04}>
+            <ProductStoryExplorer />
+          </Reveal>
         </section>
 
         <section className="relative left-1/2 mt-24 w-screen -translate-x-1/2 overflow-hidden bg-[#172133] md:mt-32">
@@ -439,29 +436,85 @@ function HeroProductVisual() {
   )
 }
 
-function ProductStory({
-  number,
-  title,
-  body,
-  delay,
-}: {
-  number: string
-  title: string
-  body: string
-  delay: number
-}) {
+function ProductStoryExplorer() {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const reducedMotion = useReducedMotion()
+  const activeStory = PRODUCT_STORIES[activeIndex]
+
   return (
-    <Reveal delay={delay} className="relative border-b border-[#d8ddd5] py-8 first:pt-0 last:border-b-0 last:pb-0">
-      <div className="flex items-start gap-5">
-        <span className="-ml-[3.35rem] flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-4 border-[#f7f4ed] bg-[#dfeadd] text-base font-semibold text-[#315f38] sm:-ml-[3.7rem]">
-          {number}
-        </span>
-        <div>
-          <h3 className="text-xl font-semibold tracking-tight text-[#172133]">{title}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-[#586273]">{body}</p>
-        </div>
+    <div className="mt-12 grid overflow-hidden border-y border-[#cbd2ca] md:mt-16 lg:grid-cols-[0.82fr_1.18fr]">
+      <div className="divide-y divide-[#d7ddd5] lg:py-8 lg:pr-10">
+        {PRODUCT_STORIES.map((story, index) => {
+          const selected = index === activeIndex
+
+          return (
+            <button
+              key={story.number}
+              type="button"
+              aria-pressed={selected}
+              onClick={() => setActiveIndex(index)}
+              className={`group relative grid w-full grid-cols-[2.5rem_1fr] gap-4 px-4 py-6 text-left transition-colors duration-200 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#3f7547] sm:px-6 lg:px-4 lg:py-7 ${
+                selected ? "bg-[#e8eee6]" : "hover:bg-white/55"
+              }`}
+            >
+              <span
+                className={`pt-1 font-mono text-xs font-semibold transition-colors ${
+                  selected ? "text-[#315f38]" : "text-[#879087]"
+                }`}
+              >
+                0{story.number}
+              </span>
+              <span>
+                <span className="flex items-center justify-between gap-4">
+                  <span className="text-lg font-semibold tracking-tight text-[#172133] sm:text-xl">
+                    {story.title}
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className={`h-2.5 w-2.5 shrink-0 rounded-full transition-[background-color,transform] ${
+                      selected ? "scale-100 bg-[#3f7547]" : "scale-75 bg-[#c4cbc3] group-hover:scale-100"
+                    }`}
+                  />
+                </span>
+                <span className="mt-2 block max-w-md text-sm leading-relaxed text-[#586273]">
+                  {story.body}
+                </span>
+              </span>
+            </button>
+          )
+        })}
       </div>
-    </Reveal>
+
+      <div
+        id="product-story-view"
+        aria-live="polite"
+        className="relative flex min-h-[520px] items-center justify-center overflow-hidden bg-[#dfe8dc] px-6 py-10 sm:min-h-[610px] sm:px-10 lg:min-h-[640px]"
+      >
+        <div aria-hidden="true" className="absolute inset-y-0 left-[18%] w-px bg-[#c4d1c1]" />
+        <div aria-hidden="true" className="absolute inset-y-0 right-[18%] w-px bg-[#c4d1c1]" />
+        <div className="absolute left-6 top-6 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#52705a] sm:left-10 sm:top-8">
+          <span>ActiveAid extension</span>
+          <span aria-hidden="true" className="h-px w-8 bg-[#93a993]" />
+          <span>{activeStory.number} / {PRODUCT_STORIES.length}</span>
+        </div>
+
+        <motion.figure
+          key={activeStory.image}
+          initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reducedMotion ? 0 : 0.24, ease: "easeOut" }}
+          className="relative mt-8 h-[430px] w-[286px] overflow-hidden rounded-[1.7rem] border border-white bg-white shadow-[0_28px_65px_rgba(31,41,55,0.18)] sm:h-[510px] sm:w-[340px] lg:h-[540px] lg:w-[360px]"
+        >
+          <Image
+            src={activeStory.image}
+            alt={activeStory.alt}
+            fill
+            sizes="(min-width: 1024px) 360px, (min-width: 640px) 340px, 286px"
+            className="object-cover object-top"
+          />
+        </motion.figure>
+      </div>
+    </div>
   )
 }
 
