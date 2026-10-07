@@ -1,13 +1,12 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { motion, useReducedMotion } from "framer-motion"
 import {
   Activity,
   BarChart3,
   Bell,
-  ChevronRight,
-  Clock3,
   HeartPulse,
   LockKeyhole,
 } from "lucide-react"
@@ -115,39 +114,40 @@ export function LandingHome({ release }: { release: ChromeStoreRelease }) {
 
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-[#f7f4ed] text-[#1f2937]">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-[#7bae7f]/20 blur-3xl" />
-        <div className="absolute -right-32 top-20 h-[28rem] w-[28rem] rounded-full bg-[#c97b63]/15 blur-3xl" />
-        <div className="absolute bottom-0 left-1/2 h-80 w-[36rem] -translate-x-1/2 rounded-full bg-white/60 blur-3xl" />
-      </div>
+      <LandingNav
+        primaryHref={primaryHref}
+        primaryLabel={primaryLabel}
+        primaryExternal={isLive}
+      />
 
-      <div className="mx-auto max-w-6xl px-6 pb-16 pt-6 md:pb-24 md:pt-8">
-        <LandingNav />
-
-        <header className="mt-10 md:mt-14">
-          <Reveal className="mx-auto max-w-3xl text-center">
-            <p className="inline-flex items-center rounded-full border border-[#d1d5db] bg-white/80 px-3 py-1 text-xs font-semibold text-[#4b5563] backdrop-blur-sm">
+      <div className="mx-auto max-w-7xl px-5 pb-16 pt-[72px] sm:px-6 md:pb-24 lg:px-8">
+        <header className="grid min-h-[calc(100svh-72px)] items-center gap-12 py-12 lg:grid-cols-[0.96fr_1.04fr] lg:gap-8 lg:py-14">
+          <Reveal className="max-w-[640px] text-left">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#3f6846]">
               Workplace wellness, without the extra noise
             </p>
-            <h1 className="mt-5 text-4xl font-semibold leading-[1.08] tracking-tight md:text-6xl md:leading-[1.05]">
-              Small movement breaks
-              <span className="mt-2 block text-[#4b5563]">
-                that fit your workday.
-              </span>
+            <h1 className="mt-6 text-balance text-[clamp(2.8rem,5.2vw,4.5rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-[#172133]">
+              Small movement breaks that fit your workday.
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-[#4b5563] md:text-lg">
-              ActiveAid supports workplace wellness habits with gentle reminders, short guided
-              relief sessions, daily check-ins, and simple local insights. No account is required
-              for the core experience.
+            <p className="mt-6 max-w-lg text-pretty text-base leading-relaxed text-[#586273] md:text-lg">
+              Gentle reminders, short guided relief sessions, daily check-ins, and simple local
+              insights. No account required.
             </p>
 
-            <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
               <PrimaryButton href={primaryHref} external={isLive}>
                 {primaryLabel}
               </PrimaryButton>
               <SecondaryButton sectionId="product">See how it works</SecondaryButton>
             </div>
-
+            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-[#586273]">
+              <span className="inline-flex items-center gap-2">
+                <LockKeyhole className="h-4 w-4 text-[#3f7547]" aria-hidden="true" />
+                Local-first
+              </span>
+              <span aria-hidden="true" className="hidden h-1 w-1 rounded-full bg-[#a1a7ae] sm:block" />
+              <span>No typed content logged</span>
+            </div>
             <AvailabilityNote status={release.status} />
           </Reveal>
 
@@ -155,10 +155,9 @@ export function LandingHome({ release }: { release: ChromeStoreRelease }) {
             initial={reducedMotion ? false : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, ease: "easeOut", delay: 0.08 }}
-            className="relative mx-auto mt-10 flex justify-center md:mt-12"
+            className="relative mx-auto flex w-full max-w-[690px] justify-center lg:justify-end"
           >
-            <div className="absolute inset-x-8 top-8 -z-10 h-40 rounded-full bg-[#7bae7f]/15 blur-3xl" />
-            <ProductPreview />
+            <HeroProductVisual />
           </motion.div>
         </header>
 
@@ -330,8 +329,7 @@ function AvailabilityNote({ status }: { status: ChromeStoreRelease["status"] }) 
         : "Chrome release details will appear here"
 
   return (
-    <p className="mx-auto mt-4 flex w-fit items-center gap-2 text-sm text-[#4b5563]">
-      <LockKeyhole className="h-4 w-4 text-[#527d57]" aria-hidden="true" />
+    <p className="mt-3 flex w-fit items-center gap-2 text-xs text-[#6a7280]">
       {message}
     </p>
   )
@@ -343,7 +341,7 @@ function PrimaryButton({ href, children, external = false }: { href: string; chi
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
-      className="inline-flex h-11 items-center justify-center rounded-full bg-[#6a9d6e] px-6 text-sm font-semibold text-white shadow-sm transition-[background-color,transform,box-shadow] duration-200 hover:bg-[#5e8f62] hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6a9d6e] active:scale-[0.98]"
+      className="inline-flex h-12 items-center justify-center rounded-full bg-[#3f7547] px-7 text-sm font-semibold text-white shadow-sm transition-[background-color,transform,box-shadow] duration-200 hover:bg-[#315f38] hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3f7547] active:scale-[0.98]"
     >
       {children}
     </Link>
@@ -360,7 +358,7 @@ function SecondaryButton({
   return (
     <SmoothAnchor
       sectionId={sectionId}
-      className="inline-flex h-11 items-center justify-center rounded-full border border-[#d1d5db] bg-white px-6 text-sm font-semibold text-[#1f2937] transition-[background-color,transform] duration-200 hover:bg-[#f3efe6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6a9d6e] active:scale-[0.98]"
+      className="inline-flex h-12 items-center justify-center rounded-full border border-[#bfc9bd] bg-transparent px-7 text-sm font-semibold text-[#315f38] transition-[background-color,transform,border-color] duration-200 hover:border-[#96aa97] hover:bg-white/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3f7547] active:scale-[0.98]"
     >
       {children}
     </SmoothAnchor>
@@ -391,32 +389,45 @@ function SectionHeading({
   )
 }
 
-function ProductPreview() {
+function HeroProductVisual() {
   return (
-    <div aria-label="Illustration of the ActiveAid extension home view" className="w-full max-w-[410px] overflow-hidden rounded-[28px] border border-[#d1d5db] bg-[#f8faf8] text-left shadow-[0_24px_60px_rgba(31,41,55,0.16)]">
-      <div className="border-b border-[#e5e7eb] bg-white px-6 py-5">
-        <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#dfeadf] text-[#36583a]"><Activity className="h-5 w-5" aria-hidden="true" /></span>
-          <div><p className="font-semibold">ActiveAid</p><p className="text-xs text-[#6b7280]">Wellness while you work.</p></div>
-        </div>
+    <figure
+      aria-label="ActiveAid extension showing its Today, Check-in, and Insights views"
+      className="relative h-[510px] w-full sm:h-[580px] lg:h-[620px]"
+    >
+      <div aria-hidden="true" className="absolute inset-x-[8%] bottom-[5%] h-[78%] rounded-[2rem] border border-[#d9ddd5] bg-[#e9eee5]" />
+
+      <div className="absolute left-0 top-[18%] hidden aspect-[2/3] w-[43%] overflow-hidden rounded-[1.6rem] border border-white/80 bg-white shadow-[0_24px_55px_rgba(31,41,55,0.12)] sm:block">
+        <Image
+          src="/screenshots/check-in.png"
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 300px, 240px"
+          className="object-cover object-top"
+        />
       </div>
-      <div className="space-y-3 p-5">
-        <div className="rounded-2xl bg-[#e9f1e9] p-5">
-          <div className="flex items-start justify-between gap-4"><div><p className="text-xs text-[#4b5563]">You&apos;ve been active for</p><p className="mt-1 text-4xl font-semibold tracking-tight">0m</p></div><span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-[#36583a]">Reminders on</span></div>
-          <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white"><div className="h-full w-0 rounded-full bg-[#6a9d6e]" /></div>
-        </div>
-        <div className="flex items-center gap-3 rounded-2xl border border-[#e5e7eb] bg-white p-4">
-          <HeartPulse className="h-5 w-5 text-[#527d57]" aria-hidden="true" />
-          <div className="min-w-0 flex-1"><p className="text-sm font-semibold">Daily check-in</p><p className="truncate text-xs text-[#6b7280]">Log how your body feels today.</p></div>
-          <span className="flex items-center text-xs font-semibold text-[#36583a]">Check in <ChevronRight className="h-4 w-4" aria-hidden="true" /></span>
-        </div>
-        <div className="rounded-2xl border border-[#e5e7eb] bg-white p-4">
-          <div className="flex items-center justify-between"><p className="text-sm font-semibold">Quick Relief</p><span className="text-xs font-semibold text-[#527d57]">View all</span></div>
-          <p className="mt-1 text-xs text-[#6b7280]">Short guided resets you can do at your desk.</p>
-          <div className="mt-3 flex items-center gap-3 rounded-xl bg-[#f7f4ed] p-3"><Clock3 className="h-5 w-5 text-[#c97b63]" aria-hidden="true" /><div className="flex-1"><p className="text-xs font-semibold">Neck &amp; shoulder reset</p><p className="text-[11px] text-[#6b7280]">2 min · 4 gentle steps</p></div><ChevronRight className="h-4 w-4 text-[#6b7280]" aria-hidden="true" /></div>
-        </div>
+
+      <div className="absolute right-0 top-[12%] hidden aspect-[2/3] w-[43%] overflow-hidden rounded-[1.6rem] border border-white/80 bg-white shadow-[0_24px_55px_rgba(31,41,55,0.12)] sm:block">
+        <Image
+          src="/screenshots/insight.png"
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 300px, 240px"
+          className="object-cover object-top"
+        />
       </div>
-    </div>
+
+      <div className="absolute left-1/2 top-1/2 z-10 aspect-[2/3] w-[78%] max-w-[385px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[1.9rem] border border-white bg-white shadow-[0_32px_70px_rgba(31,41,55,0.2)] sm:w-[56%]">
+        <Image
+          src="/screenshots/today.png"
+          alt="ActiveAid Today view with activity timing, a daily check-in, and quick relief sessions"
+          fill
+          priority
+          sizes="(min-width: 1024px) 385px, (min-width: 640px) 56vw, 78vw"
+          className="object-cover object-top"
+        />
+      </div>
+    </figure>
   )
 }
 

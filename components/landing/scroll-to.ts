@@ -1,7 +1,7 @@
 import { animate } from "framer-motion"
 
-export const LANDING_NAV_OFFSET = 88
-export const LANDING_MOBILE_NAV_OFFSET = 116
+export const LANDING_NAV_OFFSET = 80
+export const LANDING_MOBILE_NAV_OFFSET = 80
 
 export function getLandingNavOffset() {
   return window.innerWidth < 1024 ? LANDING_MOBILE_NAV_OFFSET : LANDING_NAV_OFFSET
