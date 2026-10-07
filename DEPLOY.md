@@ -52,10 +52,12 @@ git push -u origin main
 
 Before packaging the extension:
 
-1. In **Authentication → Providers → Email**, allow new user sign-ups and keep email confirmation enabled.
-2. In **Authentication → URL Configuration**, set the Site URL to the deployed ActiveAid website.
-3. Configure a production SMTP provider; the default Supabase sender is only suitable for limited testing.
-4. Create an account from the extension, confirm the email, sign in, and verify that cloud backup remains off until explicitly enabled.
+1. Run `supabase/migrations/0001_init.sql`, `0002_sync_client_ids.sql`, and `0003_cloud_data_delete_policies.sql` in order.
+2. In **Authentication → Providers → Email**, allow new user sign-ups and keep email confirmation enabled.
+3. In **Authentication → URL Configuration**, set the Site URL to the deployed ActiveAid website.
+4. In **Authentication → Email Templates → Confirm signup**, use the subject `Confirm your ActiveAid email` and paste `supabase/templates/confirmation.html` into the message body.
+5. Configure a production SMTP provider with `ActiveAid` as the sender name; the default Supabase sender is only suitable for limited testing.
+6. Create an account from the extension, confirm the email, sign in, and verify that cloud backup remains off until explicitly enabled.
 
 ---
 

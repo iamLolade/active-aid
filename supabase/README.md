@@ -14,14 +14,17 @@ In the Supabase dashboard **SQL Editor**, run in order:
 2. `supabase/migrations/0002_sync_client_ids.sql`
 3. `supabase/migrations/0003_cloud_data_delete_policies.sql`
 
+If backup reports `column wellness_logs.client_event_id does not exist`, migration `0002_sync_client_ids.sql` has not been applied to that Supabase project. Run `0002`, then `0003`, and retry backup. Both migrations are safe to rerun.
+
 ## Auth for extension sync (optional)
 Cloud sync uses Supabase email + password auth from the extension popup.
 
 1. In Supabase **Authentication → Providers**, enable Email and allow new user sign-ups.
 2. Keep **Confirm email** enabled for production. A new extension user creates an account, confirms the email, then returns to ActiveAid to sign in.
 3. In **Authentication → URL Configuration**, set **Site URL** to the deployed ActiveAid website rather than the localhost default.
-4. Configure custom SMTP before a public release. Supabase's default sender is intended for testing and is heavily rate-limited.
-5. Create and confirm a test account from the extension before packaging the release.
+4. In **Authentication → Email Templates → Confirm signup**, set the subject to `Confirm your ActiveAid email`, then paste `supabase/templates/confirmation.html` into the message body.
+5. Configure custom SMTP before a public release. Set the sender name to `ActiveAid`; Supabase's default sender is intended for testing and is heavily rate-limited.
+6. Create and confirm a test account from the extension before packaging the release.
 
 ## Wire the extension
 From the repo root (with `.env` filled in):
@@ -51,7 +54,7 @@ Expected response:
 - `ok: true`
 - `auth.status: 200`
 - `rest.status: 200`
-- `schema.status: 200` (after migrations are applied)
+- `schema.status: 200` (the `wellness_logs.client_event_id` sync column exists)
 
 ## Environment variables
 This repo expects (via `.env`, not committed):

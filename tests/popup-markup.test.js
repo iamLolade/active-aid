@@ -5,6 +5,7 @@ import { readFile } from "node:fs/promises"
 const popupPath = new URL("../extension/popup/popup.html", import.meta.url)
 const popupStylesPath = new URL("../extension/popup/popup.css", import.meta.url)
 const popupScriptPath = new URL("../extension/popup/popup.js", import.meta.url)
+const popupIconsPath = new URL("../extension/popup/icons.js", import.meta.url)
 
 test("popup IDs are unique and navigation targets exist", async () => {
   const html = await readFile(popupPath, "utf8")
@@ -50,6 +51,35 @@ test("cloud backup starts with account creation and accessible password controls
   )
   assert.match(html, /id="syncConfirmPassword"[^>]+required/s)
   assert.match(html, /id="syncAuthSubmit"[^>]*>Create account</)
+})
+
+test("signed-in cloud backup stays concise and keeps destructive actions distinct", async () => {
+  const [html, script] = await Promise.all([
+    readFile(popupPath, "utf8"),
+    readFile(popupScriptPath, "utf8"),
+  ])
+
+  assert.match(html, /class="syncAccountRow"/)
+  assert.match(html, /class="syncToggleCopy"/)
+  assert.match(html, />Back up wellness data</)
+  assert.match(html, /class="syncAccountActions"/)
+  assert.match(html, /class="syncAccountAction syncAccountAction--danger"/)
+  assert.match(script, /Off"} · Account connected/)
+  assert.doesNotMatch(script, /Cloud backup is off\. Nothing will be uploaded\./)
+})
+
+test("onboarding rows align their content and shared navigation uses improved icons", async () => {
+  const [styles, script, icons] = await Promise.all([
+    readFile(popupStylesPath, "utf8"),
+    readFile(popupScriptPath, "utf8"),
+    readFile(popupIconsPath, "utf8"),
+  ])
+
+  assert.match(styles, /\.onboardingListItem\s*{[^}]*align-items:\s*center;/s)
+  assert.match(icons, /export function iconHeartHandshake/)
+  assert.match(icons, /export function iconInsights/)
+  assert.match(script, /checkin: iconHeartHandshake/)
+  assert.match(script, /insights: iconInsights/)
 })
 
 test("reminder presets expose selected state and local data actions explain their scope", async () => {

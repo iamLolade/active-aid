@@ -919,8 +919,9 @@ input[type="text"]:focus {
 
 .onboardingListItem {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
+  min-height: 32px;
   font-size: 13px;
   line-height: var(--leading-hint);
   color: var(--slate);
@@ -936,6 +937,10 @@ input[type="text"]:focus {
   background: rgba(232, 240, 233, 0.85);
   color: #3d6b42;
   flex-shrink: 0;
+}
+
+.onboardingListIcon svg {
+  display: block;
 }
 
 .onboardingPrivacyText {
@@ -1738,10 +1743,53 @@ input[type="text"]:focus {
   text-align: center;
 }
 
+.syncAccountRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--gray-soft);
+  border-radius: 12px;
+  background: rgba(232, 240, 233, 0.48);
+}
+
+.syncAccountIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: var(--white);
+  color: #3d6b42;
+  flex: 0 0 auto;
+}
+
+.syncAccountIcon svg,
+.syncAccountActionIcon svg {
+  display: block;
+}
+
+.syncAccountDetails {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.syncAccountLabel {
+  color: #3d6b42;
+  font-size: 11px;
+  font-weight: 700;
+}
+
 .syncAccount {
-  margin: 0 0 10px;
+  overflow: hidden;
+  color: var(--slate);
   font-size: 12px;
-  color: var(--slate-muted);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .authModeFieldset {
@@ -1830,29 +1878,125 @@ input[type="text"]:focus {
 }
 
 .syncConsentText {
-  margin: 0 0 12px;
-  font-size: 12px;
+  margin: 8px 2px 10px;
+  font-size: 11px;
   line-height: var(--leading-hint);
   color: var(--slate-muted);
 }
 
 .syncToggle {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
   margin-bottom: 10px;
+  padding: 12px;
+  border: 1px solid var(--gray-soft);
+  border-radius: 12px;
+  background: var(--white);
+}
+
+.syncToggle .toggleTrack {
+  order: 2;
+}
+
+.syncToggleCopy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+  order: 1;
+}
+
+.syncToggleTitle {
+  color: var(--slate);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.syncToggleHint {
+  color: var(--slate-muted);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
 }
 
 .syncStatus {
   margin: 0 0 10px;
-  font-size: 12px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  background: var(--cream);
+  font-size: 11px;
   line-height: var(--leading-hint);
   color: var(--slate-muted);
 }
 
 .syncStatus--ok {
+  background: var(--sage-soft);
   color: #3d6b42;
 }
 
 .syncStatus--error {
+  background: rgba(201, 123, 99, 0.12);
   color: #7c3f32;
+}
+
+.syncNowAction {
+  margin-bottom: 8px;
+}
+
+.syncAccountActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.syncAccountAction {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 10px;
+  border: 1px solid var(--gray);
+  border-radius: 10px;
+  background: var(--cream);
+  color: var(--slate-muted);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background var(--ease-ui),
+    border-color var(--ease-ui),
+    color var(--ease-ui),
+    transform var(--ease-press);
+}
+
+.syncAccountAction:hover:not(:disabled) {
+  border-color: var(--sage);
+  background: var(--sage-soft);
+  color: #3d6b42;
+}
+
+.syncAccountAction:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.syncAccountAction--danger {
+  border-color: rgba(201, 123, 99, 0.48);
+  color: #8b5a48;
+}
+
+.syncAccountAction--danger:hover:not(:disabled) {
+  border-color: rgba(201, 123, 99, 0.85);
+  background: rgba(201, 123, 99, 0.12);
+  color: #7c3f32;
+}
+
+.syncAccountActionIcon {
+  display: inline-flex;
+  flex: 0 0 auto;
 }
 
 .btn--actionRow {

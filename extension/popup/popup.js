@@ -51,9 +51,13 @@ import {
   iconChevronLeft,
   iconChevronRight,
   iconClock,
-  iconHeart,
+  iconCloudCheck,
+  iconHeartHandshake,
+  iconInsights,
+  iconLogOut,
   iconPlay,
   iconSettings,
+  iconTrash,
   sessionIcon,
   severityIcon,
 } from "./icons.js"
@@ -61,8 +65,8 @@ import { createConfirmationDialog } from "./confirmation-dialog.js"
 
 const NAV_TAB_ICONS = {
   home: iconCalendar,
-  checkin: iconHeart,
-  insights: iconBarChart,
+  checkin: iconHeartHandshake,
+  insights: iconInsights,
   settings: iconSettings,
 }
 
@@ -127,6 +131,9 @@ const els = {
   syncDeleteCloudData: document.getElementById("syncDeleteCloudData"),
   syncSignOut: document.getElementById("syncSignOut"),
   syncAccount: document.getElementById("syncAccount"),
+  syncAccountIcon: document.getElementById("syncAccountIcon"),
+  syncDeleteIcon: document.getElementById("syncDeleteIcon"),
+  syncSignOutIcon: document.getElementById("syncSignOutIcon"),
   presets: document.querySelectorAll(".preset"),
   sessionList: document.getElementById("sessionList"),
   quickReliefSection: document.getElementById("quickReliefSection"),
@@ -273,7 +280,7 @@ function renderOnboardingChrome() {
   const checkin = document.getElementById("onboardIconCheckin")
   if (reminders) reminders.innerHTML = iconBell(18)
   if (relief) relief.innerHTML = iconPlay(18)
-  if (checkin) checkin.innerHTML = iconHeart(18)
+  if (checkin) checkin.innerHTML = iconHeartHandshake(19)
 }
 
 function bindOnboarding() {
@@ -321,12 +328,12 @@ function renderNavIcons() {
 
 function renderCheckInHeaderIcon() {
   const slot = document.getElementById("checkInHeaderIcon")
-  if (slot) slot.innerHTML = iconHeart(22)
+  if (slot) slot.innerHTML = iconHeartHandshake(22)
 }
 
 function renderInsightsHeaderIcon() {
   const slot = document.getElementById("insightsHeaderIcon")
-  if (slot) slot.innerHTML = iconBarChart(22)
+  if (slot) slot.innerHTML = iconInsights(22)
 }
 
 function renderSettingsViewHeaderIcon() {
@@ -344,7 +351,7 @@ function renderHomeHeroChrome() {
 function renderHomeCheckInRowChrome() {
   const rowIcon = document.getElementById("homeCheckInIcon")
   const chevron = document.querySelector("#goCheckIn .pillBtnIcon")
-  if (rowIcon) rowIcon.innerHTML = iconHeart(22)
+  if (rowIcon) rowIcon.innerHTML = iconHeartHandshake(22)
   if (chevron) chevron.innerHTML = iconChevronRight(16)
 }
 
@@ -790,7 +797,7 @@ async function renderDashboard() {
     label: "Today’s check-in",
     iconHtml: summary.todayCheckIn
       ? severityIcon(summary.todayCheckIn.severity, 20)
-      : iconHeart(20),
+      : iconHeartHandshake(20),
   })
 
   els.trendList.replaceChildren()
@@ -1064,21 +1071,24 @@ async function updateSyncUI() {
 
   if (els.syncSignedOut) els.syncSignedOut.hidden = signedIn
   if (els.syncSignedIn) els.syncSignedIn.hidden = !signedIn
+  if (els.syncHint) els.syncHint.hidden = signedIn
 
   if (signedIn) {
     if (els.syncSummaryHint) {
-      const accountLabel = state.email ? `Signed in as ${state.email}` : "Signed in"
-      els.syncSummaryHint.textContent = `${state.enabled ? "On" : "Off"} · ${accountLabel}`
+      els.syncSummaryHint.textContent = `${state.enabled ? "On" : "Off"} · Account connected`
     }
     if (els.syncAccount) {
-      els.syncAccount.textContent = state.email ? `Signed in as ${state.email}` : "Signed in"
+      els.syncAccount.textContent = state.email || "ActiveAid account"
     }
+    if (els.syncAccountIcon) els.syncAccountIcon.innerHTML = iconCloudCheck(20)
+    if (els.syncDeleteIcon) els.syncDeleteIcon.innerHTML = iconTrash(17)
+    if (els.syncSignOutIcon) els.syncSignOutIcon.innerHTML = iconLogOut(17)
     if (els.syncEnabled) els.syncEnabled.checked = state.enabled
     if (els.syncNow) els.syncNow.hidden = !state.enabled
     if (state.lastError) {
       setSyncStatus(state.lastError, "error")
     } else if (!state.enabled) {
-      setSyncStatus("Cloud backup is off. Nothing will be uploaded.")
+      setSyncStatus("")
     } else if (state.lastSyncedAt) {
       const when = new Date(state.lastSyncedAt).toLocaleString([], {
         month: "short",
@@ -1092,7 +1102,9 @@ async function updateSyncUI() {
     }
   } else {
     if (els.syncSummaryHint) els.syncSummaryHint.textContent = "Off · No account required"
+    if (els.syncHint) els.syncHint.hidden = false
     if (state.lastError) setSyncStatus(state.lastError, "error")
+    else setSyncStatus("")
   }
 }
 

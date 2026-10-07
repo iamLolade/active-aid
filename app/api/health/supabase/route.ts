@@ -30,20 +30,19 @@ export async function GET() {
     (err) => ({ ok: false, status: 0, statusText: String(err) }) as Response
   )
 
-  // Optional: confirms migration was applied (404 if table missing)
+  // Confirms the table and sync-deduplication column required by the extension exist.
   const schemaRes = await supabaseAdminFetch(
-    "/rest/v1/wellness_logs?select=id&limit=1",
+    "/rest/v1/wellness_logs?select=id,client_event_id&limit=1",
     { method: "GET" }
   ).catch((err) => ({ ok: false, status: 0, statusText: String(err) }) as Response)
 
   const durationMs = Date.now() - startedAt
 
   return Response.json({
-    ok: authRes.ok && restRes.ok,
+    ok: authRes.ok && restRes.ok && schemaRes.ok,
     durationMs,
     auth: { ok: authRes.ok, status: authRes.status },
     rest: { ok: restRes.ok, status: restRes.status },
     schema: { ok: schemaRes.ok, status: schemaRes.status },
   })
 }
-

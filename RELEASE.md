@@ -12,12 +12,13 @@ Use this before sharing the extension or deploying the web app.
 - [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY` set
 - [ ] `SUPABASE_SERVICE_ROLE_KEY` set (server only)
 - [ ] Supabase migrations applied through `supabase/migrations/0003_cloud_data_delete_policies.sql`
-- [ ] Supabase email sign-ups, production Site URL, email confirmation, and production SMTP configured
+- [ ] Supabase email sign-ups, production Site URL, branded confirmation template, and production SMTP configured
 
 ## 2. Backend health
 - [ ] `npm run dev` running
 - [ ] Open `/api/health/supabase`
 - [ ] Response shows `ok: true`, `auth.status: 200`, `rest.status: 200`, `schema.status: 200`
+- [ ] `schema.status: 200` confirms the required `wellness_logs.client_event_id` column exists
 
 ## 3. Web app
 - [ ] `npm run build` succeeds
@@ -84,7 +85,7 @@ Run with Supabase configured, email confirmation enabled, and production SMTP av
 | 9 | Confirm **Delete cloud backup** | Backup turns off; cloud rows are deleted; local wellness data remains |
 | 10 | Sign out | Local sign-in session is cleared; local and existing cloud wellness data remain |
 
-**Code-verified (2026-10-03):** 41 automated tests, lint, production build, and browser-targeted extension packaging pass. Installed-extension, cross-browser, email-delivery, and live-sync sign-off remain manual.
+**Code-verified (2026-10-07):** 45 automated tests, lint, production build, and browser-targeted extension packaging pass. Installed-extension, cross-browser, email-delivery, and live-sync sign-off remain manual.
 
 **Manual sign-off:** _________________ Date: _________
 

@@ -438,28 +438,52 @@
             </form>
 
               <div id="syncSignedIn" hidden>
-              <p class="syncAccount" id="syncAccount"></p>
-              <p class="syncConsentText" id="syncConsentText">
-                When enabled, ActiveAid syncs your check-ins, completed sessions, and reminder
-                settings. Activity timing never leaves this device.
-              </p>
-              <label class="toggle syncToggle">
-                <input type="checkbox" id="syncEnabled" aria-describedby="syncConsentText" />
-                <span class="toggleTrack" aria-hidden="true"></span>
-                <span class="toggleLabel">Back up my wellness data</span>
-              </label>
-              <button class="btn--actionRow" id="syncNow" type="button" hidden>
-                <span class="actionRowLabel">Sync now</span>
-                <span class="actionRowHint">Back up changes from this device.</span>
-              </button>
-              <button class="btn--actionRow btn--actionRowDanger" id="syncDeleteCloudData" type="button">
-                <span class="actionRowLabel">Delete cloud backup</span>
-                <span class="actionRowHint">Permanently removes backed-up wellness data only.</span>
-              </button>
-              <button class="btn--actionRow" id="syncSignOut" type="button">
-                <span class="actionRowLabel">Sign out on this device</span>
-                <span class="actionRowHint">Local wellness data stays here.</span>
-              </button>
+                <div class="syncAccountRow">
+                  <span class="syncAccountIcon" id="syncAccountIcon" aria-hidden="true"></span>
+                  <span class="syncAccountDetails">
+                    <span class="syncAccountLabel">Signed in</span>
+                    <span class="syncAccount" id="syncAccount"></span>
+                  </span>
+                </div>
+                <p class="syncConsentText" id="syncConsentText">
+                  Activity timing always stays on this device.
+                </p>
+                <label class="toggle syncToggle">
+                  <input
+                    type="checkbox"
+                    id="syncEnabled"
+                    aria-describedby="syncToggleHint syncConsentText"
+                  />
+                  <span class="toggleTrack" aria-hidden="true"></span>
+                  <span class="syncToggleCopy">
+                    <span class="syncToggleTitle">Back up wellness data</span>
+                    <span class="syncToggleHint" id="syncToggleHint">
+                      Check-ins, completed sessions, and reminder settings.
+                    </span>
+                  </span>
+                </label>
+                <button class="btn--actionRow syncNowAction" id="syncNow" type="button" hidden>
+                  <span class="actionRowLabel">Sync now</span>
+                  <span class="actionRowHint">Back up changes from this device.</span>
+                </button>
+                <div class="syncAccountActions">
+                  <button
+                    class="syncAccountAction syncAccountAction--danger"
+                    id="syncDeleteCloudData"
+                    type="button"
+                  >
+                    <span
+                      class="syncAccountActionIcon"
+                      id="syncDeleteIcon"
+                      aria-hidden="true"
+                    ></span>
+                    <span>Delete backup</span>
+                  </button>
+                  <button class="syncAccountAction" id="syncSignOut" type="button">
+                    <span class="syncAccountActionIcon" id="syncSignOutIcon" aria-hidden="true"></span>
+                    <span>Sign out</span>
+                  </button>
+                </div>
               </div>
             </div>
           </details>
