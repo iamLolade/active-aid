@@ -294,12 +294,12 @@ export function LandingHome({ release }: { release: ChromeStoreRelease }) {
           </Reveal>
           <div className="mt-10 divide-y divide-[#e5e7eb] rounded-3xl border border-[#d1d5db] bg-white px-6 shadow-sm md:px-8">
             {FAQS.map((item) => (
-              <details key={item.question} className="group py-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-[#1f2937] marker:hidden">
+              <details key={item.question} className="group -mx-3 px-3 py-5 transition-colors open:bg-[#f8faf7] motion-reduce:transition-none">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-md text-base font-semibold text-[#1f2937] transition-colors marker:hidden hover:text-[#315f38] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#3f7547] motion-reduce:transition-none">
                   <span>{item.question}</span>
                   <span
                     aria-hidden="true"
-                    className="text-xl font-normal text-[#527d57] transition-transform group-open:rotate-45"
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#cdd8cc] text-lg font-normal text-[#527d57] transition-[background-color,transform] group-open:rotate-45 group-open:bg-[#e8f0e9] motion-reduce:transition-none"
                   >
                     +
                   </span>
@@ -390,7 +390,7 @@ function PrimaryButton({ href, children, external = false }: { href: string; chi
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
-      className="inline-flex h-12 items-center justify-center rounded-full bg-[#3f7547] px-7 text-sm font-semibold text-white shadow-sm transition-[background-color,transform,box-shadow] duration-200 hover:bg-[#315f38] hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3f7547] active:scale-[0.98]"
+      className="inline-flex h-12 items-center justify-center rounded-full bg-[#3f7547] px-7 text-sm font-semibold text-white shadow-sm transition-[background-color,transform,box-shadow] duration-200 hover:bg-[#315f38] hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3f7547] active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100"
     >
       {children}
     </Link>
@@ -407,7 +407,7 @@ function SecondaryButton({
   return (
     <SmoothAnchor
       sectionId={sectionId}
-      className="inline-flex h-12 items-center justify-center rounded-full border border-[#bfc9bd] bg-transparent px-7 text-sm font-semibold text-[#315f38] transition-[background-color,transform,border-color] duration-200 hover:border-[#96aa97] hover:bg-white/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3f7547] active:scale-[0.98]"
+      className="inline-flex h-12 items-center justify-center rounded-full border border-[#bfc9bd] bg-transparent px-7 text-sm font-semibold text-[#315f38] transition-[background-color,transform,border-color] duration-200 hover:border-[#96aa97] hover:bg-white/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3f7547] active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100"
     >
       {children}
     </SmoothAnchor>
@@ -488,10 +488,12 @@ function ProductStoryExplorer() {
           return (
             <button
               key={story.number}
+              id={`product-story-trigger-${story.number}`}
               type="button"
               aria-pressed={selected}
+              aria-controls="product-story-view"
               onClick={() => setActiveIndex(index)}
-              className={`group relative grid w-full grid-cols-[2.5rem_1fr] gap-4 px-4 py-6 text-left transition-colors duration-200 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#3f7547] sm:px-6 lg:px-4 lg:py-7 ${
+              className={`group relative grid w-full grid-cols-[2.5rem_1fr] gap-4 px-4 py-6 text-left transition-colors duration-200 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#3f7547] motion-reduce:transition-none sm:px-6 lg:px-4 lg:py-7 ${
                 selected ? "bg-[#e8eee6]" : "hover:bg-white/55"
               }`}
             >
@@ -509,7 +511,7 @@ function ProductStoryExplorer() {
                   </span>
                   <span
                     aria-hidden="true"
-                    className={`h-2.5 w-2.5 shrink-0 rounded-full transition-[background-color,transform] ${
+                    className={`h-2.5 w-2.5 shrink-0 rounded-full transition-[background-color,transform] motion-reduce:transform-none motion-reduce:transition-none ${
                       selected ? "scale-100 bg-[#3f7547]" : "scale-75 bg-[#c4cbc3] group-hover:scale-100"
                     }`}
                   />
@@ -525,6 +527,8 @@ function ProductStoryExplorer() {
 
       <div
         id="product-story-view"
+        role="region"
+        aria-labelledby={`product-story-trigger-${activeStory.number}`}
         aria-live="polite"
         className="relative flex min-h-[520px] items-center justify-center overflow-hidden bg-[#dfe8dc] px-6 py-10 sm:min-h-[610px] sm:px-10 lg:min-h-[640px]"
       >
@@ -547,6 +551,7 @@ function ProductStoryExplorer() {
             src={activeStory.image}
             alt={activeStory.alt}
             fill
+            unoptimized
             sizes="(min-width: 1024px) 360px, (min-width: 640px) 340px, 286px"
             className="object-cover object-top"
           />
@@ -606,7 +611,7 @@ function InstallAssurance({ children }: { children: React.ReactNode }) {
 
 function FeatureCard({ num, title, body }: { num: string; title: string; body: string }) {
   return (
-    <div className="flex h-full gap-4 rounded-2xl border border-[#d1d5db] bg-white p-6 shadow-sm transition-[box-shadow,transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-[#c5d0c6] hover:shadow-md">
+    <div className="flex h-full gap-4 rounded-2xl border border-[#d1d5db] bg-white p-6 shadow-sm">
       <span className="font-mono text-xs font-semibold text-[#6a9d6e]">{num}</span>
       <div>
         <h3 className="text-[15px] font-semibold text-[#1f2937]">{title}</h3>
@@ -618,7 +623,10 @@ function FeatureCard({ num, title, body }: { num: string; title: string; body: s
 
 function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="transition-colors duration-200 hover:text-[#1f2937]">
+    <Link
+      href={href}
+      className="rounded-sm transition-colors duration-200 hover:text-[#1f2937] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#3f7547] motion-reduce:transition-none"
+    >
       {children}
     </Link>
   )

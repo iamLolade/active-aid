@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useReducedMotion } from "framer-motion"
 import { Menu, X } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { scrollToSection } from "@/components/landing/scroll-to"
 import { useActiveSection } from "@/components/landing/use-active-section"
 import { BrandLockup } from "@/components/brand-lockup"
@@ -29,16 +29,27 @@ export function LandingNav({
   const reducedMotion = useReducedMotion()
   const active = useActiveSection(SECTION_IDS)
   const [menuOpen, setMenuOpen] = useState(false)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     if (!menuOpen) return
 
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false)
+      if (event.key !== "Escape") return
+      setMenuOpen(false)
+      menuButtonRef.current?.focus()
+    }
+    const desktopQuery = window.matchMedia("(min-width: 768px)")
+    const closeAtDesktop = (event: MediaQueryListEvent) => {
+      if (event.matches) setMenuOpen(false)
     }
 
     window.addEventListener("keydown", closeOnEscape)
-    return () => window.removeEventListener("keydown", closeOnEscape)
+    desktopQuery.addEventListener("change", closeAtDesktop)
+    return () => {
+      window.removeEventListener("keydown", closeOnEscape)
+      desktopQuery.removeEventListener("change", closeAtDesktop)
+    }
   }, [menuOpen])
 
   const navigate = useCallback(
@@ -65,18 +76,19 @@ export function LandingNav({
               href={primaryHref}
               target={primaryExternal ? "_blank" : undefined}
               rel={primaryExternal ? "noopener noreferrer" : undefined}
-              className="hidden h-10 shrink-0 items-center justify-center rounded-full bg-[#3f7547] px-5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] hover:bg-[#315f38] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3f7547] active:scale-[0.98] sm:inline-flex"
+              className="hidden h-10 shrink-0 items-center justify-center rounded-full bg-[#3f7547] px-5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] hover:bg-[#315f38] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3f7547] active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100 sm:inline-flex"
             >
               {primaryLabel}
             </Link>
 
             <button
+              ref={menuButtonRef}
               type="button"
               aria-expanded={menuOpen}
               aria-controls="landing-mobile-menu"
               aria-label={menuOpen ? "Close navigation" : "Open navigation"}
               onClick={() => setMenuOpen((open) => !open)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#cfcdc5] bg-white text-[#1f2937] transition-colors hover:bg-[#efebe2] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3f7547] md:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#cfcdc5] bg-white text-[#1f2937] transition-[background-color,transform] hover:bg-[#efebe2] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3f7547] active:scale-95 motion-reduce:transition-none motion-reduce:active:scale-100 md:hidden"
             >
               {menuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
             </button>
@@ -127,7 +139,7 @@ function SectionLinks({
               navigate(link.id)
             }}
             className={[
-              "relative whitespace-nowrap rounded-lg px-3 py-2.5 font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#3f7547] md:rounded-none md:px-3 md:py-6",
+              "relative whitespace-nowrap rounded-lg px-3 py-2.5 font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#3f7547] motion-reduce:transition-none md:rounded-none md:px-3 md:py-6",
               isActive
                 ? "bg-[#e8eee6] text-[#315f38] md:bg-transparent md:after:absolute md:after:inset-x-3 md:after:bottom-0 md:after:h-0.5 md:after:bg-[#3f7547]"
                 : "hover:bg-white/70 hover:text-[#1f2937] md:hover:bg-transparent",
