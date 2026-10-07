@@ -23,7 +23,7 @@ Current version: see `extension/manifest.json` (`version` field)
 | Field | Value |
 |-------|-------|
 | **Name** | ActiveAid |
-| **Category** | Productivity |
+| **Category** | Well-being |
 | **Language** | English |
 | **Homepage URL** | `{APP_URL}` |
 | **Support URL** | `{APP_URL}/support` |
@@ -131,18 +131,29 @@ Use the closest labels shown in the current dashboard. Do not select browsing hi
 
 ## Screenshots (store upload)
 
-Capture screenshots from the packaged release candidate after final QA. Do not use old marketing mockups or captures from an earlier interface.
+Generate the store-ready screenshots after updating the source captures in `public/screenshots/`:
 
-Use 1280×800 or 640×400 PNG/JPEG and show these verified states:
+```bash
+npm run store:assets
+```
 
-| Screen | Capture requirement |
-|--------|---------------------|
-| Today | Fresh install with reminders enabled and no invented user history |
-| Check-in | Overall feeling and optional body-area controls visible |
-| Quick Relief | A real guided session with its step and time controls visible |
-| Insights | A clearly labeled test profile with representative data |
+Upload these opaque 1280×800 JPEG files in order:
 
-Center the popup on a quiet neutral background. Keep all copy legible and avoid adding claims that are not present in the extension.
+1. `public/store/screenshots/01-today.jpg`
+2. `public/store/screenshots/02-check-in.jpg`
+3. `public/store/screenshots/03-insights.jpg`
+4. `public/store/screenshots/04-settings.jpg`
+
+The source captures must come from the packaged release candidate. Do not replace them with fabricated UI or captures from an earlier interface.
+
+## Promotional tiles
+
+Upload the generated opaque JPEG assets:
+
+- **Small promo tile (440×280):** `public/store/promos/small-promo.jpg`
+- **Marquee promo tile (1400×560):** `public/store/promos/marquee-promo.jpg`
+
+The small promo tile is required. The marquee tile is optional but ready to upload.
 
 ---
 

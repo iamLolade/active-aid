@@ -37,7 +37,7 @@ This validates `extension/manifest.json` and creates targeted store zips from th
 | Screenshots | Capture the packaged release candidate using the verified states in `store/LISTING.md` |
 | Listing copy | `store/LISTING.md` |
 
-Tip: use 1280×800 or 640×400 screenshots; keep text readable.
+Run `npm run store:assets`. Upload the 1280×800 screenshots from `public/store/screenshots/` and promo tiles from `public/store/promos/`.
 
 ## 4. Create listing in Developer Dashboard
 

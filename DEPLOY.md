@@ -84,7 +84,7 @@ Paste from [`store/LISTING.md`](./store/LISTING.md):
 | Field | Value |
 |-------|-------|
 | **Name** | ActiveAid |
-| **Category** | Productivity |
+| **Category** | Well-being |
 | **Short description** | `Gentle wellness reminders, desk relief sessions, and daily check-ins. Local-first. No account required.` |
 | **Detailed description** | *(paste full description from `store/LISTING.md`)* |
 | **Homepage URL** | `https://activeaid.vercel.app` |
@@ -93,7 +93,7 @@ Paste from [`store/LISTING.md`](./store/LISTING.md):
 
 ### Screenshots
 
-Use 1280×800 or 640×400 PNG/JPEG. Suggested captures from the popup:
+Run `npm run store:assets`, then upload the generated screenshots from `public/store/screenshots/` and promo tiles from `public/store/promos/`.
 
 | Screen | What to capture |
 |--------|----------------|
