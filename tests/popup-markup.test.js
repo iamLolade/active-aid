@@ -125,6 +125,16 @@ test("insight labels stay concise in the compact metric grid", async () => {
   ]) {
     assert.match(script, new RegExp(`label: "${label}"`))
   }
+
+  for (const icon of [
+    "iconBreakComplete",
+    "iconTimer",
+    "iconCalendarDays",
+    "iconDeskActivity",
+    "iconStreak",
+  ]) {
+    assert.match(script, new RegExp(`iconHtml: ${icon}\\(20\\)`))
+  }
 })
 
 test("Today hero separates activity, sessions, and reminder status", async () => {

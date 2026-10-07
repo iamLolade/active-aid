@@ -8,7 +8,16 @@ import {
   getTotalDurationSeconds,
 } from "../extension/shared/sessions.js"
 import { formatCountdown, minutesToMs, msToRoundedMinutes } from "../extension/shared/time.js"
-import { bodyAreaIcon, sessionIcon, severityIcon } from "../extension/popup/icons.js"
+import {
+  bodyAreaIcon,
+  iconBreakComplete,
+  iconCalendarDays,
+  iconDeskActivity,
+  iconStreak,
+  iconTimer,
+  sessionIcon,
+  severityIcon,
+} from "../extension/popup/icons.js"
 
 test("the relief-session catalog has unique, usable entries", () => {
   assert.equal(SESSIONS.length, 5)
@@ -64,4 +73,17 @@ test("check-in body areas reuse the quick-relief artwork", () => {
   for (const [areaId, sessionId] of Object.entries(sharedIcons)) {
     assert.equal(bodyAreaIcon(areaId), sessionIcon(sessionId))
   }
+})
+
+test("insight metrics use distinct, purpose-specific artwork", () => {
+  const icons = [
+    iconBreakComplete(),
+    iconTimer(),
+    iconCalendarDays(),
+    iconDeskActivity(),
+    iconStreak(),
+  ]
+
+  assert.equal(new Set(icons).size, icons.length)
+  assert.ok(icons.every((icon) => icon.includes("<svg")))
 })

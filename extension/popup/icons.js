@@ -30,6 +30,16 @@ function strokePaths(...paths) {
   return paths.map(strokePath).join("")
 }
 
+/** @param {string} d */
+function movementPath(d) {
+  return `<path d="${d}" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>`
+}
+
+/** @param {string[]} paths */
+function movementPaths(...paths) {
+  return paths.map(movementPath).join("")
+}
+
 // --- Nav & chrome ---
 
 export function iconHeartHandshake(size = 24) {
@@ -50,10 +60,20 @@ export function iconCalendar(size = 24) {
   )
 }
 
-export function iconBarChart(size = 24) {
+export function iconCalendarDays(size = 24) {
   return iconSvg(
     size,
-    strokePaths("M12 20V10M18 20V4M6 20v-4")
+    strokePaths(
+      "M8 2v4",
+      "M16 2v4",
+      "M3 10h18",
+      "M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z",
+      "M8 14h.01",
+      "M12 14h.01",
+      "M16 14h.01",
+      "M8 18h.01",
+      "M12 18h.01"
+    )
   )
 }
 
@@ -131,6 +151,17 @@ export function iconClock(size = 24) {
   )
 }
 
+export function iconTimer(size = 24) {
+  return iconSvg(
+    size,
+    strokePaths(
+      "M10 2h4",
+      "M12 14l3-3",
+      "M20 14a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"
+    )
+  )
+}
+
 export function iconBell(size = 24) {
   return iconSvg(
     size,
@@ -156,11 +187,32 @@ export function iconPlay(size = 24) {
   )
 }
 
-export function iconActivity(size = 24) {
+export function iconBreakComplete(size = 24) {
+  return iconSvg(
+    size,
+    strokePaths(
+      "M21.8 10A10 10 0 1 1 17 3.34",
+      "m9 11 3 3L22 4"
+    )
+  )
+}
+
+export function iconDeskActivity(size = 24) {
+  return iconSvg(
+    size,
+    strokePaths(
+      "M18 5a2 2 0 0 1 2 2v8.5H4V7a2 2 0 0 1 2-2h12Z",
+      "M2 18h20",
+      "M9 18v1h6v-1"
+    )
+  )
+}
+
+export function iconStreak(size = 24) {
   return iconSvg(
     size,
     strokePath(
-      "M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a2 2 0 0 1-3.86 0l-2.35-8.36A2 2 0 0 0 6.49 12H2"
+      "M12 3s1 4 4 6.5 3 3.5 3 5.5a7 7 0 0 1-14 0c0-1.1.35-2.1 1-3a5 5 0 0 0 5 0c0-2-1.5-3-1.5-5 0-1.35.83-2.68 2.5-4Z"
     )
   )
 }
@@ -212,39 +264,68 @@ const MOVEMENT_ICONS = {
   neck: (size) =>
     iconSvg(
       size,
-      strokePath(
-        "M13.5 3a6 6 0 0 0-6 6v2a6 6 0 0 0 3 5.2V21M10.5 17h4v-3h3v-2h2l-2-3a6 6 0 0 0-4-6M15 8h.01"
-      )
+      '<ellipse cx="12" cy="7" rx="4" ry="5" stroke="currentColor" stroke-width="1.9"/>' +
+        movementPaths(
+          "M8.7 10.5v2.1c0 1.4-.7 2.3-2.4 3C4.1 16.4 3 18.1 3 21",
+          "M15.3 10.5v2.1c0 1.4.7 2.3 2.4 3 2.2.8 3.3 2.5 3.3 5.4",
+          "M6 11.5 4.2 10.4",
+          "M5.7 14H3.5",
+          "m18 11.5 1.8-1.1",
+          "M18.3 14h2.2"
+        )
     ),
   wrist: (size) =>
     iconSvg(
       size,
-      strokePaths(
+      movementPaths(
         "M8 12V8.5a1.5 1.5 0 0 1 3 0V11",
         "M11 11V6.5a1.5 1.5 0 0 1 3 0V11",
         "M14 11V8a1.5 1.5 0 0 1 3 0v5",
-        "M8 12 6.8 10.8a1.5 1.5 0 0 0-2.1 2.1l3.7 5A5 5 0 0 0 12.4 20H14a5 5 0 0 0 5-5v-3"
+        "M8 12 6.8 10.8a1.5 1.5 0 0 0-2.1 2.1l3.7 5A5 5 0 0 0 12.4 20H14a5 5 0 0 0 5-5v-3",
+        "m6 17-2 1",
+        "M6.2 19.5H4",
+        "m18 17 2 1",
+        "M17.8 19.5H20"
       )
     ),
   "lower-back": (size) =>
     iconSvg(
       size,
-      '<circle cx="8" cy="5" r="2.25" stroke="currentColor" stroke-width="1.75"/>' +
-        strokePaths("M8 7.5v6l4 2.5h6", "M5 12h3M5 12v8", "M12 16v4M18 16v4", "M10 9.5c2.8.2 4.5 1.8 4.5 4.5")
+      movementPaths(
+        "M5 3c.5 2.8 1 5.6 1 8 0 2.2-.9 3.9-1.5 5.6-.5 1.4-.7 2.8-.7 4.4",
+        "M19 3c-.5 2.8-1 5.6-1 8 0 2.2.9 3.9 1.5 5.6.5 1.4.7 2.8.7 4.4",
+        "M5.5 18.6c2.2-1.3 4.3-1.3 6.5-.2 2.2-1.1 4.3-1.1 6.5.2",
+        "M12 9v2",
+        "m8.5 10.5 1.5 1.3",
+        "m15.5 10.5-1.5 1.3"
+      ) +
+        '<circle cx="12" cy="14" r="1.7" stroke="currentColor" stroke-width="1.9"/>' +
+        '<circle cx="12" cy="14" r=".55" fill="currentColor"/>'
     ),
   shoulder: (size) =>
     iconSvg(
       size,
-      '<circle cx="12" cy="5" r="2.7" stroke="currentColor" stroke-width="1.75"/>' +
-        strokePaths("M12 7.7v5.8", "M4.5 20c.6-4 3.2-6.1 7.5-6.1s6.9 2.1 7.5 6.1") +
-        '<path d="M5.8 17c.5-1.3 1.4-2.2 2.7-2.7M18.2 17c-.5-1.3-1.4-2.2-2.7-2.7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>'
+      '<circle cx="12" cy="5" r="3" stroke="currentColor" stroke-width="1.9"/>' +
+        movementPaths(
+          "M9.2 7c-.2 1.6-.9 2.5-2.4 3C4.2 10.9 3 14.2 3 19",
+          "M14.8 7c.2 1.6.9 2.5 2.4 3 2.6.9 3.8 4.2 3.8 9",
+          "M6.2 14.5V19",
+          "M17.8 14.5V19",
+          "M4.6 8.6 3 7",
+          "M4 11H2",
+          "m19.4 8.6 1.6-1.6",
+          "M20 11h2"
+        )
     ),
   eyes: (size) =>
     iconSvg(
       size,
-      strokePaths(
-        "M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z",
-        "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+      movementPaths(
+        "M2 13s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z",
+        "M12 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z",
+        "M8 4.5 7 3",
+        "M12 4V2",
+        "m16 4.5 1-1.5"
       )
     ),
 }

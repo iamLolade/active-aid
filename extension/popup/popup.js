@@ -44,19 +44,22 @@ import {
 } from "../shared/checkins.js"
 import {
   bodyAreaIcon,
-  iconActivity,
-  iconBarChart,
   iconBell,
+  iconBreakComplete,
   iconCalendar,
+  iconCalendarDays,
   iconChevronLeft,
   iconChevronRight,
   iconClock,
   iconCloudCheck,
+  iconDeskActivity,
   iconHeartHandshake,
   iconInsights,
   iconLogOut,
   iconPlay,
   iconSettings,
+  iconStreak,
+  iconTimer,
   iconTrash,
   sessionIcon,
   severityIcon,
@@ -768,27 +771,27 @@ async function renderDashboard() {
   appendStatCard({
     value: String(summary.breaksToday),
     label: "Breaks today",
-    iconHtml: iconPlay(20),
+    iconHtml: iconBreakComplete(20),
   })
   appendStatCard({
     value: `${summary.breakMinutesToday} min`,
     label: "Relief today",
-    iconHtml: iconClock(20),
+    iconHtml: iconTimer(20),
   })
   appendStatCard({
     value: String(summary.sessionsLast7Days),
     label: "Sessions in 7 days",
-    iconHtml: iconBarChart(20),
+    iconHtml: iconCalendarDays(20),
   })
   appendStatCard({
     value: `${summary.activeMinutesToday} min`,
     label: "Active today",
-    iconHtml: iconActivity(20),
+    iconHtml: iconDeskActivity(20),
   })
   appendStatCard({
     value: String(summary.checkInStreak),
     label: "Check-in streak",
-    iconHtml: iconCalendar(20),
+    iconHtml: iconStreak(20),
   })
   appendStatCard({
     value: summary.todayCheckIn
