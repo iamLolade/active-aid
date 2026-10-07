@@ -4,10 +4,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { motion, useReducedMotion } from "framer-motion"
 import {
-  Activity,
-  BarChart3,
-  Bell,
-  HeartPulse,
+  Clock3,
+  Leaf,
   LockKeyhole,
 } from "lucide-react"
 import { LandingNav } from "@/components/landing/landing-nav"
@@ -33,26 +31,21 @@ const FEATURES = [
   },
 ] as const
 
-const PRODUCT_FLOW = [
+const PRODUCT_STORIES = [
   {
-    icon: Bell,
-    title: "Get a gentle reminder",
-    body: "ActiveAid nudges you only after your chosen amount of sustained activity.",
+    number: "1",
+    title: "Work normally",
+    body: "Choose your reminder interval and keep going. ActiveAid stays quiet until it is time for a gentle nudge.",
   },
   {
-    icon: HeartPulse,
+    number: "2",
     title: "Take a quick reset",
-    body: "Open a short, desk-friendly session with timed steps that move forward automatically.",
+    body: "Follow short guided steps that advance automatically, then check in whenever it suits you.",
   },
   {
-    icon: Activity,
-    title: "Check in with yourself",
-    body: "Log how your body feels and note any areas you want to pay attention to.",
-  },
-  {
-    icon: BarChart3,
+    number: "3",
     title: "Notice simple patterns",
-    body: "See breaks, relief time, check-in streaks, and a small seven-day view from local data.",
+    body: "Your local history turns breaks, relief sessions, and check-ins into a useful seven-day view.",
   },
 ] as const
 
@@ -126,7 +119,7 @@ export function LandingHome({ release }: { release: ChromeStoreRelease }) {
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#3f6846]">
               Workplace wellness, without the extra noise
             </p>
-            <h1 className="mt-6 text-balance text-[clamp(2.8rem,5.2vw,4.5rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-[#172133]">
+            <h1 className="mt-6 text-balance text-[clamp(2.65rem,4.7vw,4.1rem)] font-semibold leading-[0.99] tracking-[-0.04em] text-[#172133]">
               Small movement breaks that fit your workday.
             </h1>
             <p className="mt-6 max-w-lg text-pretty text-base leading-relaxed text-[#586273] md:text-lg">
@@ -165,37 +158,52 @@ export function LandingHome({ release }: { release: ChromeStoreRelease }) {
           <Reveal>
             <SectionHeading
               eyebrow="How it fits into your day"
-              title="From a gentle reminder to a useful pattern"
-              body="ActiveAid keeps each step short and clear, so looking after your workplace wellness habits does not become another task to manage."
-              centered
+              title="A small reset, right when it helps"
+              body="ActiveAid stays quiet while you work, then gives you a clear next step."
             />
           </Reveal>
-          <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {PRODUCT_FLOW.map((item) => (
-              <JourneyCard key={item.title} {...item} />
-            ))}
+          <div className="mt-12 grid items-center gap-12 md:mt-16 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+            <Reveal className="relative mx-auto w-full max-w-[430px]">
+              <div aria-hidden="true" className="absolute -inset-5 translate-x-5 translate-y-5 border border-[#cbd5c8] bg-[#e8eee6]" />
+              <div className="relative aspect-[2/3] overflow-hidden rounded-[1.8rem] border border-white bg-white shadow-[0_24px_60px_rgba(31,41,55,0.16)]">
+                <Image
+                  src="/screenshots/today.png"
+                  alt="ActiveAid Today view showing reminders, daily check-in, and quick relief"
+                  fill
+                  sizes="(min-width: 1024px) 430px, 80vw"
+                  className="object-cover object-top"
+                />
+              </div>
+            </Reveal>
+
+            <div className="relative border-l border-[#cbd5c8] pl-8 sm:pl-10">
+              {PRODUCT_STORIES.map((story, index) => (
+                <ProductStory key={story.number} {...story} delay={index * 0.05} />
+              ))}
+            </div>
           </div>
         </section>
 
-        <section className="mt-20 md:mt-28">
+        <section className="relative left-1/2 mt-24 w-screen -translate-x-1/2 overflow-hidden bg-[#172133] md:mt-32">
           <Reveal>
-            <div className="overflow-hidden rounded-[2rem] bg-[#1f2937] px-8 py-14 text-white md:px-14 md:py-16">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9ca3af]">
-                Why ActiveAid
-              </p>
-              <h2 className="mt-4 max-w-3xl text-3xl font-semibold leading-tight tracking-tight md:text-5xl md:leading-[1.08]">
-                Skip the dashboard
-                <span className="block text-[#9ca3af]">nobody opens.</span>
-              </h2>
-              <p className="mt-5 max-w-2xl text-sm leading-relaxed text-[#d1d5db] md:text-base">
-                Most wellness tools feel like another app to manage. ActiveAid lives where you
-                already work: a small popup, gentle reminders, and desk-friendly resets without
-                corporate noise or surveillance.
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <TrustChip>No typed content logged</TrustChip>
-                <TrustChip>Snooze built in</TrustChip>
-                <TrustChip>Local first</TrustChip>
+            <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 text-white sm:px-6 md:grid-cols-[1.1fr_0.9fr] md:items-end md:py-24 lg:gap-20 lg:px-8">
+              <div className="max-w-3xl">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#b8d8b5]">
+                  Why ActiveAid
+                </p>
+                <h2 className="mt-5 text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] md:text-6xl">
+                  Support that stays in the background until you need it.
+                </h2>
+                <p className="mt-6 max-w-2xl text-base leading-relaxed text-[#cbd2dc] md:text-lg">
+                  No feed to maintain. No dashboard to keep open. Just a gentle prompt and a useful
+                  next step.
+                </p>
+              </div>
+
+              <div className="border-t border-white/25">
+                <WhyLine icon={Leaf}>Works without an account</WhyLine>
+                <WhyLine icon={Clock3}>Snooze or pause anytime</WhyLine>
+                <WhyLine icon={LockKeyhole}>Your wellness data stays local by default</WhyLine>
               </div>
             </div>
           </Reveal>
@@ -431,23 +439,44 @@ function HeroProductVisual() {
   )
 }
 
-function JourneyCard({ icon: Icon, title, body }: { icon: typeof Bell; title: string; body: string }) {
+function ProductStory({
+  number,
+  title,
+  body,
+  delay,
+}: {
+  number: string
+  title: string
+  body: string
+  delay: number
+}) {
   return (
-    <Reveal>
-      <div className="h-full rounded-2xl border border-[#d1d5db] bg-white p-6 shadow-sm">
-        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e8f0e9] text-[#3d6b42]"><Icon className="h-5 w-5" aria-hidden="true" /></span>
-        <h3 className="mt-5 text-base font-semibold">{title}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-[#4b5563]">{body}</p>
+    <Reveal delay={delay} className="relative border-b border-[#d8ddd5] py-8 first:pt-0 last:border-b-0 last:pb-0">
+      <div className="flex items-start gap-5">
+        <span className="-ml-[3.35rem] flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-4 border-[#f7f4ed] bg-[#dfeadd] text-base font-semibold text-[#315f38] sm:-ml-[3.7rem]">
+          {number}
+        </span>
+        <div>
+          <h3 className="text-xl font-semibold tracking-tight text-[#172133]">{title}</h3>
+          <p className="mt-2 text-sm leading-relaxed text-[#586273]">{body}</p>
+        </div>
       </div>
     </Reveal>
   )
 }
 
-function TrustChip({ children }: { children: React.ReactNode }) {
+function WhyLine({
+  icon: Icon,
+  children,
+}: {
+  icon: typeof Leaf
+  children: React.ReactNode
+}) {
   return (
-    <span className="rounded-full border border-[#374151] bg-[#111827] px-4 py-1.5 text-xs font-medium text-[#e5e7eb]">
-      {children}
-    </span>
+    <div className="flex items-center gap-4 border-b border-white/25 py-5 text-sm text-[#f2f4f6] md:text-base">
+      <Icon className="h-5 w-5 shrink-0 text-[#b8d8b5]" strokeWidth={1.8} aria-hidden="true" />
+      <span>{children}</span>
+    </div>
   )
 }
 
