@@ -8,7 +8,7 @@ import { scrollToSection } from "@/components/landing/scroll-to"
 import { useActiveSection } from "@/components/landing/use-active-section"
 import { BrandLockup } from "@/components/brand-lockup"
 
-const SECTION_IDS = ["product", "features", "privacy", "faq"] as const
+const SECTION_IDS = ["product", "features", "privacy", "faq", "install"] as const
 
 const NAV_LINKS = [
   { id: "product", label: "Product", href: "#product" },

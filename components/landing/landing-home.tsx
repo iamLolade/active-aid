@@ -5,10 +5,16 @@ import Link from "next/link"
 import { useState } from "react"
 import { motion, useReducedMotion } from "framer-motion"
 import {
+  Check,
   Clock3,
+  Cloud,
+  EyeOff,
+  HardDrive,
   Leaf,
   LockKeyhole,
+  ShieldCheck,
 } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 import { LandingNav } from "@/components/landing/landing-nav"
 import { Reveal } from "@/components/landing/reveal"
 import { SmoothAnchor } from "@/components/landing/smooth-anchor"
@@ -44,8 +50,8 @@ const PRODUCT_STORIES = [
     number: "2",
     title: "Work until a gentle nudge",
     body: "ActiveAid stays quiet while you work, then offers a clear route to a short guided reset.",
-    image: "/screenshots/today.png",
-    alt: "ActiveAid Today view showing activity timing, daily check-in, and quick relief",
+    image: "/screenshots/relief-session.png",
+    alt: "ActiveAid Neck Relief session showing step progress, timing, and movement guidance",
   },
   {
     number: "3",
@@ -60,6 +66,29 @@ const PRODUCT_STORIES = [
     body: "Your local history turns breaks, relief sessions, and check-ins into a useful seven-day view.",
     image: "/screenshots/insight.png",
     alt: "ActiveAid Insights view showing a concise summary of local wellness activity",
+  },
+] as const
+
+const PRIVACY_POINTS = [
+  {
+    icon: HardDrive,
+    title: "Local by default",
+    body: "Reminder settings, check-ins, relief history, and simple insights stay in extension storage on this device.",
+  },
+  {
+    icon: EyeOff,
+    title: "Your content is not recorded",
+    body: "ActiveAid detects that activity happened. It does not record typed text, page content, URLs, screenshots, or camera data.",
+  },
+  {
+    icon: Cloud,
+    title: "Backup requires a separate choice",
+    body: "Signing in alone does not upload wellness data. Cloud backup starts only after you explicitly enable it in Settings.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "You keep control",
+    body: "Export or erase local data at any time. Activity timing never leaves your device, even when backup is enabled.",
   },
 ] as const
 
@@ -225,27 +254,32 @@ export function LandingHome({ release }: { release: ChromeStoreRelease }) {
 
         <section id="privacy" className="scroll-mt-28 mt-20 md:mt-28">
           <Reveal>
-            <div className="rounded-3xl border border-[#d1d5db] bg-white p-8 shadow-sm md:p-10">
-              <SectionHeading
-                eyebrow="Privacy"
-                title="Designed to feel safe and non-intrusive"
-                body="ActiveAid tracks activity timing to estimate active work time. It does not record content."
-                compact
-              />
-              <div className="mt-8 grid gap-4 md:grid-cols-2">
-                <CheckLine>We never record what you type.</CheckLine>
-                <CheckLine>No page content or browsing history is collected.</CheckLine>
-                <CheckLine>No screenshots or webcam access.</CheckLine>
-                <CheckLine>Activity timing stays on your device.</CheckLine>
-                <CheckLine>Cloud backup is optional and separately enabled.</CheckLine>
-                <CheckLine>You can export or clear local data whenever you want.</CheckLine>
+            <div className="grid overflow-hidden border-y border-[#cbd2ca] lg:grid-cols-[0.82fr_1.18fr]">
+              <div className="bg-[#172133] p-8 text-white sm:p-10 lg:p-12">
+                <LockKeyhole className="h-7 w-7 text-[#b8d8b5]" strokeWidth={1.8} aria-hidden="true" />
+                <p className="mt-8 text-xs font-semibold uppercase tracking-[0.16em] text-[#b8d8b5]">
+                  Privacy, in plain language
+                </p>
+                <h2 className="mt-4 max-w-md text-balance text-3xl font-semibold leading-tight tracking-[-0.03em] md:text-4xl">
+                  Useful without seeing what you do.
+                </h2>
+                <p className="mt-5 max-w-md text-sm leading-relaxed text-[#cbd2dc] md:text-base">
+                  ActiveAid uses activity timing to schedule reminders. The content of your work is
+                  outside its scope.
+                </p>
+                <Link
+                  href="/privacy"
+                  className="mt-8 inline-flex text-sm font-semibold text-[#d8ead6] transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b8d8b5]"
+                >
+                  Read the full privacy policy →
+                </Link>
               </div>
-              <Link
-                href="/privacy"
-                className="mt-8 inline-flex text-sm font-semibold text-[#3d6b42] transition-colors hover:text-[#2f5835]"
-              >
-                Read the privacy policy →
-              </Link>
+
+              <div className="divide-y divide-[#e1e5df] bg-white px-6 sm:px-8 lg:px-10">
+                {PRIVACY_POINTS.map((point) => (
+                  <PrivacyPoint key={point.title} {...point} />
+                ))}
+              </div>
             </div>
           </Reveal>
         </section>
@@ -278,25 +312,35 @@ export function LandingHome({ release }: { release: ChromeStoreRelease }) {
           </div>
         </section>
 
-        <section id="install" className="scroll-mt-28 mt-20 md:mt-28">
+        <section
+          id="install"
+          className="relative left-1/2 mt-20 w-screen -translate-x-1/2 scroll-mt-28 bg-[#dfe8dc] md:mt-28"
+        >
           <Reveal>
-            <SectionHeading
-              eyebrow="Install"
-              title={installCopy.title}
-              body={installCopy.body}
-            />
-          </Reveal>
-          <Reveal delay={0.05}>
-            <div className="mt-10 flex flex-col items-start justify-between gap-6 rounded-3xl border border-[#d1d5db] bg-white p-8 shadow-sm sm:flex-row sm:items-center">
+            <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-6 md:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-20 lg:px-8">
               <div>
-                <p className="text-base font-semibold text-[#1f2937]">Chrome extension</p>
-                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#4b5563]">
-                  {installCopy.detail}
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#3f6846]">
+                  Chrome extension
                 </p>
+                <h2 className="mt-4 max-w-xl text-balance text-3xl font-semibold leading-tight tracking-[-0.035em] text-[#172133] md:text-5xl">
+                  {installCopy.title}
+                </h2>
+                <p className="mt-5 max-w-xl text-base leading-relaxed text-[#52605a]">
+                  {installCopy.body}
+                </p>
+                <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+                  <PrimaryButton href={primaryHref} external={isLive}>
+                    {primaryLabel}
+                  </PrimaryButton>
+                  <span className="text-sm text-[#5b665f]">No account required</span>
+                </div>
               </div>
-              <PrimaryButton href={primaryHref} external={isLive}>
-                {primaryLabel}
-              </PrimaryButton>
+
+              <div className="border-t border-[#afbead] lg:border-l lg:border-t-0 lg:pl-10">
+                <InstallAssurance>{installCopy.detail}</InstallAssurance>
+                <InstallAssurance>Review the privacy disclosure before activity timing begins.</InstallAssurance>
+                <InstallAssurance>Change reminders or clear local data whenever you want.</InstallAssurance>
+              </div>
             </div>
           </Reveal>
         </section>
@@ -374,22 +418,16 @@ function SectionHeading({
   eyebrow,
   title,
   body,
-  compact,
-  centered,
 }: {
   eyebrow: string
   title: string
   body: string
-  compact?: boolean
-  centered?: boolean
 }) {
   return (
-    <div className={[compact ? "" : "max-w-2xl", centered ? "mx-auto text-center" : ""].join(" ")}>
+    <div className="max-w-2xl">
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#4b5563]">{eyebrow}</p>
       <h2 className="mt-3 text-2xl font-semibold tracking-tight md:text-3xl">{title}</h2>
-      <p className={[ "mt-3 text-sm leading-relaxed text-[#4b5563]", centered ? "mx-auto" : "" ].join(" ")}>
-        {body}
-      </p>
+      <p className="mt-3 text-sm leading-relaxed text-[#4b5563]">{body}</p>
     </div>
   )
 }
@@ -533,6 +571,39 @@ function WhyLine({
   )
 }
 
+function PrivacyPoint({
+  icon: Icon,
+  title,
+  body,
+}: {
+  icon: LucideIcon
+  title: string
+  body: string
+}) {
+  return (
+    <div className="grid gap-4 py-7 sm:grid-cols-[3rem_1fr] sm:py-8">
+      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#e8f0e9] text-[#3f7547]">
+        <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
+      </span>
+      <div>
+        <h3 className="text-base font-semibold text-[#172133]">{title}</h3>
+        <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#586273]">{body}</p>
+      </div>
+    </div>
+  )
+}
+
+function InstallAssurance({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-start gap-4 border-b border-[#afbead] py-5 text-sm leading-relaxed text-[#3f5145] last:border-b-0">
+      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#3f7547] text-white">
+        <Check className="h-3.5 w-3.5" strokeWidth={2.4} aria-hidden="true" />
+      </span>
+      <span>{children}</span>
+    </div>
+  )
+}
+
 function FeatureCard({ num, title, body }: { num: string; title: string; body: string }) {
   return (
     <div className="flex h-full gap-4 rounded-2xl border border-[#d1d5db] bg-white p-6 shadow-sm transition-[box-shadow,transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-[#c5d0c6] hover:shadow-md">
@@ -541,17 +612,6 @@ function FeatureCard({ num, title, body }: { num: string; title: string; body: s
         <h3 className="text-[15px] font-semibold text-[#1f2937]">{title}</h3>
         <p className="mt-2 text-sm leading-relaxed text-[#4b5563]">{body}</p>
       </div>
-    </div>
-  )
-}
-
-function CheckLine({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-start gap-3 rounded-2xl border border-[#e5e7eb] bg-[#f7f4ed] p-5">
-      <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e8f0e9] text-[#3d6b42]">
-        ✓
-      </span>
-      <p className="text-sm leading-relaxed text-[#4b5563]">{children}</p>
     </div>
   )
 }
