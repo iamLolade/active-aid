@@ -40,7 +40,7 @@ export default function InstallPage() {
   return (
     <main className="min-h-screen bg-[#f7f4ed] text-[#1f2937]">
       <div className="mx-auto max-w-5xl px-6 pb-16 pt-6 md:pb-24 md:pt-8">
-        <SiteHeader />
+        <SiteHeader currentPage="install" />
 
         <section className="mx-auto mt-20 max-w-3xl text-center md:mt-28">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#4b5563]">
