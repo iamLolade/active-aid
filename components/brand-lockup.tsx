@@ -6,7 +6,7 @@ export function BrandLockup() {
     <Link
       href="/"
       aria-label="ActiveAid home"
-      className="group flex min-w-0 items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#6a9d6e]"
+      className="group flex min-h-11 min-w-0 items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#6a9d6e]"
     >
       <Image
         src="/activeaid-mark.svg"

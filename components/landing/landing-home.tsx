@@ -269,7 +269,7 @@ export function LandingHome({ release }: { release: ChromeStoreRelease }) {
                 </p>
                 <Link
                   href="/privacy"
-                  className="mt-8 inline-flex text-sm font-semibold text-[#d8ead6] transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b8d8b5]"
+                  className="mt-6 inline-flex min-h-11 items-center text-sm font-semibold text-[#d8ead6] transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b8d8b5]"
                 >
                   Read the full privacy policy →
                 </Link>
@@ -295,7 +295,7 @@ export function LandingHome({ release }: { release: ChromeStoreRelease }) {
           <div className="mt-10 divide-y divide-[#e5e7eb] rounded-3xl border border-[#d1d5db] bg-white px-6 shadow-sm md:px-8">
             {FAQS.map((item) => (
               <details key={item.question} className="group -mx-3 px-3 py-5 transition-colors open:bg-[#f8faf7] motion-reduce:transition-none">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-md text-base font-semibold text-[#1f2937] transition-colors marker:hidden hover:text-[#315f38] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#3f7547] motion-reduce:transition-none">
+                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 rounded-md text-base font-semibold text-[#1f2937] transition-colors marker:hidden hover:text-[#315f38] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#3f7547] motion-reduce:transition-none">
                   <span>{item.question}</span>
                   <span
                     aria-hidden="true"
@@ -445,6 +445,7 @@ function HeroProductVisual() {
           src="/screenshots/check-in.png"
           alt=""
           fill
+          loading="eager"
           sizes="(min-width: 1024px) 300px, 240px"
           className="object-cover object-top"
         />
@@ -455,6 +456,7 @@ function HeroProductVisual() {
           src="/screenshots/insight.png"
           alt=""
           fill
+          loading="eager"
           sizes="(min-width: 1024px) 300px, 240px"
           className="object-cover object-top"
         />
@@ -465,7 +467,7 @@ function HeroProductVisual() {
           src="/screenshots/today.png"
           alt="ActiveAid Today view with activity timing, a daily check-in, and quick relief sessions"
           fill
-          priority
+          loading="eager"
           sizes="(min-width: 1024px) 385px, (min-width: 640px) 56vw, 78vw"
           className="object-cover object-top"
         />
@@ -625,7 +627,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
   return (
     <Link
       href={href}
-      className="rounded-sm transition-colors duration-200 hover:text-[#1f2937] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#3f7547] motion-reduce:transition-none"
+      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm transition-colors duration-200 hover:text-[#1f2937] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#3f7547] motion-reduce:transition-none"
     >
       {children}
     </Link>

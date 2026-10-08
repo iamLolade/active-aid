@@ -76,7 +76,7 @@ export function LandingNav({
               href={primaryHref}
               target={primaryExternal ? "_blank" : undefined}
               rel={primaryExternal ? "noopener noreferrer" : undefined}
-              className="hidden h-10 shrink-0 items-center justify-center rounded-full bg-[#3f7547] px-5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] hover:bg-[#315f38] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3f7547] active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100 sm:inline-flex"
+              className="hidden h-11 shrink-0 items-center justify-center rounded-full bg-[#3f7547] px-5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] hover:bg-[#315f38] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3f7547] active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100 sm:inline-flex"
             >
               {primaryLabel}
             </Link>
@@ -88,7 +88,7 @@ export function LandingNav({
               aria-controls="landing-mobile-menu"
               aria-label={menuOpen ? "Close navigation" : "Open navigation"}
               onClick={() => setMenuOpen((open) => !open)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#cfcdc5] bg-white text-[#1f2937] transition-[background-color,transform] hover:bg-[#efebe2] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3f7547] active:scale-95 motion-reduce:transition-none motion-reduce:active:scale-100 md:hidden"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#cfcdc5] bg-white text-[#1f2937] transition-[background-color,transform] hover:bg-[#efebe2] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3f7547] active:scale-95 motion-reduce:transition-none motion-reduce:active:scale-100 md:hidden"
             >
               {menuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
             </button>
