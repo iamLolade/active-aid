@@ -190,7 +190,7 @@ export default function PrivacyPage() {
 
         <div className="mt-10 grid gap-12 lg:mt-16 lg:grid-cols-[14rem_minmax(0,1fr)] lg:items-start lg:gap-16">
           <aside className="hidden lg:block">
-            <nav aria-label="Privacy policy sections" className="sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto border-l border-[#cbd2ca] pl-5 pr-3">
+            <nav aria-label="Privacy policy sections" className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto border-l border-[#cbd2ca] pl-5 pr-3">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#6a7280]">On this page</p>
               <PolicyLinks className="mt-5" />
             </nav>
@@ -286,7 +286,7 @@ function PolicySection({
   section: (typeof POLICY_GROUPS)[number]["sections"][number]
 }) {
   return (
-    <section id={section.id} className="scroll-mt-8 border-b border-[#e1e5df] px-6 py-8 last:border-b-0 sm:px-8 md:px-10 md:py-10">
+    <section id={section.id} className="scroll-mt-24 border-b border-[#e1e5df] px-6 py-8 last:border-b-0 sm:px-8 md:px-10 md:py-10">
       <div className="grid gap-3 sm:grid-cols-[2.5rem_1fr] sm:gap-5">
         <span className="font-mono text-xs font-semibold text-[#6a9d6e]" aria-hidden="true">
           {String(number).padStart(2, "0")}

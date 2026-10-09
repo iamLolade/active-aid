@@ -3,7 +3,10 @@ import { BrandLockup } from "@/components/brand-lockup"
 
 export function SiteHeader({ currentPage }: { currentPage?: "privacy" | "install" }) {
   return (
-    <nav aria-label="Primary" className="flex items-center justify-between gap-4">
+    <nav
+      aria-label="Primary"
+      className="sticky top-0 z-50 flex min-h-[72px] items-center justify-between gap-4 border-b border-[#dedbd2] bg-[#f7f4ed]/95 backdrop-blur-md"
+    >
       <BrandLockup />
       <div className="flex items-center gap-4 text-sm font-medium text-[#4b5563]">
         <Link
