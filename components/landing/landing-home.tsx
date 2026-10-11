@@ -114,6 +114,11 @@ const FAQS = [
       "A lightweight content script detects activity timing across the webpages where you work. ActiveAid does not read, store, or transmit page content.",
   },
   {
+    question: "What stage is ActiveAid at?",
+    answer:
+      "ActiveAid is a working product currently being prepared for a human-centred usability and feasibility study. Its clinical effectiveness has not yet been evaluated.",
+  },
+  {
     question: "Is ActiveAid a medical tool?",
     answer:
       "No. ActiveAid supports workplace wellness habits. It is not a medical, diagnostic, or therapeutic tool. Stop any movement if it hurts and follow your own medical guidance.",
